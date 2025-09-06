@@ -11,7 +11,7 @@ export const Header = () => {
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <a
           href="/welcome"
           className="flex items-center transition-transform hover:scale-105"
