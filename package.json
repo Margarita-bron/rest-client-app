@@ -11,8 +11,8 @@
     "lint": "eslint .",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "postinstall": "react-router type-gen",
-    "type-gen": "react-router type-gen"
+    "postinstall": "react-router typegen",
+    "typegen": "react-router typegen"
   },
   "dependencies": {
     "@react-router/node": "^7.7.1",
