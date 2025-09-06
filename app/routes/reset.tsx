@@ -12,8 +12,15 @@ function Reset() {
   const navigate = useNavigate();
   useEffect(() => {
     if (loading) return;
-    if (user) navigate('/dashboard');
+    if (user) navigate('/welcome');
   }, [user, loading]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendPasswordReset(email);
+    navigate('/sing-in');
+  };
+
   return (
     <div className="min-h-screen flex flex-col ">
       <Header />
@@ -38,7 +45,7 @@ function Reset() {
             </div>
 
             <div className="mt-20 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form action="#" method="POST" className="space-y-3">
+              <form onSubmit={handleSubmit} method="POST" className="space-y-3">
                 <div>
                   <label
                     htmlFor="email"
@@ -64,7 +71,6 @@ function Reset() {
                 <div>
                   <button
                     type="submit"
-                    onClick={() => sendPasswordReset(email)}
                     className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
                   >
                     Send password reset email
@@ -78,7 +84,7 @@ function Reset() {
                   href="#"
                   className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
-                  <Link to="/register">Register</Link> now.
+                  <Link to="/sing-up">Register</Link> now.
                 </a>
               </p>
             </div>
