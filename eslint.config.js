@@ -2,13 +2,12 @@ import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
-import pluginJsxA11y from 'eslint-plugin-jsx-a11y';
-import { globalIgnores } from 'eslint/config';
 
 export default tseslint.config([
-  globalIgnores(['dist']),
+  { ignores: ['dist'] },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -20,6 +19,11 @@ export default tseslint.config([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    plugins: {
+      react,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
     },
     rules: {
       'prettier/prettier': 'warn',
@@ -34,7 +38,6 @@ export default tseslint.config([
           'ts-expect-error': false,
         },
       ],
-
       'no-warning-comments': [
         'warn',
         {
@@ -42,6 +45,18 @@ export default tseslint.config([
           location: 'start',
         },
       ],
+      ...reactHooks.configs.recommended.rules,
+      ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
   },
 ]);
