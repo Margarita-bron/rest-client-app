@@ -1,29 +1,44 @@
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, registerWithEmailAndPassword } from '../firebase/firebase';
+import { auth, registerWithEmailAndPassword } from '../utils/firebase';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header/header';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { singUpSchema } from '~/utils/yup-auth-tests';
+import { useForm } from 'react-hook-form';
+
+type singUpFormProps = {
+  name: string;
+  email: string;
+  password: string;
+};
 
 function Welcome() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
-  const register = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!name) {
-      alert('Please enter name');
-      return;
-    }
-    registerWithEmailAndPassword(name, email, password);
-    navigate('/welcome');
-  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm({ resolver: yupResolver(singUpSchema), mode: 'onChange' });
+
   useEffect(() => {
     if (loading) return;
-    if (user) navigate('/welcome');
-  }, [user, loading]);
+    if (user && !error) {
+      navigate('/welcome');
+    }
+  }, [user, loading, error, navigate]);
+
+  const onSubmit = (formData: singUpFormProps) => {
+    registerWithEmailAndPassword(
+      formData.name,
+      formData.email,
+      formData.password
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col ">
       <Header />
@@ -48,7 +63,11 @@ function Welcome() {
             </div>
 
             <div className="mt-20 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form onSubmit={register} method="POST" className="space-y-3">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                method="POST"
+                className="space-y-3"
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -59,14 +78,17 @@ function Welcome() {
                   <div className="mt-2">
                     <input
                       id="name"
-                      name="name"
                       type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
                       placeholder="Full Name"
-                      required
+                      autoComplete="given-name"
+                      {...register('name')}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                     />
+                    {errors.name && touchedFields.name && (
+                      <p className="text-[0.65rem] text-left text-red-700 break-words max-w-full">
+                        {errors.name?.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -80,15 +102,17 @@ function Welcome() {
                   <div className="mt-2">
                     <input
                       id="email"
-                      name="email"
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="E-mail Address"
-                      required
                       autoComplete="email"
+                      {...register('email')}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                     />
+                    {errors.email && touchedFields.email && (
+                      <p className="text-[0.65rem] text-left text-red-700">
+                        {errors.email?.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -104,15 +128,17 @@ function Welcome() {
                   <div className="mt-2">
                     <input
                       id="password"
-                      name="password"
                       type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
-                      required
-                      autoComplete="current-password"
+                      autoComplete="new-password"
+                      {...register('password')}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                     />
+                    {errors.password && (
+                      <p className="text-[0.65rem] text-left text-red-700">
+                        {errors.password?.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 

@@ -2,28 +2,38 @@ import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, signInWithEmailPassword } from '../firebase/firebase';
+import { auth, signInWithEmailPassword } from '../utils/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import '../firebase/login/login.css';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { singInSchema } from '~/utils/yup-auth-tests';
+
+type singInFormProps = {
+  email: string;
+  password: string;
+};
 
 const Welcome = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm({ resolver: yupResolver(singInSchema), mode: 'onChange' });
+
   useEffect(() => {
     if (loading) {
-      // maybe trigger a loading screen
       return;
     }
-    if (user) navigate('/welcome');
-  }, [user, loading]);
+    if (user && !error) {
+      navigate('/welcome');
+    }
+  }, [user, loading, error, navigate]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    signInWithEmailPassword(email, password);
-    navigate('/welcome');
+  const onSubmit = (formData: singInFormProps) => {
+    signInWithEmailPassword(formData.email, formData.password);
   };
 
   return (
@@ -50,7 +60,11 @@ const Welcome = () => {
             </div>
 
             <div className="mt-20 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form onSubmit={handleSubmit} method="POST" className="space-y-3">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                method="POST"
+                className="space-y-3"
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -61,15 +75,17 @@ const Welcome = () => {
                   <div className="mt-2">
                     <input
                       id="email"
-                      name="email"
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="E-mail Address"
-                      required
                       autoComplete="email"
+                      {...register('email')}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                     />
+                    {errors.email && touchedFields.email && (
+                      <p className="text-[0.65rem] text-left text-red-700">
+                        {errors.email?.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -93,15 +109,17 @@ const Welcome = () => {
                   <div className="mt-2">
                     <input
                       id="password"
-                      name="password"
                       type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
-                      required
                       autoComplete="current-password"
+                      {...register('password')}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                     />
+                    {errors.password && (
+                      <p className="text-[0.65rem] text-left text-red-700">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 

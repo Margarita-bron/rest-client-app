@@ -5,8 +5,15 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
+  updateProfile,
 } from 'firebase/auth';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  setDoc,
+  doc,
+} from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 
 const firebaseConfig = {
@@ -48,11 +55,16 @@ const registerWithEmailAndPassword = async (
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     const user = res.user;
-    await addDoc(collection(db, 'users'), {
-      uid: user.uid,
+
+    if (user) {
+      await updateProfile(user, {
+        displayName: name,
+      });
+    }
+    await setDoc(doc(db, 'users', user.uid), {
       name,
-      authProvider: 'local',
       email,
+      authProvider: 'local',
     });
   } catch (err) {
     if (err instanceof Error) {
