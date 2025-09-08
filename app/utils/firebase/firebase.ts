@@ -14,7 +14,6 @@ import {
   setDoc,
   doc,
 } from 'firebase/firestore';
-// TODO: Add SDKs for Firebase products that you want to use
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
@@ -72,7 +71,6 @@ const registerWithEmailAndPassword = async (
       alert(err.message);
     } else {
       console.error('Unknown error', err);
-      alert('An error occurred');
     }
   }
 };
@@ -84,10 +82,8 @@ const sendPasswordReset = async (email: string): Promise<void> => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.message);
-      alert(err.message);
     } else {
       console.error('Unknown error', err);
-      alert('An error occurred');
     }
   }
 };

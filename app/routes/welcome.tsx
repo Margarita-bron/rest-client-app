@@ -1,6 +1,6 @@
 import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
-import { auth } from '../utils/firebase';
+import { auth } from '../utils/firebase/firebase';
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link } from 'react-router';
@@ -21,7 +21,7 @@ const Welcome = () => {
       <main className="flex-1 container mx-auto flex justify-center items-center text-center">
         <div className="flex flex-col  h-full scale-135">
           <h1 className="text-xl font-bold mb-5">
-            Welcome Back, {user?.displayName}!
+            Welcome Back{user.displayName ? `, ${user?.displayName}` : ''}!
           </h1>
           <div className="flex items-center gap-3">
             <Link

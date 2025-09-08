@@ -2,7 +2,7 @@ import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, signInWithEmailPassword } from '../utils/firebase';
+import { auth, signInWithEmailPassword } from '../utils/firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

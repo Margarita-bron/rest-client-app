@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, registerWithEmailAndPassword } from '../utils/firebase';
+import { auth, registerWithEmailAndPassword } from '../utils/firebase/firebase';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header/header';
 import { yupResolver } from '@hookform/resolvers/yup';

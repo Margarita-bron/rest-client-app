@@ -1,4 +1,4 @@
-import { logout } from '~/utils/firebase';
+import { logout } from '~/utils/firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 
 export const SingOutButton = () => {
