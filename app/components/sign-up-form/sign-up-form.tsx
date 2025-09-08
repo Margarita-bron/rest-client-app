@@ -1,26 +1,42 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { signUpSchema } from '~/components/sign-up-form/validation';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { ROUTES } from '~/routes-path';
 import { SIGN_UP_FORM } from './sign-up-form.data';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useEffect } from 'react';
+import { auth, registerWithEmailAndPassword } from '~/utils/firebase/firebase';
+import { signUpSchema } from '~/utils/validation/zod-auth-tests';
 //TODO - instead of strings use i18n when add translate
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export const SignUpForm = () => {
+  const [user, loading, error] = useAuthState(auth);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
+    mode: 'onChange',
   });
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log('Form submitted:', data);
-    // TODO Send actual request
+  useEffect(() => {
+    if (loading) return;
+    if (user && !error) {
+      navigate('/welcome');
+    }
+  }, [user, loading, error, navigate]);
+
+  const onSubmit = (formData: SignUpFormData) => {
+    registerWithEmailAndPassword(
+      formData.name,
+      formData.email,
+      formData.password
+    );
   };
 
   return (
@@ -32,12 +48,36 @@ export const SignUpForm = () => {
         <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
 
         <div>
-          <label className="block text-sm mb-1 text-left">Email</label>
-          <input {...register('email')} {...SIGN_UP_FORM.email} />
+          <label className="block text-sm mb-1 text-left">Full Name</label>
+          <input
+            id="name"
+            placeholder="Full Name"
+            autoComplete="given-name"
+            {...register('name')}
+            {...SIGN_UP_FORM.name}
+          />
           <div className="h-5">
-            {errors.email && (
+            {errors.name && touchedFields.name && (
               <p className="text-red-400 text-sm text-left">
-                {errors.email.message}
+                {errors.name?.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1 text-left">Email</label>
+          <input
+            id="email"
+            placeholder="E-mail Address"
+            autoComplete="email"
+            {...register('email')}
+            {...SIGN_UP_FORM.email}
+          />
+          <div className="h-5">
+            {errors.email && touchedFields.email && (
+              <p className="text-red-400 text-sm text-left">
+                {errors.email?.message}
               </p>
             )}
           </div>
@@ -45,11 +85,17 @@ export const SignUpForm = () => {
 
         <div>
           <label className="block text-sm mb-1 text-left">Password</label>
-          <input {...register('password')} {...SIGN_UP_FORM.password} />
+          <input
+            id="password"
+            placeholder="Password"
+            autoComplete="new-password"
+            {...register('password')}
+            {...SIGN_UP_FORM.password}
+          />
           <div className="h-5">
             {errors.password && (
               <p className="text-red-400 text-sm text-left">
-                {errors.password.message}
+                {errors.password?.message}
               </p>
             )}
           </div>

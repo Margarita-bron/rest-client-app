@@ -6,6 +6,7 @@ export const BASE_ROUTES = {
   variables: 'variables',
   signIn: 'sign-in',
   signUp: 'sign-up',
+  reset: 'reset',
 } as const;
 
 export const ROUTES = {
@@ -16,4 +17,5 @@ export const ROUTES = {
   variables: `/${BASE_ROUTES.variables}`,
   signIn: `/${BASE_ROUTES.signIn}`,
   signUp: `/${BASE_ROUTES.signUp}`,
+  reset: `/${BASE_ROUTES.reset}`,
 } as const;

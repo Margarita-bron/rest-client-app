@@ -1,6 +1,6 @@
 import logo from '~/assets/logo.png';
 import { useState } from 'react';
-import { SingOutButton } from '~/components/sign-out-button/sing-out-button';
+import { SingOutButton } from '~/components/sign-out-button/sign-out-button';
 
 export const Header = () => {
   const [isEnglish, setIsEnglish] = useState(true);

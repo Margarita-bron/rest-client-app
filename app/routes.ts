@@ -10,4 +10,5 @@ export default [
   route(ROUTES.variables, 'routes/variables.tsx'),
   route(ROUTES.signIn, 'routes/sign-in.tsx'),
   route(ROUTES.signUp, 'routes/sign-up.tsx'),
+  route(ROUTES.reset, 'routes/reset.tsx'),
 ] satisfies RouteConfig;

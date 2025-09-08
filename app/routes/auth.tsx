@@ -1,6 +1,6 @@
 import { Footer } from '~/components/footer/footer';
 import { SingInButton } from '~/components/sign-in-button/sign-in-button';
-import { SingUpButton } from '~/components/sign-up-button/sing-up-button';
+import { SingUpButton } from '~/components/sign-up-button/sign-up-button';
 import { HeaderAuth } from '~/components/header/header-auth';
 
 export const Auth = () => {
