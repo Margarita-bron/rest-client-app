@@ -1,6 +1,6 @@
 import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
-import { SignInForm } from '~/components/sign-in/sign-in';
+import { SignInForm } from '~/components/sign-in-form/sign-in-form';
 
 const SignIn = () => {
   return (

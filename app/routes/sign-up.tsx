@@ -1,8 +1,8 @@
 import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
-import { SignUpForm } from '~/components/sign-up/sign-up';
+import { SignUpForm } from '~/components/sign-up-form/sign-up-form';
 
-const Welcome = () => {
+const SignUp = () => {
   return (
     <div className="min-h-screen flex flex-col ">
       <Header />
@@ -13,4 +13,4 @@ const Welcome = () => {
     </div>
   );
 };
-export default Welcome;
+export default SignUp;

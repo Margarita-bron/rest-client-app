@@ -1,6 +1,6 @@
 import { z } from 'zod';
 //TODO - instead of strings use i18n when add translate
-export const signupSchema = z.object({
+export const signUpSchema = z.object({
   email: z.email('Invalid email'),
   password: z
     .string()
