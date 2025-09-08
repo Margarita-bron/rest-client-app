@@ -1,5 +1,6 @@
 import { type RouteConfig, index, route } from '@react-router/dev/routes';
-import { ROUTES } from '~/routes-path';
+// alias for react router framework mode not working, use local instead
+import { ROUTES } from './routes-path';
 
 export default [
   index('routes/home.tsx'),

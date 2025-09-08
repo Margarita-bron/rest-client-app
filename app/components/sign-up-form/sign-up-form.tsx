@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { signUpSchema } from '~/components/sign-up-form/validation';
 import { Link } from 'react-router';
 import { ROUTES } from '~/routes-path';
-
+import { SIGN_UP_FORM } from './sign-up-form.data';
 //TODO - instead of strings use i18n when add translate
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -33,12 +33,8 @@ export const SignUpForm = () => {
 
         <div>
           <label className="block text-sm mb-1 text-left">Email</label>
-          <input
-            type="email"
-            {...register('email')}
-            className="w-full px-3 py-2 rounded-lg mb-1 bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <div className="min-h-[20px]">
+          <input {...register('email')} {...SIGN_UP_FORM.email} />
+          <div className="h-5">
             {errors.email && (
               <p className="text-red-400 text-sm text-left">
                 {errors.email.message}
@@ -49,12 +45,8 @@ export const SignUpForm = () => {
 
         <div>
           <label className="block text-sm mb-1 text-left">Password</label>
-          <input
-            type="password"
-            {...register('password')}
-            className="w-full px-3 py-2 rounded-lg mb-1 bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-          <div className="min-h-[20px]">
+          <input {...register('password')} {...SIGN_UP_FORM.password} />
+          <div className="h-5">
             {errors.password && (
               <p className="text-red-400 text-sm text-left">
                 {errors.password.message}
@@ -63,12 +55,7 @@ export const SignUpForm = () => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition font-medium"
-        >
-          Sign In
-        </button>
+        <button {...SIGN_UP_FORM.submit}>Sign Up</button>
 
         <p className="text-sm text-center text-gray-400">
           Already have an account?{' '}
