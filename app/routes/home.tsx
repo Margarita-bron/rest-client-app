@@ -1,15 +1,5 @@
-import type { Route } from "./+types/home";
-import {Auth} from "~/routes/auth";
-
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
-}
-
+import { Auth } from '~/routes/auth';
+// had to delete due to meta conflict
 export default function Home() {
-  return (
-    <Auth />);
-
+  return <Auth />;
 }
