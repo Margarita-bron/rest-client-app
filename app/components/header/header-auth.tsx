@@ -1,7 +1,7 @@
 import logo from '~/assets/logo.png';
 import { useState } from 'react';
-import { SingInButton } from '~/components/sing-in-button/sing-in-button';
-import { SingUpButton } from '~/components/sing-up-button/sing-up-button';
+import { SingInButton } from '~/components/sign-in-button/sign-in-button';
+import { SingUpButton } from '~/components/sign-up-button/sing-up-button';
 
 export const HeaderAuth = () => {
   const [isEnglish, setIsEnglish] = useState(true);
