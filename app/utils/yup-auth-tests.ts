@@ -39,3 +39,10 @@ export const singUpSchema = yup.object().shape({
     .required('Email is required'),
   password: passwordSchema,
 });
+
+export const resetSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Enter a valid email address')
+    .required('Email is required'),
+});

@@ -5,11 +5,24 @@ import { Link } from 'react-router-dom';
 import { auth, sendPasswordReset } from '../utils/firebase';
 import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { resetSchema } from '~/utils/yup-auth-tests';
+
+type resetFormProps = {
+  email: string;
+};
 
 function Reset() {
-  const [email, setEmail] = useState('');
   const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm({ resolver: yupResolver(resetSchema), mode: 'onChange' });
+
   useEffect(() => {
     if (loading) return;
     if (user && !error) {
@@ -17,9 +30,8 @@ function Reset() {
     }
   }, [user, loading, error]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    sendPasswordReset(email);
+  const onSubmit = (formData: resetFormProps) => {
+    sendPasswordReset(formData.email);
   };
 
   return (
@@ -46,7 +58,11 @@ function Reset() {
             </div>
 
             <div className="mt-20 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form onSubmit={handleSubmit} method="POST" className="space-y-3">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                method="POST"
+                className="space-y-3"
+              >
                 <div>
                   <label
                     htmlFor="email"
@@ -57,13 +73,10 @@ function Reset() {
                   <div className="mt-2">
                     <input
                       id="email"
-                      name="email"
                       type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="E-mail Address"
-                      required
                       autoComplete="email"
+                      {...register('email')}
                       className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:text-sm focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500"
                     />
                   </div>
