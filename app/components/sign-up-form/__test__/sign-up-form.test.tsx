@@ -3,17 +3,51 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { SignUpForm } from '../sign-up-form';
 import { SIGN_UP_FORM } from '../sign-up-form.data';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router';
 
-beforeEach(() => {
-  render(
-    <MemoryRouter>
-      <SignUpForm />
-    </MemoryRouter>
-  );
+vi.mock('react-firebase-hooks/auth', () => ({
+  useAuthState: vi.fn(),
+}));
+
+vi.mock('~/utils/firebase/firebase', () => ({
+  auth: {},
+  registerWithEmailAndPassword: vi.fn(),
+}));
+
+vi.mock('react-router', async () => {
+  const actual =
+    await vi.importActual<typeof import('react-router')>('react-router');
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
 });
 
 describe('SignUpForm', () => {
-  it('renders form fields and submit button', () => {
+  const mockNavigate = vi.fn();
+
+  beforeEach(() => {
+    (useAuthState as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+      null,
+      false,
+      null,
+    ]);
+    (useNavigate as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      mockNavigate
+    );
+
+    render(
+      <MemoryRouter>
+        <SignUpForm />
+      </MemoryRouter>
+    );
+  });
+
+  it('renders all inputs and submit button', () => {
+    expect(
+      screen.getByTestId(SIGN_UP_FORM.name['data-testid'])
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId(SIGN_UP_FORM.email['data-testid'])
     ).toBeInTheDocument();
@@ -26,59 +60,56 @@ describe('SignUpForm', () => {
   });
 
   it('shows validation errors when fields are empty', async () => {
-    fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
-
+    const nameInput = screen.getByTestId(SIGN_UP_FORM.name['data-testid']);
     const emailInput = screen.getByTestId(SIGN_UP_FORM.email['data-testid']);
     const passwordInput = screen.getByTestId(
       SIGN_UP_FORM.password['data-testid']
     );
 
-    const emailError = await screen.findByText((content, element) => {
-      return !!(
-        element &&
-        element.tagName.toLowerCase() === 'p' &&
-        element.parentElement?.contains(emailInput) &&
-        content.trim() !== ''
-      );
-    });
+    fireEvent.focus(nameInput);
+    fireEvent.blur(nameInput);
+    fireEvent.focus(emailInput);
+    fireEvent.blur(emailInput);
+    fireEvent.focus(passwordInput);
+    fireEvent.blur(passwordInput);
 
-    const passwordError = await screen.findByText((content, element) => {
-      return !!(
-        element &&
-        element.tagName.toLowerCase() === 'p' &&
-        element.parentElement?.contains(passwordInput) &&
-        content.trim() !== ''
-      );
-    });
+    fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
 
-    expect(emailError).toBeTruthy();
-    expect(emailError.textContent).not.toBe('');
-
-    expect(passwordError).toBeTruthy();
-    expect(passwordError.textContent).not.toBe('');
+    expect(
+      await screen.findByText(/Name must be at least 2 characters/i)
+    ).toBeTruthy();
+    expect(
+      await screen.findByText(/Enter a valid email address/i)
+    ).toBeTruthy();
+    expect(
+      await screen.findByText(/Password must be at least 8 characters long/i)
+    ).toBeTruthy();
   });
 
-  it('calls onSubmit with correct data', async () => {
-    const consoleSpy = vi.spyOn(console, 'log');
+  it('calls registerWithEmailAndPassword with correct data', async () => {
+    const { registerWithEmailAndPassword } = await import(
+      '~/utils/firebase/firebase'
+    );
 
+    fireEvent.change(screen.getByTestId(SIGN_UP_FORM.name['data-testid']), {
+      target: { value: 'John Doe' },
+    });
     fireEvent.change(screen.getByTestId(SIGN_UP_FORM.email['data-testid']), {
       target: { value: 'test@example.com' },
     });
-
     fireEvent.change(screen.getByTestId(SIGN_UP_FORM.password['data-testid']), {
       target: { value: 'Abc123$%' },
     });
 
     fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
 
-    await waitFor(() =>
-      expect(consoleSpy).toHaveBeenCalledWith('Form submitted:', {
-        email: 'test@example.com',
-        password: 'Abc123$%',
-      })
-    );
-
-    consoleSpy.mockRestore();
+    await waitFor(() => {
+      expect(registerWithEmailAndPassword).toHaveBeenCalledWith(
+        'John Doe',
+        'test@example.com',
+        'Abc123$%'
+      );
+    });
   });
 
   it('shows password validation messages for invalid passwords', async () => {
@@ -86,30 +117,41 @@ describe('SignUpForm', () => {
       SIGN_UP_FORM.password['data-testid']
     );
 
-    fireEvent.change(passwordInput, { target: { value: 'Ab1$' } });
-    fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
-    expect(
-      await screen.findByText('Password must be at least 8 characters long')
-    ).toBeTruthy();
+    const cases = [
+      { value: 'Ab1$', message: 'at least 8 characters' },
+      { value: '12345678$', message: 'one letter' },
+      { value: 'Abcdefg$', message: 'one number' },
+      { value: 'Abc12345', message: 'one special character' },
+    ];
 
-    fireEvent.change(passwordInput, { target: { value: '12345678$' } });
-    fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
-    expect(
-      await screen.findByText('Password must include at least one letter')
-    ).toBeTruthy();
+    for (const { value, message } of cases) {
+      fireEvent.change(passwordInput, { target: { value } });
+      fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
+      expect(await screen.findByText((t) => t.includes(message))).toBeTruthy();
+    }
+  });
 
-    fireEvent.change(passwordInput, { target: { value: 'Abcdefg$' } });
-    fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
-    expect(
-      await screen.findByText('Password must include at least one digit')
-    ).toBeTruthy();
+  it('navigates to /welcome if user exists', async () => {
+    (useAuthState as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
+      { uid: '123' },
+      false,
+      null,
+    ]);
 
-    fireEvent.change(passwordInput, { target: { value: 'Abc12345' } });
-    fireEvent.click(screen.getByTestId(SIGN_UP_FORM.submit['data-testid']));
-    expect(
-      await screen.findByText(
-        'Password must include at least one special character'
-      )
-    ).toBeTruthy();
+    render(
+      <MemoryRouter>
+        <SignUpForm />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/welcome');
+    });
+  });
+
+  it('renders sign-in link', () => {
+    const link = screen.getByText('Sign In');
+    expect(link).toBeInTheDocument();
+    expect(link.getAttribute('href')).toBe('/sign-in');
   });
 });

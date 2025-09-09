@@ -6,17 +6,40 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    // otherwise tests not working
     !process.env.VITEST && reactRouter(),
     tsconfigPaths(),
   ],
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './app/setup-tests.ts',
+    setupFiles: 'app/setup-tests.ts',
     include: ['app/**/*.{test,spec}.{ts,tsx}'],
+    exclude: [
+      'node_modules',
+      'dist',
+      '.react-router/**',
+      'eslint.config.js',
+      'vite.config.ts',
+      'rest-client-app/.react-router/**',
+      '**/+types/**',
+      '**/+server-build.d.ts',
+      'react-router.config.ts',
+    ],
     coverage: {
       reporter: ['text', 'lcov'],
+      exclude: [
+        'node_modules',
+        'dist',
+        '.react-router/**',
+        '**/+types/**',
+        '**/+server-build.d.ts',
+        'eslint.config.js',
+        'vite.config.ts',
+        'rest-client-app/root.tsx',
+        'rest-client-app/routes.ts',
+        'rest-client-app/routes-path.ts',
+        'react-router.config.ts',
+      ],
     },
   },
 });
