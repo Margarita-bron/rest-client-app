@@ -39,7 +39,7 @@ export const SignInForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-950 text-gray-100">
+    <div className="flex items-center justify-center bg-gray-950 text-gray-100 scale-90">
       <form
         onSubmit={handleSubmit(onSubmit)}
         method="POST"
