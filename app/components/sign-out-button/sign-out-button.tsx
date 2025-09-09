@@ -2,7 +2,7 @@ import { logout } from '~/utils/firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '~/routes-path';
 
-export const SingOutButton = () => {
+export const SignOutButton = () => {
   const navigate = useNavigate();
   const handleLogout = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -13,9 +13,9 @@ export const SingOutButton = () => {
   return (
     <button
       onClick={(e) => handleLogout(e)}
-      className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+      className=" bg-indigo-500 rounded-lg px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors cursor-pointer"
     >
-      Sing out
+      Sign out
     </button>
   );
 };

@@ -15,6 +15,6 @@ export const SIGN_IN_FORM_DATA = {
     type: 'submit' as const,
     'data-testid': 'sign-in-submit',
     className:
-      'w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition font-medium',
+      'w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition font-medium cursor-pointer',
   },
 };
