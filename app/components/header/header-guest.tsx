@@ -2,7 +2,7 @@ import logo from '~/assets/logo.png';
 import { useState } from 'react';
 import { SignOutButton } from '~/components/sign-out-button/sign-out-button';
 
-export const Header = () => {
+export const HeaderGuest = () => {
   const [isEnglish, setIsEnglish] = useState(true);
 
   const toggleLanguage = () => {

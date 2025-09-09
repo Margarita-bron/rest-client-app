@@ -25,6 +25,46 @@ const firebaseConfig = {
   measurementId: 'G-CC9RST6B6Y',
 };
 
+import { getDoc, onSnapshot } from 'firebase/firestore';
+
+// Функция для одноразового получения данных пользователя из Firestore
+async function getCustomUserData(userId: string) {
+  const userDocRef = doc(db, 'users', userId);
+  const userDocSnap = await getDoc(userDocRef);
+
+  if (userDocSnap.exists()) {
+    console.log('Пользовательские данные из Firestore:', userDocSnap.data());
+    return userDocSnap.data();
+  } else {
+    console.log('Документ пользователя в Firestore не найден.');
+    return null;
+  }
+}
+
+// Функция для получения данных пользователя в реальном времени из Firestore
+function subscribeToCustomUserData(
+  userId: string,
+  callback: (data: any | null) => void
+) {
+  const userDocRef = doc(db, 'users', userId);
+  const unsubscribe = onSnapshot(
+    userDocRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        callback(docSnap.data());
+      } else {
+        callback(null); // Пользовательский документ не существует
+      }
+    },
+    (error) => {
+      console.error('Ошибка при подписке на данные пользователя:', error);
+      callback(null);
+    }
+  );
+
+  return unsubscribe; // Возвращаем функцию для отписки
+}
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
