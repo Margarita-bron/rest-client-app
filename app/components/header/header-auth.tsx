@@ -1,7 +1,7 @@
 import logo from '~/assets/logo.png';
 import { useState } from 'react';
-import { SingInButton } from '~/components/sign-in-button/sign-in-button';
-import { SingUpButton } from '~/components/sign-up-button/sign-up-button';
+import { SignInButton } from '~/components/sign-in-button/sign-in-button';
+import { SignUpButton } from '~/components/sign-up-button/sign-up-button';
 
 export const HeaderAuth = () => {
   const [isEnglish, setIsEnglish] = useState(true);
@@ -30,7 +30,7 @@ export const HeaderAuth = () => {
           >
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-medium transition-all ${
-                !isEnglish ? 'bg-blue-600 text-white' : 'text-gray-600'
+                !isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-600'
               }`}
             >
               RU
@@ -38,7 +38,7 @@ export const HeaderAuth = () => {
 
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-medium transition-all ${
-                isEnglish ? 'bg-blue-600 text-white' : 'text-gray-600'
+                isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-600'
               }`}
             >
               EN
@@ -48,8 +48,8 @@ export const HeaderAuth = () => {
           <div className="h-6 w-px bg-gray-300"></div>
 
           <div className="flex items-center gap-3">
-            <SingInButton />
-            <SingUpButton />
+            <SignInButton />
+            <SignUpButton />
           </div>
         </div>
       </div>

@@ -43,12 +43,12 @@ export const SignInForm = () => {
       <form
         onSubmit={handleSubmit(onSubmit)}
         method="POST"
-        className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-100 max-w-md space-y-6"
+        className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-115 max-w-md space-y-4"
       >
         <h1 className="text-2xl font-semibold text-center">Sign In</h1>
 
         <div>
-          <label htmlFor="email" className="block text-sm mb-1 text-left">
+          <label htmlFor="email" className="block text-m mb-1 text-left">
             Email
           </label>
           <input
@@ -68,17 +68,9 @@ export const SignInForm = () => {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm mb-1 text-left">
+          <label htmlFor="password" className="block text-m mb-1 text-left">
             Password
           </label>
-          <div className="text-sm">
-            <a
-              href="#"
-              className="font-semibold text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-            >
-              <Link to="/reset">Forgot password?</Link>
-            </a>
-          </div>
           <input
             id="password"
             placeholder="Password"
@@ -96,6 +88,14 @@ export const SignInForm = () => {
         </div>
 
         <button {...SIGN_IN_FORM_DATA.submit}>Sign In</button>
+        <div className="text-sm">
+          <a
+            href="#"
+            className="font-semibold text-sm py-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          >
+            <Link to={ROUTES.reset}>Forgot password?</Link>
+          </a>
+        </div>
 
         <p className="text-sm text-center text-gray-400">
           Don’t have an account?{' '}

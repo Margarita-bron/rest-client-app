@@ -43,7 +43,7 @@ export const SignUpForm = () => {
     <div className="flex items-center justify-center bg-gray-950 text-gray-100">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-100 max-w-md space-y-6"
+        className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-115 max-w-md space-y-4"
       >
         <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
 
@@ -56,7 +56,7 @@ export const SignUpForm = () => {
             {...register('name')}
             {...SIGN_UP_FORM.name}
           />
-          <div className="h-5">
+          <div className="h-7">
             {errors.name && touchedFields.name && (
               <p className="text-red-400 text-sm text-left">
                 {errors.name?.message}
@@ -74,7 +74,7 @@ export const SignUpForm = () => {
             {...register('email')}
             {...SIGN_UP_FORM.email}
           />
-          <div className="h-5">
+          <div className="h-7">
             {errors.email && touchedFields.email && (
               <p className="text-red-400 text-sm text-left">
                 {errors.email?.message}
@@ -92,7 +92,7 @@ export const SignUpForm = () => {
             {...register('password')}
             {...SIGN_UP_FORM.password}
           />
-          <div className="h-5">
+          <div className="h-7">
             {errors.password && (
               <p className="text-red-400 text-sm text-left">
                 {errors.password?.message}

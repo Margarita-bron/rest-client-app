@@ -10,14 +10,14 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-gray-950 border-b-1 border-gray-800 sticky top-0 z-50">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <a
           href="/welcome"
           className="flex items-center transition-transform hover:scale-105"
         >
           <img src={logo} alt="Logo" className="h-8 mr-3" />
-          <span className="text-l font-semibold text-gray-300">
+          <span className="text-l font-semibold text-gray-800">
             MVA Project
           </span>
         </a>
@@ -25,11 +25,11 @@ export const Header = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1 rounded-full border-1 border-gray-800 bg-gray-950 p-0.5 transition-colors hover:bg-gray-900"
+            className="flex items-center gap-1 rounded-full bg-gray-200 p-0.5 transition-colors hover:bg-gray-300"
           >
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-medium transition-all ${
-                !isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-500'
+                !isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-600'
               }`}
             >
               RU
@@ -37,7 +37,7 @@ export const Header = () => {
 
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-medium transition-all ${
-                isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-500'
+                isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-600'
               }`}
             >
               EN
