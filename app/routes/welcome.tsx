@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { ROUTES } from '~/routes-path';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '~/utils/firebase/firebase';
@@ -9,6 +9,7 @@ import WelcomeSkeleton from '../loading/welcome-skeleton';
 
 const Welcome = () => {
   const [user, loading, error] = useAuthState(auth);
+  const navigate = useNavigate();
   const [firestoreProfile, setFirestoreProfile] =
     useState<UserFirestoreProfile | null>(null);
   const [firestoreLoading, setFirestoreLoading] = useState(true);
@@ -59,15 +60,7 @@ const Welcome = () => {
     );
   }
 
-  if (!user || firestoreProfile === null) {
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
-        <Link to="/sing-in">Sign In</Link>
-      </div>
-    );
-  }
-
-  const nameToDisplay = firestoreProfile?.name || user.displayName;
+  const nameToDisplay = firestoreProfile?.name || user?.displayName;
 
   return (
     <div className="flex flex-col h-full scale-135 text-center">
