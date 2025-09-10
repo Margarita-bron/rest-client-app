@@ -5,6 +5,7 @@ import { auth, db } from '~/utils/firebase/firebase';
 import { useEffect, useState } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import type { UserFirestoreProfile } from '~/types/firebase-types';
+import WelcomeSkeleton from '../loading/welcome-skeleton';
 
 const Welcome = () => {
   const [user, loading, error] = useAuthState(auth);
@@ -47,22 +48,18 @@ const Welcome = () => {
   }, [user]);
 
   if (loading || firestoreLoading) {
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
-        <p>Загрузка данных пользователя...</p>
-      </div>
-    );
+    return <WelcomeSkeleton />;
   }
 
   if (error) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center">
-        <p>Ошибка: {error.message}</p>
+        <p>{error.message}</p>
       </div>
     );
   }
 
-  if (!user) {
+  if (!user || firestoreProfile === null) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center">
         <Link to="/sing-in">Sign In</Link>
@@ -102,6 +99,3 @@ const Welcome = () => {
 };
 
 export default Welcome;
-function subscribeToCustomUserData(uid: string, arg1: (data: any) => void) {
-  throw new Error('Function not implemented.');
-}

@@ -6,14 +6,9 @@ import {
   sendPasswordResetEmail,
   signOut,
   updateProfile,
+  type User,
 } from 'firebase/auth';
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from 'firebase/firestore';
+import { getFirestore, setDoc, doc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
@@ -24,46 +19,6 @@ const firebaseConfig = {
   appId: '1:358314082429:web:470d592e7fc7243fd5f114',
   measurementId: 'G-CC9RST6B6Y',
 };
-
-import { getDoc, onSnapshot } from 'firebase/firestore';
-
-// Функция для одноразового получения данных пользователя из Firestore
-async function getCustomUserData(userId: string) {
-  const userDocRef = doc(db, 'users', userId);
-  const userDocSnap = await getDoc(userDocRef);
-
-  if (userDocSnap.exists()) {
-    console.log('Пользовательские данные из Firestore:', userDocSnap.data());
-    return userDocSnap.data();
-  } else {
-    console.log('Документ пользователя в Firestore не найден.');
-    return null;
-  }
-}
-
-// Функция для получения данных пользователя в реальном времени из Firestore
-function subscribeToCustomUserData(
-  userId: string,
-  callback: (data: any | null) => void
-) {
-  const userDocRef = doc(db, 'users', userId);
-  const unsubscribe = onSnapshot(
-    userDocRef,
-    (docSnap) => {
-      if (docSnap.exists()) {
-        callback(docSnap.data());
-      } else {
-        callback(null); // Пользовательский документ не существует
-      }
-    },
-    (error) => {
-      console.error('Ошибка при подписке на данные пользователя:', error);
-      callback(null);
-    }
-  );
-
-  return unsubscribe; // Возвращаем функцию для отписки
-}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -93,13 +48,14 @@ const registerWithEmailAndPassword = async (
 ): Promise<void> => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user = res.user;
+    const user: User = res.user;
 
     if (user) {
       await updateProfile(user, {
         displayName: name,
       });
     }
+    await user.reload();
     await setDoc(doc(db, 'users', user.uid), {
       name,
       email,
