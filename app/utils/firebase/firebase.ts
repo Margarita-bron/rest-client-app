@@ -6,14 +6,9 @@ import {
   sendPasswordResetEmail,
   signOut,
   updateProfile,
+  type User,
 } from 'firebase/auth';
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from 'firebase/firestore';
+import { getFirestore, setDoc, doc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
@@ -53,13 +48,14 @@ const registerWithEmailAndPassword = async (
 ): Promise<void> => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user = res.user;
+    const user: User = res.user;
 
     if (user) {
       await updateProfile(user, {
         displayName: name,
       });
     }
+    await user.reload();
     await setDoc(doc(db, 'users', user.uid), {
       name,
       email,

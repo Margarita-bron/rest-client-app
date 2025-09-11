@@ -1,8 +1,13 @@
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '~/utils/firebase/firebase';
+import { SignOutButton } from '../sign-out-button/sign-out-button';
+import { SignInButton } from '../sign-in-button/sign-in-button';
+import { SignUpButton } from '../sign-up-button/sign-up-button';
 import logo from '~/assets/logo.png';
 import { useState } from 'react';
-import { SignOutButton } from '~/components/sign-out-button/sign-out-button';
 
 export const Header = () => {
+  const [user, loading, error] = useAuthState(auth);
   const [isEnglish, setIsEnglish] = useState(true);
 
   const toggleLanguage = () => {
@@ -10,7 +15,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-gray-950 border-b-1 border-gray-800 sticky top-0 z-50">
+    <header className="bg-gray-950 border-b border-gray-800 sticky top-0 z-50">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <a
           href="/welcome"
@@ -25,11 +30,11 @@ export const Header = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1 rounded-full border-1 border-gray-800 bg-gray-950 p-0.5 transition-colors hover:bg-gray-900"
+            className="flex items-center gap-1 rounded-full bg-gray-300 p-0.5 transition-colors hover:bg-gray-300"
           >
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-medium transition-all ${
-                !isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-500'
+                !isEnglish ? 'bg-indigo-500 text-gray-100' : 'text-gray-600'
               }`}
             >
               RU
@@ -37,7 +42,7 @@ export const Header = () => {
 
             <span
               className={`px-2 py-0.5 rounded-full text-xs font-medium transition-all ${
-                isEnglish ? 'bg-indigo-500 text-white' : 'text-gray-500'
+                isEnglish ? 'bg-indigo-500 text-gray-100' : 'text-gray-600'
               }`}
             >
               EN
@@ -47,7 +52,14 @@ export const Header = () => {
           <div className="h-6 w-px bg-gray-300"></div>
 
           <div className="flex items-center gap-3">
-            <SignOutButton />
+            {user ? (
+              <SignOutButton />
+            ) : (
+              <>
+                <SignInButton />
+                <SignUpButton />
+              </>
+            )}
           </div>
         </div>
       </div>
