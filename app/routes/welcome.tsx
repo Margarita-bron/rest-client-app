@@ -16,7 +16,9 @@ const Welcome = () => {
 
   useEffect(() => {
     let unsubscribe: () => void;
-
+    if (!user) {
+      navigate('/');
+    }
     if (user) {
       setFirestoreLoading(true);
       const userDocRef = doc(db, 'users', user.uid);
