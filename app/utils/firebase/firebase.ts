@@ -12,7 +12,7 @@ import { getFirestore, setDoc, doc } from 'firebase/firestore';
 import {
   showAuthErrorNotification,
   showAuthInfoNotification,
-} from '~/errors/auth-error-notification';
+} from '~/utils/firebase/firebase-notification';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
