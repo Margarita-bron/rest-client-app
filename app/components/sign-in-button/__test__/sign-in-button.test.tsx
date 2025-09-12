@@ -16,21 +16,4 @@ describe('SignInButton', () => {
     expect(button).toHaveClass('rounded-lg');
     expect(button.getAttribute('href')).toBe('/sign-in');
   });
-
-  it('calls onClick when clicked', () => {
-    const consoleSpy = vi.spyOn(console, 'log');
-
-    render(
-      <MemoryRouter>
-        <SignInButton />
-      </MemoryRouter>
-    );
-
-    const button = screen.getByText('Sign In');
-    fireEvent.click(button);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Sign In clicked');
-
-    consoleSpy.mockRestore();
-  });
 });

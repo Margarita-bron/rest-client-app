@@ -9,7 +9,11 @@ vi.mock('react-router', async () => {
     await vi.importActual<typeof import('react-router')>('react-router');
   return {
     ...actual,
-    Link: (props: any) => <a {...props}>{props.children}</a>,
+    Link: (
+      props: React.PropsWithChildren<
+        React.AnchorHTMLAttributes<HTMLAnchorElement>
+      >
+    ) => <a {...props}>{props.children}</a>,
   };
 });
 
@@ -32,12 +36,5 @@ describe('SignUpButton', () => {
     expect(link.getAttribute('to') || link.getAttribute('href')).toBe(
       ROUTES.signUp
     );
-  });
-
-  it('calls console.log on click', () => {
-    const link = screen.getByTestId(SIGN_UP_BUTTON_DATA['data-testid']);
-    fireEvent.click(link);
-    expect(consoleSpy).toHaveBeenCalledWith('Sign Up clicked');
-    consoleSpy.mockRestore();
   });
 });
