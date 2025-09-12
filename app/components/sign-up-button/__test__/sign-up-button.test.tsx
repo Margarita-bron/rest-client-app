@@ -9,7 +9,11 @@ vi.mock('react-router', async () => {
     await vi.importActual<typeof import('react-router')>('react-router');
   return {
     ...actual,
-    Link: (props: any) => <a {...props}>{props.children}</a>,
+    Link: (
+      props: React.PropsWithChildren<
+        React.AnchorHTMLAttributes<HTMLAnchorElement>
+      >
+    ) => <a {...props}>{props.children}</a>,
   };
 });
 
