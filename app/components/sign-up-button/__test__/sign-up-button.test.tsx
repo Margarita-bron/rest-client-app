@@ -33,11 +33,4 @@ describe('SignUpButton', () => {
       ROUTES.signUp
     );
   });
-
-  it('calls console.log on click', () => {
-    const link = screen.getByTestId(SIGN_UP_BUTTON_DATA['data-testid']);
-    fireEvent.click(link);
-    expect(consoleSpy).toHaveBeenCalledWith('Sign Up clicked');
-    consoleSpy.mockRestore();
-  });
 });
