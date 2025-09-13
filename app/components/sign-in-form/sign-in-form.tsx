@@ -89,12 +89,12 @@ export const SignInForm = () => {
 
         <button {...SIGN_IN_FORM_DATA.submit}>Sign In</button>
         <div className="text-sm">
-          <a
-            href="#"
-            className="font-semibold text-sm py-1 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+          <Link
+            to={ROUTES.reset}
+            className="text-indigo-400 hover:text-indigo-300 font-medium"
           >
-            <Link to={ROUTES.reset}>Forgot password?</Link>
-          </a>
+            Forgot password?
+          </Link>
         </div>
 
         <p className="text-sm text-center text-gray-400">
