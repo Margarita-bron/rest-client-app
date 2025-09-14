@@ -1,3 +1,4 @@
+// redux/auth/auth-slice.ts
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { User } from 'firebase/auth';
 
@@ -7,9 +8,8 @@ interface AuthState {
   error: string | null;
 }
 
-const userFromStorage = localStorage.getItem('user');
 const initialState: AuthState = {
-  user: userFromStorage ? JSON.parse(userFromStorage) : null,
+  user: null,
   loading: false,
   error: null,
 };
@@ -20,7 +20,6 @@ const authSlice = createSlice({
   reducers: {
     setUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
-      localStorage.setItem('user', JSON.stringify(action.payload));
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;

@@ -1,10 +1,9 @@
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { HeaderAuth } from '~/components/header/header-auth';
 import { HeaderGuest } from '~/components/header/header-guest';
-import { auth } from '~/lib/firebase/firebase';
+import { useAuth } from '~/redux/auth/hooks';
 
 export const Header = () => {
-  const [user, loading] = useAuthState(auth);
+  const { user, loading } = useAuth();
 
   if (loading) return null;
 
