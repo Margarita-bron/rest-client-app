@@ -1,5 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-//TODO - auth store
-export default configureStore({
-  reducer: {},
+import authReducer from './auth/auth-slice';
+
+export const store = configureStore({
+  reducer: {
+    auth: authReducer,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

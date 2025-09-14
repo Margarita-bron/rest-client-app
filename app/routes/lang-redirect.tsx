@@ -1,4 +1,3 @@
-// app/routes/lang-redirect.tsx
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { routing } from '~/lib/routing/routes-path';
