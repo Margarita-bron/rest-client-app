@@ -1,4 +1,3 @@
-// redux/auth/auth-slice.ts
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { User } from 'firebase/auth';
 

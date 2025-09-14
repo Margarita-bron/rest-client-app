@@ -2,10 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { SignOutButton } from '../sign-out-button';
-import * as firebaseModule from '~/utils/firebase/firebase';
+import * as firebaseModule from '~/lib/firebase/firebase';
 import { ROUTES } from '~/lib/routing/routes-path';
 
-vi.mock('~/utils/firebase/firebase', () => ({
+vi.mock('~/lib/firebase/firebase', () => ({
   logout: vi.fn(),
 }));
 
