@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { FirebaseAuthErrorMessages } from '~/constants/firebase-errors';
+import { FirebaseAuthErrorMessages } from '~/lib/firebase/firebase-errors';
 
 const showAuthErrorNotification = (error: unknown) => {
   if (error && typeof error === 'object' && 'code' in error) {

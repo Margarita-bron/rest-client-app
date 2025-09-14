@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { RESET_FORM_DATA } from '~/components/reset-form/reset-form.data';
 import { resetSchema } from '~/utils/validation/zod-auth-tests';
-import { auth, sendPasswordReset } from '~/utils/firebase/firebase';
+import { auth, sendPasswordReset } from '~/lib/firebase/firebase';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 

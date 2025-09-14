@@ -1,4 +1,4 @@
-import { logout } from '~/utils/firebase/firebase';
+import { logout } from '~/lib/firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '~/lib/routing/routes-path';
 

@@ -1,11 +1,11 @@
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from '~/utils/firebase/firebase';
 import { useEffect, useState } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
-import type { UserFirestoreProfile } from '~/types/firebase-types';
+import type { UserFirestoreProfile } from '~/lib/firebase/firebase-types';
 import WelcomeSkeleton from '../loading/welcome-skeleton';
+import { auth, db } from '~/lib/firebase/firebase';
 
 const Welcome = () => {
   const [user, loading, error] = useAuthState(auth);

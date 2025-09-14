@@ -6,7 +6,7 @@ import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_UP_FORM } from './sign-up-form.data';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
-import { auth, registerWithEmailAndPassword } from '~/utils/firebase/firebase';
+import { auth, registerWithEmailAndPassword } from '~/lib/firebase/firebase';
 import { signUpSchema } from '~/utils/validation/zod-auth-tests';
 //TODO - instead of strings use i18n when add translate
 

@@ -5,7 +5,7 @@ import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_IN_FORM_DATA } from '~/components/sign-in-form/sign-in-form.data';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, signInWithEmailPassword } from '~/utils/firebase/firebase';
+import { auth, signInWithEmailPassword } from '~/lib/firebase/firebase';
 import { useEffect } from 'react';
 import { signInSchema } from '~/utils/validation/zod-auth-tests';
 //TODO - instead of strings use i18n when add translate
