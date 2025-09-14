@@ -1,7 +1,7 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { SignUpButton } from '../sign-up-button';
-import { ROUTES } from '~/routes-path';
+import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_UP_BUTTON_DATA } from '~/components/sign-up-button/sign-up-button-data';
 
 vi.mock('react-router', async () => {

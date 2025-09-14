@@ -2,18 +2,18 @@ import { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { RESET_FORM_DATA } from '~/components/reset-form/reset-form.data';
 import { resetSchema } from '~/utils/validation/zod-auth-tests';
 import { auth, sendPasswordReset } from '~/utils/firebase/firebase';
-import { ROUTES } from '~/routes-path';
+import { Link, useRouter } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 
 type ResetFormData = z.infer<typeof resetSchema>;
 
 function ResetForm() {
   const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
+  const { navigate } = useRouter();
 
   const {
     register,

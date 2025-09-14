@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate } from 'react-router';
-import { ROUTES } from '~/routes-path';
+import { Link, useRouter } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_UP_FORM } from './sign-up-form.data';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect } from 'react';
@@ -14,7 +14,7 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export const SignUpForm = () => {
   const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
+  const { navigate } = useRouter();
   const {
     register,
     handleSubmit,

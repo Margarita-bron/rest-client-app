@@ -1,5 +1,5 @@
-import { Link } from 'react-router';
-import { ROUTES } from '~/routes-path';
+import { Link } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 
 export const SignInButton = () => {
   return (

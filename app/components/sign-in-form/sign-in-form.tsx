@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Link, useNavigate } from 'react-router';
-import { ROUTES } from '~/routes-path';
+import { Link, useRouter } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_IN_FORM_DATA } from '~/components/sign-in-form/sign-in-form.data';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, signInWithEmailPassword } from '~/utils/firebase/firebase';
@@ -14,7 +14,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
   const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
+  const { navigate } = useRouter();
 
   const {
     register,
@@ -30,7 +30,7 @@ export const SignInForm = () => {
       return;
     }
     if (user && !error) {
-      navigate('/welcome');
+      navigate(ROUTES.welcome);
     }
   }, [user, loading, error, navigate]);
 

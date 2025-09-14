@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { SignOutButton } from '../sign-out-button';
 import * as firebaseModule from '~/utils/firebase/firebase';
-import { ROUTES } from '~/routes-path';
+import { ROUTES } from '~/lib/routing/routes-path';
 
 vi.mock('~/utils/firebase/firebase', () => ({
   logout: vi.fn(),

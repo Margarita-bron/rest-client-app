@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router';
-import { ROUTES } from '~/routes-path';
+import { Link } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '~/utils/firebase/firebase';
 import { useEffect, useState } from 'react';
@@ -9,7 +9,6 @@ import WelcomeSkeleton from '../loading/welcome-skeleton';
 
 const Welcome = () => {
   const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
   const [firestoreProfile, setFirestoreProfile] =
     useState<UserFirestoreProfile | null>(null);
   const [firestoreLoading, setFirestoreLoading] = useState(true);
