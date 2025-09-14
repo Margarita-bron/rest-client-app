@@ -3,6 +3,9 @@ import type { RootState } from '~/redux/store';
 
 export const useAuth = () => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const firestoreProfile = useSelector(
+    (state: RootState) => state.auth.firestoreProfile
+  );
   const loading = useSelector((state: RootState) => state.auth.loading);
   const error = useSelector((state: RootState) => state.auth.error);
 
@@ -10,6 +13,7 @@ export const useAuth = () => {
     user,
     loading,
     error,
+    firestoreProfile,
     isAuthenticated: !!user,
   };
 };

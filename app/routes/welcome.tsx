@@ -1,65 +1,39 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useEffect, useState } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
-import type { UserFirestoreProfile } from '~/lib/firebase/firebase-types';
 import WelcomeSkeleton from '../loading/welcome-skeleton';
-import { auth, db } from '~/lib/firebase/firebase';
+import type { AppDispatch } from '~/redux/store';
+import {
+  fetchUserProfile,
+  subscribeToAuthChanges,
+} from '~/redux/auth/auth-actions';
+import { useAuth } from '~/redux/auth/hooks';
 
 const Welcome = () => {
-  const [user, loading, error] = useAuthState(auth);
-  const [firestoreProfile, setFirestoreProfile] =
-    useState<UserFirestoreProfile | null>(null);
-  const [firestoreLoading, setFirestoreLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, firestoreProfile, loading, error } = useAuth();
 
   useEffect(() => {
-    let unsubscribe: () => void;
+    const unsubscribe = dispatch(subscribeToAuthChanges());
+    return () => unsubscribe();
+  }, [dispatch]);
 
-    if (user) {
-      setFirestoreLoading(true);
-      const userDocRef = doc(db, 'users', user.uid);
-      unsubscribe = onSnapshot(
-        userDocRef,
-        (docSnap) => {
-          if (docSnap.exists()) {
-            setFirestoreProfile(docSnap.data() as UserFirestoreProfile);
-          } else {
-            setFirestoreProfile(null);
-          }
-          setFirestoreLoading(false);
-        },
-        (firestoreError) => {
-          console.error(firestoreError);
-          setFirestoreProfile(null);
-          setFirestoreLoading(false);
-        }
-      );
-    } else {
-      setFirestoreProfile(null);
-      setFirestoreLoading(false);
-    }
+  useEffect(() => {
+    if (!user?.uid) return;
+    dispatch(fetchUserProfile(user.uid));
+  }, [user?.uid, dispatch]);
 
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [user]);
+  if (loading) return <WelcomeSkeleton />;
 
-  if (loading || firestoreLoading) {
-    return <WelcomeSkeleton />;
-  }
-
-  if (error) {
+  if (error)
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
-        <p>{error.message}</p>
+      <div className="min-h-screen flex items-center justify-center">
+        {error}
       </div>
     );
-  }
 
-  const nameToDisplay = firestoreProfile?.name || user?.displayName;
+  const nameToDisplay = firestoreProfile?.name || user?.name;
 
   return (
     <div className="flex flex-col h-full scale-135 text-center">

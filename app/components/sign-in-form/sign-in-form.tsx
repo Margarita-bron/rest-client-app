@@ -4,17 +4,19 @@ import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_IN_FORM_DATA } from '~/components/sign-in-form/sign-in-form.data';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, signInWithEmailPassword } from '~/lib/firebase/firebase';
 import { useEffect } from 'react';
 import { signInSchema } from '~/utils/validation/zod-auth-tests';
-//TODO - instead of strings use i18n when add translate
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '~/redux/store';
+import { loginUser } from '~/redux/auth/auth-actions';
+import { useAuth } from '~/redux/auth/hooks';
 
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
-  const [user, loading, error] = useAuthState(auth);
+  const dispatch = useDispatch<AppDispatch>();
   const { navigate } = useRouter();
+  const { loading, error, isAuthenticated } = useAuth();
 
   const {
     register,
@@ -25,17 +27,13 @@ export const SignInForm = () => {
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    if (loading) {
-      return;
-    }
-    if (user && !error) {
+  const onSubmit = async (formData: SignInFormData) => {
+    try {
+      await dispatch(loginUser(formData.email, formData.password));
       navigate(ROUTES.welcome);
+    } catch (err) {
+      console.error(err);
     }
-  }, [user, loading, error, navigate]);
-
-  const onSubmit = (formData: SignInFormData) => {
-    signInWithEmailPassword(formData.email, formData.password);
   };
 
   return (
@@ -87,7 +85,12 @@ export const SignInForm = () => {
           </div>
         </div>
 
-        <button {...SIGN_IN_FORM_DATA.submit}>Sign In</button>
+        <button {...SIGN_IN_FORM_DATA.submit} disabled={loading}>
+          {loading ? 'Signing in...' : 'Sign In'}
+        </button>
+
+        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+
         <div className="text-sm">
           <Link
             to={ROUTES.reset}
