@@ -8,7 +8,18 @@ import {
   updateProfile,
   type User,
 } from 'firebase/auth';
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import {
+  getFirestore,
+  setDoc,
+  addDoc,
+  serverTimestamp,
+  doc,
+  collection,
+  orderBy,
+  query,
+  getDocs,
+} from 'firebase/firestore';
+import type { RequestAnalytic } from '~/types/request-analytic';
 import {
   showAuthErrorNotification,
   showAuthInfoNotification,
@@ -100,6 +111,31 @@ const logout = (): void => {
   signOut(auth);
 };
 
+const saveRequestHistory = async (
+  entry: Omit<RequestAnalytic, 'createdAt'>
+) => {
+  try {
+    await addDoc(collection(db, 'requestHistory'), {
+      ...entry,
+      createdAt: serverTimestamp(),
+    });
+  } catch (error) {
+    showAuthErrorNotification(error);
+  }
+};
+
+const getRequestHistory = async () => {
+  const docsHistory = query(
+    collection(db, 'requestHistory'),
+    orderBy('createdAt', 'desc')
+  );
+  const querySnapshot = await getDocs(docsHistory);
+  return querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+};
+
 export {
   auth,
   db,
@@ -107,4 +143,6 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  saveRequestHistory,
+  getRequestHistory,
 };

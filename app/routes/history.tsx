@@ -15,6 +15,15 @@ const History = () => {
     }
   }, [user, loading, error, navigate]);
 
+  const saveRequestHistory = () => {
+    try {
+      await addDoc(collection(db, 'requestHistory'), {
+        ...entry,
+        createdAt: serverTimestamp(),
+      });
+    } catch (error) {}
+  };
+
   return (
     <div className="flex flex-col h-full scale-135 text-center">
       <div className="flex items-center gap-3 justify-center">
