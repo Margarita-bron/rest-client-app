@@ -6,14 +6,13 @@ import {
   sendPasswordResetEmail,
   signOut,
   updateProfile,
+  type User,
 } from 'firebase/auth';
+import { getFirestore, setDoc, doc } from 'firebase/firestore';
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-} from 'firebase/firestore';
+  showAuthErrorNotification,
+  showAuthInfoNotification,
+} from '~/utils/firebase/firebase-notification';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
@@ -35,13 +34,16 @@ const signInWithEmailPassword = async (
 ): Promise<void> => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(err.message);
-      alert(err.message);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(
+        'Полный объект ошибки, полученный в catch:',
+        JSON.stringify(error, null, 2)
+      );
+      showAuthErrorNotification(error);
+      alert(error.message);
     } else {
-      console.error('Unknown error', err);
-      alert('An error occurred');
+      showAuthErrorNotification(error);
     }
   }
 };
@@ -53,24 +55,29 @@ const registerWithEmailAndPassword = async (
 ): Promise<void> => {
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user = res.user;
+    const user: User = res.user;
 
     if (user) {
       await updateProfile(user, {
         displayName: name,
       });
     }
+    await user.reload();
     await setDoc(doc(db, 'users', user.uid), {
       name,
       email,
       authProvider: 'local',
     });
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(err.message);
-      alert(err.message);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(
+        'Полный объект ошибки, полученный в catch:',
+        JSON.stringify(error, null, 2)
+      );
+      showAuthErrorNotification(error);
+      alert(error.message);
     } else {
-      console.error('Unknown error', err);
+      showAuthErrorNotification(error);
     }
   }
 };
@@ -78,12 +85,13 @@ const registerWithEmailAndPassword = async (
 const sendPasswordReset = async (email: string): Promise<void> => {
   try {
     await sendPasswordResetEmail(auth, email);
-    alert('Password reset link sent!');
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(err.message);
+    showAuthInfoNotification('Password reset link sent to email!');
+  } catch (error) {
+    if (error instanceof Error) {
+      showAuthErrorNotification(error);
+      alert(error.message);
     } else {
-      console.error('Unknown error', err);
+      showAuthErrorNotification(error);
     }
   }
 };
