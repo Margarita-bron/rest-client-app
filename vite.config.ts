@@ -8,6 +8,7 @@ export default defineConfig({
     tailwindcss(),
     !process.env.VITEST && reactRouter(),
     tsconfigPaths(),
+
   ],
   test: {
     globals: true,
