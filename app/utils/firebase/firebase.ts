@@ -16,10 +16,14 @@ import {
   doc,
   collection,
   orderBy,
+  where,
   query,
   getDocs,
 } from 'firebase/firestore';
-import type { RequestAnalytic } from '~/types/request-analytic';
+import type {
+  RequestAnalytic,
+  UserRequestHistory,
+} from '~/types/request-analytic';
 import {
   showAuthErrorNotification,
   showAuthInfoNotification,
@@ -111,7 +115,7 @@ const logout = (): void => {
   signOut(auth);
 };
 
-const saveRequestHistory = async (
+const saveUserRequestHistory = async (
   entry: Omit<RequestAnalytic, 'createdAt'>
 ) => {
   try {
@@ -124,9 +128,10 @@ const saveRequestHistory = async (
   }
 };
 
-const getRequestHistory = async () => {
+const getUserRequestHistory = async (userId: string | undefined) => {
   const docsHistory = query(
     collection(db, 'requestHistory'),
+    where('userId', '==', userId),
     orderBy('createdAt', 'desc')
   );
   const querySnapshot = await getDocs(docsHistory);
@@ -143,6 +148,6 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
-  saveRequestHistory,
-  getRequestHistory,
+  saveUserRequestHistory,
+  getUserRequestHistory,
 };
