@@ -1,5 +1,5 @@
 import { Link } from '~/lib/routing/navigation';
-import { SIGN_UP_BUTTON_DATA } from '~/components/sign-up-button/sign-up-button-data';
+import { SIGN_UP_BUTTON_DATA } from './sign-up-button-data';
 import { ROUTES } from '~/lib/routing/routes-path';
 
 export const SignUpButton = () => {

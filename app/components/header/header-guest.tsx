@@ -1,9 +1,9 @@
-import { SignInButton } from '../sign-in-button/sign-in-button';
-import { SignUpButton } from '../sign-up-button/sign-up-button';
 import logo from '~/assets/logo.png';
 import { useState } from 'react';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
+import { SignInButton } from '~/components/header/sign-in-button/sign-in-button';
+import { SignUpButton } from '~/components/header/sign-up-button/sign-up-button';
 
 export const HeaderGuest = () => {
   const [isEnglish, setIsEnglish] = useState(true);

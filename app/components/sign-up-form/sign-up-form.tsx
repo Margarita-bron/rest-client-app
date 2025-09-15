@@ -27,7 +27,7 @@ export const SignUpForm = () => {
   useEffect(() => {
     if (loading) return;
     if (user && !error) {
-      navigate('/welcome');
+      navigate(ROUTES.welcome);
     }
   }, [user, loading, error, navigate]);
 

@@ -1,8 +1,8 @@
-import { SignOutButton } from '../sign-out-button/sign-out-button';
 import logo from '~/assets/logo.png';
 import { useState } from 'react';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
+import { SignOutButton } from '~/components/header/sign-out-button/sign-out-button';
 
 export const HeaderAuth = () => {
   const [isEnglish, setIsEnglish] = useState(true);

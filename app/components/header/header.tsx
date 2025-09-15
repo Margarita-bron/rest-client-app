@@ -6,7 +6,7 @@ import { Loader } from '~/ui/loader';
 export const Header = () => {
   const { user, loading } = useAuth();
   return (
-    <header className="bg-gray-950 border-b border-gray-800 sticky top-0 z-50">
+    <header className="bg-gray-950 border-b border-gray-800 sticky top-0 z-50 h-16 max-w-7xl">
       {loading ? <Loader /> : user ? <HeaderAuth /> : <HeaderGuest />}
     </header>
   );

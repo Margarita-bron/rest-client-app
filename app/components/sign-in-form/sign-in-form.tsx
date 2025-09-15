@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_IN_FORM_DATA } from '~/components/sign-in-form/sign-in-form.data';
-import { useEffect } from 'react';
 import { signInSchema } from '~/utils/validation/zod-auth-tests';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '~/redux/store';
@@ -16,7 +15,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
 export const SignInForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { navigate } = useRouter();
-  const { loading, error, isAuthenticated } = useAuth();
+  const { loading, error } = useAuth();
 
   const {
     register,
