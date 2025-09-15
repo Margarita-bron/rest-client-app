@@ -9,10 +9,15 @@ export const ROUTES = {
   reset: 'reset',
 } as const;
 
+export const Locale = Object.freeze({
+  en: 'en',
+  ru: 'ru',
+});
+
+export type Locale = (typeof Locale)[keyof typeof Locale];
+
 export const routing = {
-  locales: ['en', 'ru'] as const,
-  defaultLocale: 'en',
+  locales: Object.values(Locale) as Locale[],
+  defaultLocale: Locale.en,
   baseRoutes: ROUTES,
 } as const;
-
-export type Locale = (typeof routing.locales)[number];

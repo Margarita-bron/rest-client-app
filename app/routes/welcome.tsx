@@ -9,10 +9,12 @@ import {
   subscribeToAuthChanges,
 } from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
+import { useTranslation } from 'react-i18next';
 
 const Welcome = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, firestoreProfile, loading, error } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = dispatch(subscribeToAuthChanges());
@@ -37,7 +39,10 @@ const Welcome = () => {
 
   return (
     <div className="flex flex-col h-full scale-135 text-center">
-      <h1 className="text-xl font-bold mb-5">Welcome Back, {nameToDisplay}!</h1>
+      <h1 className="text-xl font-bold mb-5">
+        {' '}
+        {t('welcome')}, {nameToDisplay}!
+      </h1>
       <div className="flex items-center gap-3 justify-center">
         <Link
           to={ROUTES.restClient}

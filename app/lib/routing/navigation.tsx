@@ -8,7 +8,7 @@ import { routing, type Locale } from '~/lib/routing/routes-path';
 
 function buildPath(locale: Locale, path: string, relative = false) {
   if (relative) return path;
-  const trimmed = path.replace(/^\/+/, ''); // убираем ведущие слэши
+  const trimmed = path.replace(/^\/+/, '');
   return trimmed === '' ? `/${locale}` : `/${locale}/${trimmed}`;
 }
 
