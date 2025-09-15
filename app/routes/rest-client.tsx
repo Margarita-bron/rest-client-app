@@ -3,7 +3,11 @@ import RequestPanel from '../components/rest-client/request-panel/request-panel'
 import HeadersEditor from '../components/rest-client/headers-editor/headers-editor';
 import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
 import ResponseView from '../components/rest-client/response-view/response-view';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { auth, saveUserRequestHistory } from '~/utils/firebase/firebase';
+import type { Timestamp } from 'firebase/firestore';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { buildErrorMessage } from 'vite';
 
 export interface Header {
   id: string;
@@ -16,7 +20,7 @@ const RestClient = () => {
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [url, setUrl] = useState('');
   const [requestBody, setRequestBody] = useState('');
-  const [responseData, setResponseData] = useState<any>(null);
+  const [responseData, setResponseData] = useState<unknown>(null);
   const [responseRaw, setResponseRaw] = useState<string>('');
   const [responseHeaders, setResponseHeaders] = useState<
     Record<string, string>
@@ -43,6 +47,7 @@ const RestClient = () => {
             url,
             requestBody,
             headers,
+            error,
             setLoading,
             setError,
             setResponseData,
@@ -99,6 +104,7 @@ async function sendRequest({
   url,
   requestBody,
   headers,
+  error,
   setLoading,
   setError,
   setResponseData,
@@ -109,12 +115,14 @@ async function sendRequest({
   url: string;
   requestBody: string;
   headers: Header[];
+  error: string | null;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  setResponseData: (data: any) => void;
+  setResponseData: (data: unknown) => void;
   setResponseRaw: (raw: string) => void;
   setResponseHeaders: (headers: Record<string, string>) => void;
 }) {
+  const [user] = useAuthState(auth);
   if (!url) {
     setError('Please enter a URL');
     return;
@@ -125,6 +133,8 @@ async function sendRequest({
   setResponseData(null);
   setResponseRaw('');
   setResponseHeaders({});
+  const startTime = Date.now();
+  let statusCode = 0;
 
   try {
     let targetUrl = url;
@@ -144,7 +154,7 @@ async function sendRequest({
       }
     });
 
-    let requestBodyData: any = undefined;
+    let requestBodyData: unknown = undefined;
     if (['POST', 'PUT', 'PATCH'].includes(selectedMethod) && requestBody) {
       try {
         requestBodyData = JSON.parse(requestBody);
@@ -159,10 +169,11 @@ async function sendRequest({
       headers: requestHeaders,
       data: requestBodyData,
       timeout: 10000,
-      transformResponse: [(data: any) => data],
+      transformResponse: [(data: unknown) => data],
     };
 
     const res = await axios(config);
+    statusCode = res.status;
     setResponseRaw(res.data);
     setResponseHeaders(res.headers as Record<string, string>);
 
@@ -171,16 +182,53 @@ async function sendRequest({
     } catch {
       setResponseData(res.data);
     }
-  } catch (err: any) {
-    const errorMessage =
-      err.response?.data?.message || err.message || 'Request failed';
-    setError(errorMessage);
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      const error = err as AxiosError;
 
-    if (err.response?.headers) {
-      setResponseHeaders(err.response.headers);
+      statusCode = err.response?.status ?? 0;
+      setError(err.message);
+
+      if (error.response?.headers) {
+        const headers: Record<string, string> = {};
+
+        for (const [key, value] of Object.entries(error.response.headers)) {
+          if (typeof value === 'string') {
+            headers[key] = value;
+          } else if (Array.isArray(value)) {
+            headers[key] = value.join(', ');
+          } else if (value !== undefined) {
+            headers[key] = String(value);
+          }
+        }
+        setResponseHeaders(headers);
+      }
+    } else if (err instanceof Error) {
+      setError(err.message);
+    } else {
+      setError('Request failed');
     }
   } finally {
     setLoading(false);
+    const duration = Date.now() - startTime;
+
+    const saveHeaders: Record<string, string | boolean> = {};
+    headers.forEach(({ id, key, value, enabled }) => {
+      if (enabled && key) {
+        saveHeaders[key] = value;
+      }
+    });
+
+    await saveUserRequestHistory({
+      userId: user?.uid,
+      method: selectedMethod.toLowerCase(),
+      url: url,
+      headers: saveHeaders,
+      body: requestBody,
+      duration,
+      statusCode,
+      errorMessage: error,
+    });
   }
 }
 

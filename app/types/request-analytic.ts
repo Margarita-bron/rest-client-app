@@ -1,5 +1,5 @@
 export type RequestAnalytic = {
-  userId: string;
+  userId?: string;
   method: string;
   url: string;
   headers: Record<string, string | boolean>;
@@ -7,7 +7,7 @@ export type RequestAnalytic = {
   duration: number;
   statusCode: number;
   createdAt: number;
-  errorMessage?: string;
+  errorMessage: string | null;
 };
 
 type RequestAnalyticWithId = Partial<RequestAnalytic> & { id: string };

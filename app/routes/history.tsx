@@ -50,7 +50,13 @@ const History = () => {
         )}
         <ul>
           {requestsHistory.map((item) => (
-            <li> </li>
+            <li>
+              <Link
+                to={`/rest-client?method=${item.method}&url=${encodeURIComponent(item.body ?? '')}&body=${encodeURIComponent(item.body ?? '')}`}
+              >
+                [{item.method}] {item.url}
+              </Link>{' '}
+            </li>
           ))}
         </ul>
       </div>
