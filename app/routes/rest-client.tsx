@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import RequestPanel from '../components/request-panel/request-panel';
-import HeadersEditor from '../components/headers-editor/headers-editor';
-import RequestBodyEditor from '../components/request-body-editor/request-body-editor';
-import ResponseView from '../components/response-view/response-view';
+import RequestPanel from '../components/rest-client/request-panel/request-panel';
+import HeadersEditor from '../components/rest-client/headers-editor/headers-editor';
+import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
+import ResponseView from '../components/rest-client/response-view/response-view';
 import axios from 'axios';
 
 export interface Header {
@@ -18,13 +18,15 @@ const RestClient = () => {
   const [requestBody, setRequestBody] = useState('');
   const [responseData, setResponseData] = useState<any>(null);
   const [responseRaw, setResponseRaw] = useState<string>('');
-  const [responseHeaders, setResponseHeaders] = useState<Record<string, string>>({});
+  const [responseHeaders, setResponseHeaders] = useState<
+    Record<string, string>
+  >({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
   const [showHeaders, setShowHeaders] = useState(false);
   const [headers, setHeaders] = useState<Header[]>([
-    { id: '1', key: 'Content-Type', value: 'application/json', enabled: true }
+    { id: '1', key: 'Content-Type', value: 'application/json', enabled: true },
   ]);
 
   return (
@@ -35,28 +37,39 @@ const RestClient = () => {
         url={url}
         setUrl={setUrl}
         loading={loading}
-        sendRequest={() => sendRequest({
-          selectedMethod,
-          url,
-          requestBody,
-          headers,
-          setLoading,
-          setError,
-          setResponseData,
-          setResponseRaw,
-          setResponseHeaders
-        })}
+        sendRequest={() =>
+          sendRequest({
+            selectedMethod,
+            url,
+            requestBody,
+            headers,
+            setLoading,
+            setError,
+            setResponseData,
+            setResponseRaw,
+            setResponseHeaders,
+          })
+        }
       />
 
       <HeadersEditor
         headers={headers}
-        addHeader={() => setHeaders([...headers, { id: Date.now().toString(), key: '', value: '', enabled: true }])}
-        updateHeader={(id, field, value) =>
-          setHeaders(headers.map(header =>
-            header.id === id ? { ...header, [field]: value } : header
-          ))
+        addHeader={() =>
+          setHeaders([
+            ...headers,
+            { id: Date.now().toString(), key: '', value: '', enabled: true },
+          ])
         }
-        removeHeader={(id) => setHeaders(headers.filter(header => header.id !== id))}
+        updateHeader={(id, field, value) =>
+          setHeaders(
+            headers.map((header) =>
+              header.id === id ? { ...header, [field]: value } : header
+            )
+          )
+        }
+        removeHeader={(id) =>
+          setHeaders(headers.filter((header) => header.id !== id))
+        }
       />
 
       {['POST', 'PUT', 'PATCH'].includes(selectedMethod) && (
@@ -82,16 +95,16 @@ const RestClient = () => {
 };
 
 async function sendRequest({
-                             selectedMethod,
-                             url,
-                             requestBody,
-                             headers,
-                             setLoading,
-                             setError,
-                             setResponseData,
-                             setResponseRaw,
-                             setResponseHeaders
-                           }: {
+  selectedMethod,
+  url,
+  requestBody,
+  headers,
+  setLoading,
+  setError,
+  setResponseData,
+  setResponseRaw,
+  setResponseHeaders,
+}: {
   selectedMethod: string;
   url: string;
   requestBody: string;
@@ -121,12 +134,11 @@ async function sendRequest({
 
     const urlObj = new URL(targetUrl);
 
-
     const requestHeaders: Record<string, string> = {
-      'X-Target-URL': urlObj.origin
+      'X-Target-URL': urlObj.origin,
     };
 
-    headers.forEach(header => {
+    headers.forEach((header) => {
       if (header.enabled && header.key && header.value) {
         requestHeaders[header.key] = header.value;
       }
@@ -147,7 +159,7 @@ async function sendRequest({
       headers: requestHeaders,
       data: requestBodyData,
       timeout: 10000,
-      transformResponse: [(data: any) => data]
+      transformResponse: [(data: any) => data],
     };
 
     const res = await axios(config);
@@ -159,9 +171,9 @@ async function sendRequest({
     } catch {
       setResponseData(res.data);
     }
-
   } catch (err: any) {
-    const errorMessage = err.response?.data?.message || err.message || 'Request failed';
+    const errorMessage =
+      err.response?.data?.message || err.message || 'Request failed';
     setError(errorMessage);
 
     if (err.response?.headers) {
