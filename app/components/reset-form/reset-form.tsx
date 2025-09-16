@@ -1,19 +1,22 @@
 import { useEffect } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { Link, useRouter } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 import { RESET_FORM_DATA } from '~/components/reset-form/reset-form.data';
 import { resetSchema } from '~/utils/validation/zod-auth-tests';
-import { auth, sendPasswordReset } from '~/utils/firebase/firebase';
-import { ROUTES } from '~/routes-path';
+import { resetPasswordUser } from '~/redux/auth/auth-actions';
+import { useAuth } from '~/redux/auth/hooks';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '~/redux/store';
 
 type ResetFormData = z.infer<typeof resetSchema>;
 
 function ResetForm() {
-  const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, loading, error } = useAuth();
+  const { navigate } = useRouter();
 
   const {
     register,
@@ -25,14 +28,13 @@ function ResetForm() {
   });
 
   useEffect(() => {
-    if (loading) return;
-    if (user && !error) {
-      navigate('/welcome');
+    if (!loading && user && !error) {
+      navigate(ROUTES.welcome);
     }
   }, [user, loading, error, navigate]);
 
   const onSubmit = (formData: ResetFormData) => {
-    sendPasswordReset(formData.email);
+    dispatch(resetPasswordUser(formData.email));
   };
 
   return (
@@ -70,6 +72,8 @@ function ResetForm() {
         >
           Send password reset email
         </button>
+
+        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
         <p className="text-sm text-center text-gray-400">
           Don’t have an account?{' '}

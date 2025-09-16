@@ -16,7 +16,7 @@ vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
 }));
 
-vi.mock('~/utils/firebase/firebase', () => ({
+vi.mock('~/lib/firebase/firebase', () => ({
   auth: {},
   signInWithEmailPassword: vi.fn(),
 }));
@@ -85,9 +85,7 @@ describe('SignInForm', () => {
   });
 
   it('calls signInWithEmailPassword with correct data', async () => {
-    const { signInWithEmailPassword } = await import(
-      '~/utils/firebase/firebase'
-    );
+    const { signInWithEmailPassword } = await import('~/lib/firebase/firebase');
 
     fireEvent.change(
       screen.getByTestId(SIGN_IN_FORM_DATA.email['data-testid']),

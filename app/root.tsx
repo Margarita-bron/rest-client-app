@@ -12,6 +12,8 @@ import './app.css';
 import favicon from '~/assets/favicon.ico';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Provider } from 'react-redux';
+import { store } from '~/redux/store';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -48,7 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <>
+    <Provider store={store}>
       <Outlet />
       <ToastContainer
         position="bottom-right"
@@ -56,7 +58,7 @@ export default function App() {
         theme="dark"
         className="!bottom-14 scale-90"
       />
-    </>
+    </Provider>
   );
 }
 

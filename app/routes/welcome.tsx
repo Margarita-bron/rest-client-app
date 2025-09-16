@@ -1,70 +1,48 @@
-import { Link, useNavigate } from 'react-router';
-import { ROUTES } from '~/routes-path';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, db } from '~/utils/firebase/firebase';
-import { useEffect, useState } from 'react';
-import { doc, onSnapshot } from 'firebase/firestore';
-import type { UserFirestoreProfile } from '~/types/firebase-types';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from '~/lib/routing/navigation';
+import { ROUTES } from '~/lib/routing/routes-path';
 import WelcomeSkeleton from '../loading/welcome-skeleton';
+import type { AppDispatch } from '~/redux/store';
+import {
+  fetchUserProfile,
+  subscribeToAuthChanges,
+} from '~/redux/auth/auth-actions';
+import { useAuth } from '~/redux/auth/hooks';
+import { useTranslation } from 'react-i18next';
 
 const Welcome = () => {
-  const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
-  const [firestoreProfile, setFirestoreProfile] =
-    useState<UserFirestoreProfile | null>(null);
-  const [firestoreLoading, setFirestoreLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, firestoreProfile, loading, error } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    let unsubscribe: () => void;
+    const unsubscribe = dispatch(subscribeToAuthChanges());
+    return () => unsubscribe();
+  }, [dispatch]);
 
-    if (user) {
-      setFirestoreLoading(true);
-      const userDocRef = doc(db, 'users', user.uid);
-      unsubscribe = onSnapshot(
-        userDocRef,
-        (docSnap) => {
-          if (docSnap.exists()) {
-            setFirestoreProfile(docSnap.data() as UserFirestoreProfile);
-          } else {
-            setFirestoreProfile(null);
-          }
-          setFirestoreLoading(false);
-        },
-        (firestoreError) => {
-          console.error(firestoreError);
-          setFirestoreProfile(null);
-          setFirestoreLoading(false);
-        }
-      );
-    } else {
-      setFirestoreProfile(null);
-      setFirestoreLoading(false);
-    }
+  useEffect(() => {
+    if (!user?.uid) return;
+    dispatch(fetchUserProfile(user.uid));
+  }, [user?.uid, dispatch]);
 
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, [user]);
+  if (loading) return <WelcomeSkeleton />;
 
-  if (loading || firestoreLoading) {
-    return <WelcomeSkeleton />;
-  }
-
-  if (error) {
+  if (error)
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center">
-        <p>{error.message}</p>
+      <div className="min-h-screen flex items-center justify-center">
+        {error}
       </div>
     );
-  }
 
-  const nameToDisplay = firestoreProfile?.name || user?.displayName;
+  const nameToDisplay = firestoreProfile?.name || user?.name;
 
   return (
     <div className="flex flex-col h-full scale-135 text-center">
-      <h1 className="text-xl font-bold mb-5">Welcome Back, {nameToDisplay}!</h1>
+      <h1 className="text-xl font-bold mb-5">
+        {' '}
+        {t('welcome')}, {nameToDisplay}!
+      </h1>
       <div className="flex items-center gap-3 justify-center">
         <Link
           to={ROUTES.restClient}

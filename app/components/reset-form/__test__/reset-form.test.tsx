@@ -5,14 +5,14 @@ import { MemoryRouter } from 'react-router-dom';
 import ResetForm from '../reset-form';
 import { RESET_FORM_DATA } from '../reset-form.data';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import * as firebaseModule from '~/utils/firebase/firebase';
+import * as firebaseModule from '~/lib/firebase/firebase';
 import * as routerModule from 'react-router-dom';
 
 vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
 }));
 
-vi.mock('~/utils/firebase/firebase', () => ({
+vi.mock('~/lib/firebase/firebase', () => ({
   auth: {},
   sendPasswordReset: vi.fn(),
 }));
