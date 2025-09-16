@@ -23,11 +23,11 @@ import {
 import type {
   RequestAnalytic,
   UserRequestHistory,
-} from '~/types/request-analytic';
+} from '~/types/history-analytic';
 import {
   showAuthErrorNotification,
   showAuthInfoNotification,
-} from '~/utils/firebase/firebase-notification';
+} from '~/lib/firebase/firebase-notification';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',

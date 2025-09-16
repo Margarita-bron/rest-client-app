@@ -10,7 +10,7 @@ vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
 }));
 
-vi.mock('~/utils/firebase/firebase', () => ({
+vi.mock('~/lib/firebase/firebase', () => ({
   auth: {},
   registerWithEmailAndPassword: vi.fn(),
 }));
@@ -88,7 +88,7 @@ describe('SignUpForm', () => {
 
   it('calls registerWithEmailAndPassword with correct data', async () => {
     const { registerWithEmailAndPassword } = await import(
-      '~/utils/firebase/firebase'
+      '~/lib/firebase/firebase'
     );
 
     fireEvent.change(screen.getByTestId(SIGN_UP_FORM.name['data-testid']), {

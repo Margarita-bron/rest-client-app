@@ -1,10 +1,10 @@
 import { Link, useNavigate } from 'react-router';
-import { ROUTES } from '~/routes-path';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth, getUserRequestHistory } from '~/utils/firebase/firebase';
 import { useEffect, useState } from 'react';
+import type { UserRequestHistory } from '~/types/history-analytic';
+import { auth, getUserRequestHistory } from '~/lib/firebase/firebase';
 import { emptyHistory } from '~/constants/history-page';
-import type { UserRequestHistory } from '~/types/request-analytic';
+import { ROUTES } from '~/lib/routing/routes-path';
 
 const History = () => {
   const [user, loading, error] = useAuthState(auth);
