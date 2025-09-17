@@ -1,5 +1,5 @@
-import { SignInButton } from '~/components/header/sign-in-button/sign-in-button';
-import { SignUpButton } from '~/components/header/sign-up-button/sign-up-button';
+import { SignInButton } from '~/components/buttons/sign-in-button/sign-in-button';
+import { SignUpButton } from '~/components/buttons/sign-up-button/sign-up-button';
 
 export const Auth = () => {
   return (

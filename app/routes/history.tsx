@@ -1,10 +1,10 @@
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect, useState } from 'react';
 import type { UserRequestHistory } from '~/types/history-analytic';
 import { auth, getUserRequestHistory } from '~/lib/firebase/firebase';
 import { emptyHistory } from '~/constants/history-page';
-import { ROUTES } from '~/lib/routing/routes-path';
+import RestClientButton from '~/components/buttons/rest-client-button';
 
 const History = () => {
   const [user, loading, error] = useAuthState(auth);
@@ -40,23 +40,12 @@ const History = () => {
           <>
             {' '}
             <h2>{emptyHistory}</h2>
-            <Link
-              to={ROUTES.restClient}
-              className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-            >
-              REST Client
-            </Link>
+            <RestClientButton />
           </>
         )}
         <ul>
           {requestsHistory.map((item) => (
-            <li>
-              <Link
-                to={`/rest-client?method=${item.method}&url=${encodeURIComponent(item.body ?? '')}&body=${encodeURIComponent(item.body ?? '')}`}
-              >
-                [{item.method}] {item.url}
-              </Link>{' '}
-            </li>
+            <li></li>
           ))}
         </ul>
       </div>
