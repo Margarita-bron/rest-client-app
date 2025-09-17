@@ -3,8 +3,10 @@ import type { AppDispatch } from '~/redux/store';
 import { logoutUser } from '~/redux/auth/auth-actions';
 import { useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 export const SignOutButton = () => {
+  const t = useTr('header');
   const dispatch = useDispatch<AppDispatch>();
   const { navigate } = useRouter();
 
@@ -23,7 +25,7 @@ export const SignOutButton = () => {
       onClick={handleLogout}
       className="bg-indigo-500 rounded-lg px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors cursor-pointer"
     >
-      Sign out
+      {t('signOut')}
     </button>
   );
 };

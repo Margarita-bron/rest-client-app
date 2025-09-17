@@ -1,6 +1,6 @@
 export const ROUTES = {
   home: '',
-  welcome: 'welcome',
+  welcome: 'main',
   restClient: 'rest-client',
   history: 'history',
   variables: 'variables',

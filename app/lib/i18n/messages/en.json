@@ -1,6 +1,93 @@
 {
-  "hello": "Hello",
-  "welcome": "Welcome to the app",
-  "signIn": "Sign In",
-  "signUp": "Sign Up"
+  "header": {
+    "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "mainPage": "Main page"
+  },
+  "resetForm": {
+    "resetPassword": "Reset Password",
+    "email": "Email",
+    "emailPlaceHolder": "mail.adress@gmail.com",
+    "notHaveAccount": "Don’t have an account?",
+    "signUp": "Sign Up"
+  },
+  "signUpForm": {
+    "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "alreadyHaveAccount": "Already have an account?",
+    "name": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "namePlaceholder": "Full Name",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Password1234$",
+    "submit": "Sign Up"
+  },
+  "signInForm": {
+    "submit": "Sign In",
+    "forgotPassword": "Forgot password?",
+    "dontHaveAccount": "Don’t have an account?",
+    "signUp": "Sign Up",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Password"
+  },
+  "auth-validation": {
+    "signUp": {
+      "nameRequired": "Name is required",
+      "nameMin": "Name must be at least 2 characters",
+      "nameInvalid": "Name can only contain letters, spaces, apostrophes, and hyphens",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "passwordLetter": "Password must contain at least one letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecial": "Password must contain at least one special character (!@#$%^&*())"
+    },
+    "signIn": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "passwordLetter": "Password must contain at least one letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecial": "Password must contain at least one special character (!@#$%^&*())"
+    },
+    "reset": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address"
+    }
+  },
+  "headersEditor": {
+    "title": "Headers",
+    "addButton": "+ Add Header",
+    "headerNamePlaceholder": "Header name",
+    "headerValuePlaceholder": "Header value",
+    "removeButton": "×"
+  },
+  "requestBodyEditor": {
+    "title": "Request Body",
+    "placeholder": "{\"key\": \"value\"}"
+  },
+  "requestPanel": {
+    "placeholder": "Enter URL (e.g., jsonplaceholder.typicode.com/posts)",
+    "send": "Send",
+    "loading": "Loading..."
+  },
+  "responseView": {
+    "loading": "Loading...",
+    "error": "Error: {{message}}",
+    "title": "Response:",
+    "showJson": "Show JSON",
+    "showRaw": "Show Raw",
+    "hideHeaders": "Hide Headers",
+    "showHeaders": "Show Headers",
+    "headersTitle": "Response Headers:"
+  },
+  "welcomePage": {
+    "welcome": "Welcome",
+    "restClient": "REST Client",
+    "history": "History",
+    "variables": "Variables",
+    "loadingError": "An error occurred while loading data"
+  }
 }
