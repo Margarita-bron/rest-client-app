@@ -28,8 +28,12 @@ export const SignInForm = () => {
 
   const onSubmit = async (formData: SignInFormData) => {
     try {
-      await dispatch(loginUser(formData.email, formData.password));
-      navigate(ROUTES.welcome);
+      const success = await dispatch(
+        loginUser(formData.email, formData.password)
+      );
+      if (success) {
+        navigate(ROUTES.welcome);
+      }
     } catch (err) {
       console.error(err);
     }

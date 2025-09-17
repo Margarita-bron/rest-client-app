@@ -4,17 +4,19 @@ import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { SIGN_UP_FORM } from './sign-up-form.data';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useEffect } from 'react';
-import { auth, registerWithEmailAndPassword } from '~/lib/firebase/firebase';
 import { signUpSchema } from '~/utils/validation/zod-auth-tests';
-//TODO - instead of strings use i18n when add translate
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '~/redux/store';
+import { registerUser } from '~/redux/auth/auth-actions';
+import { useAuth } from '~/redux/auth/hooks';
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export const SignUpForm = () => {
-  const [user, loading, error] = useAuthState(auth);
+  const dispatch = useDispatch<AppDispatch>();
   const { navigate } = useRouter();
+  const { loading, error } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -24,25 +26,21 @@ export const SignUpForm = () => {
     mode: 'onChange',
   });
 
-  useEffect(() => {
-    if (loading) return;
-    if (user && !error) {
+  const onSubmit = async (formData: SignUpFormData) => {
+    const success = await dispatch(
+      registerUser(formData.name, formData.email, formData.password)
+    );
+
+    if (success) {
       navigate(ROUTES.welcome);
     }
-  }, [user, loading, error, navigate]);
-
-  const onSubmit = (formData: SignUpFormData) => {
-    registerWithEmailAndPassword(
-      formData.name,
-      formData.email,
-      formData.password
-    );
   };
 
   return (
     <div className="flex items-center justify-center bg-gray-950 text-gray-100 scale-90">
       <form
         onSubmit={handleSubmit(onSubmit)}
+        method="POST"
         className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-115 max-w-md space-y-4"
       >
         <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
@@ -101,7 +99,11 @@ export const SignUpForm = () => {
           </div>
         </div>
 
-        <button {...SIGN_UP_FORM.submit}>Sign Up</button>
+        <button {...SIGN_UP_FORM.submit} disabled={loading}>
+          {loading ? 'Signing up...' : 'Sign Up'}
+        </button>
+
+        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
         <p className="text-sm text-center text-gray-400">
           Already have an account?{' '}

@@ -33,7 +33,7 @@ export function Link({
   const handleClick = (e: React.MouseEvent) => {
     if (relative) return;
     e.preventDefault();
-    navigateFn(to, { replace: true });
+    navigateFn(to);
   };
 
   if (relative) {
