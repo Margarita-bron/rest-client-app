@@ -4,10 +4,9 @@ import HeadersEditor from '../components/rest-client/headers-editor/headers-edit
 import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
 import ResponseView from '../components/rest-client/response-view/response-view';
 import axios, { AxiosError } from 'axios';
-import { auth, saveUserRequestHistory } from '~/utils/firebase/firebase';
-import type { Timestamp } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { buildErrorMessage } from 'vite';
+import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
+import type { User } from 'firebase/auth';
 
 export interface Header {
   id: string;
@@ -17,6 +16,7 @@ export interface Header {
 }
 
 const RestClient = () => {
+  const [user] = useAuthState(auth);
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [url, setUrl] = useState('');
   const [requestBody, setRequestBody] = useState('');
@@ -43,6 +43,7 @@ const RestClient = () => {
         loading={loading}
         sendRequest={() =>
           sendRequest({
+            user,
             selectedMethod,
             url,
             requestBody,
@@ -100,6 +101,7 @@ const RestClient = () => {
 };
 
 async function sendRequest({
+  user,
   selectedMethod,
   url,
   requestBody,
@@ -111,6 +113,7 @@ async function sendRequest({
   setResponseRaw,
   setResponseHeaders,
 }: {
+  user: User | null | undefined;
   selectedMethod: string;
   url: string;
   requestBody: string;
@@ -122,7 +125,6 @@ async function sendRequest({
   setResponseRaw: (raw: string) => void;
   setResponseHeaders: (headers: Record<string, string>) => void;
 }) {
-  const [user] = useAuthState(auth);
   if (!url) {
     setError('Please enter a URL');
     return;

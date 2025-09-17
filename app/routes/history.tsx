@@ -34,7 +34,7 @@ const History = () => {
 
   return (
     <div className="flex flex-col h-full scale-135 text-center">
-      <div className="flex items-center gap-3 justify-center">
+      <div className="flex items-center gap-3 justify-center flex-col">
         {loading || loadingHistory}
         {requestsHistory.length === 0 && !loadingHistory && (
           <>
