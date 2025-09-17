@@ -1,27 +1,34 @@
 import type { Header } from '~/routes/rest-client';
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 type HeadersEditorProps = {
   headers: Header[];
   addHeader: () => void;
-  updateHeader: (id: string, field: 'key' | 'value' | 'enabled', value: string | boolean) => void;
+  updateHeader: (
+    id: string,
+    field: 'key' | 'value' | 'enabled',
+    value: string | boolean
+  ) => void;
   removeHeader: (id: string) => void;
-}
+};
 
 const HeadersEditor = ({
-                         headers,
-                         addHeader,
-                         updateHeader,
-                         removeHeader
-                       }: HeadersEditorProps) => {
+  headers,
+  addHeader,
+  updateHeader,
+  removeHeader,
+}: HeadersEditorProps) => {
+  const t = useTr('headersEditor');
+
   return (
     <div className="mb-4">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-lg font-semibold text-white">Headers</h3>
+        <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
         <button
           onClick={addHeader}
           className="px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700"
         >
-          + Add Header
+          {t('addButton')}
         </button>
       </div>
 
@@ -31,17 +38,19 @@ const HeadersEditor = ({
             <input
               type="checkbox"
               checked={header.enabled}
-              onChange={(e) => updateHeader(header.id, 'enabled', e.target.checked)}
+              onChange={(e) =>
+                updateHeader(header.id, 'enabled', e.target.checked)
+              }
               className="ml-2 accent-blue-500"
             />
             <input
-              placeholder="Header name"
+              placeholder={t('headerNamePlaceholder')}
               value={header.key}
               onChange={(e) => updateHeader(header.id, 'key', e.target.value)}
               className="flex-1 px-2 py-1 border border-gray-600 rounded-md bg-gray-700 text-white text-sm"
             />
             <input
-              placeholder="Header value"
+              placeholder={t('headerValuePlaceholder')}
               value={header.value}
               onChange={(e) => updateHeader(header.id, 'value', e.target.value)}
               className="flex-1 px-2 py-1 border border-gray-600 rounded-md bg-gray-700 text-white text-sm"
@@ -50,7 +59,7 @@ const HeadersEditor = ({
               onClick={() => removeHeader(header.id)}
               className="px-2 py-1 bg-red-600 text-white rounded-md text-sm hover:bg-red-700"
             >
-              ×
+              {t('removeButton')}
             </button>
           </div>
         ))}

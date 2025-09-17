@@ -1,21 +1,26 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { SIGN_UP_FORM } from './sign-up-form.data';
-import { signUpSchema } from '~/utils/validation/zod-auth-tests';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '~/redux/store';
 import { registerUser } from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
-
-type SignUpFormData = z.infer<typeof signUpSchema>;
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { useAuthSchemas } from '~/utils/validation/use-auth-schemas';
+import { SIGN_UP_FORM } from './sign-up-form.data';
 
 export const SignUpForm = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { user, loading, error } = useAuth();
   const { navigate } = useRouter();
-  const { loading, error } = useAuth();
+
+  const t = useTr('signUpForm');
+  const { signUpSchema } = useAuthSchemas();
+
+  type SignUpFormData = z.infer<typeof signUpSchema>;
 
   const {
     register,
@@ -26,11 +31,16 @@ export const SignUpForm = () => {
     mode: 'onChange',
   });
 
+  useEffect(() => {
+    if (!loading && user && !error) {
+      navigate(ROUTES.welcome);
+    }
+  }, [user, loading, error, navigate]);
+
   const onSubmit = async (formData: SignUpFormData) => {
     const success = await dispatch(
       registerUser(formData.name, formData.email, formData.password)
     );
-
     if (success) {
       navigate(ROUTES.welcome);
     }
@@ -43,13 +53,13 @@ export const SignUpForm = () => {
         method="POST"
         className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-115 max-w-md space-y-4"
       >
-        <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
+        <h1 className="text-2xl font-semibold text-center">{t('submit')}</h1>
 
         <div>
-          <label className="block text-sm mb-1 text-left">Full Name</label>
+          <label className="block text-sm mb-1 text-left">{t('name')}</label>
           <input
             id="name"
-            placeholder="Full Name"
+            placeholder={t('namePlaceholder')}
             autoComplete="given-name"
             {...register('name')}
             {...SIGN_UP_FORM.name}
@@ -64,10 +74,10 @@ export const SignUpForm = () => {
         </div>
 
         <div>
-          <label className="block text-sm mb-1 text-left">Email</label>
+          <label className="block text-sm mb-1 text-left">{t('email')}</label>
           <input
             id="email"
-            placeholder="E-mail Address"
+            placeholder={t('emailPlaceholder')}
             autoComplete="email"
             {...register('email')}
             {...SIGN_UP_FORM.email}
@@ -82,10 +92,12 @@ export const SignUpForm = () => {
         </div>
 
         <div>
-          <label className="block text-sm mb-1 text-left">Password</label>
+          <label className="block text-sm mb-1 text-left">
+            {t('password')}
+          </label>
           <input
             id="password"
-            placeholder="Password"
+            placeholder={t('passwordPlaceholder')}
             autoComplete="new-password"
             {...register('password')}
             {...SIGN_UP_FORM.password}
@@ -100,18 +112,18 @@ export const SignUpForm = () => {
         </div>
 
         <button {...SIGN_UP_FORM.submit} disabled={loading}>
-          {loading ? 'Signing up...' : 'Sign Up'}
+          {loading ? 'Signing up...' : t('submit')}
         </button>
 
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
         <p className="text-sm text-center text-gray-400">
-          Already have an account?{' '}
+          {t('alreadyHaveAccount')}{' '}
           <Link
             to={ROUTES.signIn}
             className="text-indigo-400 hover:text-indigo-300 font-medium"
           >
-            Sign In
+            {t('signIn')}
           </Link>
         </p>
       </form>

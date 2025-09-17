@@ -7,12 +7,15 @@ export default [
   route(':lang', 'routes/$lang.tsx', [
     route('', 'routes/__layout.tsx', [
       index('routes/home.tsx'),
-      route(ROUTES.signIn, 'routes/sign-in.tsx'),
-      route(ROUTES.signUp, 'routes/sign-up.tsx'),
+      route('', 'routes/__is-not-logged.tsx', [
+        route(ROUTES.signIn, 'routes/sign-in.tsx'),
+        route(ROUTES.signUp, 'routes/sign-up.tsx'),
+      ]),
+
       route(ROUTES.reset, 'routes/reset.tsx'),
 
       route('', 'routes/__private.tsx', [
-        route(ROUTES.welcome, 'routes/welcome.tsx'),
+        route(ROUTES.welcome, 'routes/main.tsx'),
 
         route(ROUTES.restClient, 'routes/rest-client.tsx'),
         route(ROUTES.history, 'routes/history.tsx'),

@@ -1,6 +1,93 @@
 {
-  "hello": "Привет",
-  "welcome": "Добро пожаловать в приложение",
-  "signIn": "Войти",
-  "signUp": "Зарегистрироваться"
+  "header": {
+    "signUp": "Регистрация",
+    "signIn": "Вход",
+    "signOut": "Выйти",
+    "mainPage": "Главная"
+  },
+  "resetForm": {
+    "resetPassword": "Сброс пароля",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "mail.adress@gmail.com",
+    "notHaveAccount": "Нет аккаунта?",
+    "signUp": "Регистрация"
+  },
+  "signUpForm": {
+    "signUp": "Регистрация",
+    "signIn": "Вход",
+    "alreadyHaveAccount": "Уже есть аккаунт?",
+    "name": "Полное имя",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "namePlaceholder": "Полное имя",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Пароль1234$",
+    "submit": "Зарегистрироваться"
+  },
+  "signInForm": {
+    "submit": "Войти",
+    "forgotPassword": "Забыли пароль?",
+    "dontHaveAccount": "Нет аккаунта?",
+    "signUp": "Регистрация",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Пароль"
+  },
+  "auth-validation": {
+    "signUp": {
+      "nameRequired": "Имя обязательно",
+      "nameMin": "Имя должно содержать не менее 2 символов",
+      "nameInvalid": "Имя может содержать только буквы, пробелы, апострофы и дефисы",
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "passwordMin": "Пароль должен содержать не менее 8 символов",
+      "passwordLetter": "Пароль должен содержать хотя бы одну букву",
+      "passwordNumber": "Пароль должен содержать хотя бы одну цифру",
+      "passwordSpecial": "Пароль должен содержать хотя бы один специальный символ (!@#$%^&*())"
+    },
+    "signIn": {
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "passwordMin": "Пароль должен содержать не менее 8 символов",
+      "passwordLetter": "Пароль должен содержать хотя бы одну букву",
+      "passwordNumber": "Пароль должен содержать хотя бы одну цифру",
+      "passwordSpecial": "Пароль должен содержать хотя бы один специальный символ (!@#$%^&*())"
+    },
+    "reset": {
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты"
+    }
+  },
+  "headersEditor": {
+    "title": "Заголовки",
+    "addButton": "+ Добавить заголовок",
+    "headerNamePlaceholder": "Имя заголовка",
+    "headerValuePlaceholder": "Значение заголовка",
+    "removeButton": "×"
+  },
+  "requestBodyEditor": {
+    "title": "Тело запроса",
+    "placeholder": "{\"ключ\": \"значение\"}"
+  },
+  "requestPanel": {
+    "placeholder": "Введите URL (например, jsonplaceholder.typicode.com/posts)",
+    "send": "Отправить",
+    "loading": "Загрузка..."
+  },
+  "responseView": {
+    "loading": "Загрузка...",
+    "error": "Ошибка: {{message}}",
+    "title": "Ответ:",
+    "showJson": "Показать JSON",
+    "showRaw": "Показать raw",
+    "hideHeaders": "Скрыть заголовки",
+    "showHeaders": "Показать заголовки",
+    "headersTitle": "Заголовки ответа:"
+  },
+  "welcomePage": {
+    "welcome": "Добро пожаловать",
+    "restClient": "REST клиент",
+    "history": "История",
+    "variables": "Переменные",
+    "loadingError": "Произошла ошибка при загрузке данных"
+  }
 }

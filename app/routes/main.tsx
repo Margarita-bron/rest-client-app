@@ -9,12 +9,12 @@ import {
   subscribeToAuthChanges,
 } from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
-import { useTranslation } from 'react-i18next';
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 const Welcome = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, firestoreProfile, loading, error } = useAuth();
-  const { t } = useTranslation();
+  const t = useTr('welcomePage');
 
   useEffect(() => {
     const unsubscribe = dispatch(subscribeToAuthChanges());
@@ -30,8 +30,8 @@ const Welcome = () => {
 
   if (error)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        {error}
+      <div className="min-h-screen flex items-center justify-center text-red-400">
+        {t('loadingError')}
       </div>
     );
 
@@ -40,7 +40,6 @@ const Welcome = () => {
   return (
     <div className="flex flex-col h-full scale-135 text-center">
       <h1 className="text-xl font-bold mb-5">
-        {' '}
         {t('welcome')}, {nameToDisplay}!
       </h1>
       <div className="flex items-center gap-3 justify-center">
@@ -48,21 +47,21 @@ const Welcome = () => {
           to={ROUTES.restClient}
           className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
         >
-          REST Client
+          {t('restClient')}
         </Link>
         <div className="w-px h-4 bg-gray-300" />
         <Link
           to={ROUTES.history}
           className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
         >
-          History
+          {t('history')}
         </Link>
         <div className="w-px h-4 bg-gray-300" />
         <Link
           to={ROUTES.variables}
           className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
         >
-          Variables
+          {t('variables')}
         </Link>
       </div>
     </div>
