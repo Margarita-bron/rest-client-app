@@ -26,17 +26,22 @@ const mapFirebaseUser = (user: User) => ({
 // --- login ---
 export const loginUser =
   (email: string, password: string) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (dispatch: AppDispatch): Promise<boolean> => {
     dispatch(setLoading(true));
     dispatch(setError(null));
     try {
       await signInWithEmailPassword(email, password);
       const currentUser = auth.currentUser;
-      if (currentUser) dispatch(setUser(mapFirebaseUser(currentUser)));
+      if (currentUser) {
+        dispatch(setUser(mapFirebaseUser(currentUser)));
+        return true;
+      }
+      return false;
     } catch (error: unknown) {
       dispatch(
         setError(error instanceof Error ? error.message : 'Unknown error')
       );
+      return false;
     } finally {
       dispatch(setLoading(false));
     }
@@ -45,17 +50,22 @@ export const loginUser =
 // --- register ---
 export const registerUser =
   (name: string, email: string, password: string) =>
-  async (dispatch: AppDispatch): Promise<void> => {
+  async (dispatch: AppDispatch): Promise<boolean> => {
     dispatch(setLoading(true));
     dispatch(setError(null));
     try {
       await registerWithEmailAndPassword(name, email, password);
       const currentUser = auth.currentUser;
-      if (currentUser) dispatch(setUser(mapFirebaseUser(currentUser)));
+      if (currentUser) {
+        dispatch(setUser(mapFirebaseUser(currentUser)));
+        return true; // успех
+      }
+      return false;
     } catch (error: unknown) {
       dispatch(
         setError(error instanceof Error ? error.message : 'Unknown error')
       );
+      return false; // ошибка
     } finally {
       dispatch(setLoading(false));
     }
