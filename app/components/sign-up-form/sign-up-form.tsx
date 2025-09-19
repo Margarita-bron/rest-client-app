@@ -117,8 +117,6 @@ export const SignUpForm = () => {
           {loading ? 'Signing up...' : t('submit')}
         </button>
 
-        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-
         <p className="text-sm text-center text-gray-400">
           {t('alreadyHaveAccount')}{' '}
           <Link

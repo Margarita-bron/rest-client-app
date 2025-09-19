@@ -86,14 +86,14 @@
     "showHeaders": "Show Headers",
     "headersTitle": "Response Headers:"
   },
-  "welcomePage": {
+  "mainPage": {
     "welcome": "Welcome",
     "restClient": "REST Client",
     "history": "History",
     "variables": "Variables",
     "loadingError": "An error occurred while loading data"
   },
-  "home-page": {
+  "guestPage": {
     "welcome": "Welcome!",
     "aboutProject": {
       "title": "About the Project",

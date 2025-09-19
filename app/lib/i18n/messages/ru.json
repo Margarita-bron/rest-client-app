@@ -83,14 +83,14 @@
     "showHeaders": "Показать заголовки",
     "headersTitle": "Заголовки ответа:"
   },
-  "welcomePage": {
+  "mainPage": {
     "welcome": "Добро пожаловать",
     "restClient": "REST клиент",
     "history": "История",
     "variables": "Переменные",
     "loadingError": "Произошла ошибка при загрузке данных"
   },
-  "home-page": {
+  "guestPage": {
     "welcome": "Добро пожаловать!",
     "aboutProject": {
       "title": "О проекте",

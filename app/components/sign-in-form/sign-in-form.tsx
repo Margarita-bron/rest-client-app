@@ -36,13 +36,11 @@ export const SignInForm = () => {
 
   const onSubmit = async (formData: SignInFormData) => {
     try {
-      const success = await login({
+      const { success } = await login({
         email: formData.email,
         password: formData.password,
       });
-      if (success) {
-        navigate(ROUTES.welcome);
-      }
+      if (success) navigate(ROUTES.welcome);
     } catch (err) {
       console.error(err);
     }
@@ -88,13 +86,6 @@ export const SignInForm = () => {
             {...register('password')}
             {...SIGN_IN_FORM_DATA.password}
           />
-          <div className="h-7">
-            {errors.password && (
-              <p className="text-red-400 text-sm text-left">
-                {errors.password?.message}
-              </p>
-            )}
-          </div>
         </div>
 
         <button {...SIGN_IN_FORM_DATA.submit} disabled={loading}>

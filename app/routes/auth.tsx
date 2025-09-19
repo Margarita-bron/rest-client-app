@@ -4,7 +4,7 @@ import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import githubLogo from '~/assets/github.svg';
 
 export const Auth = () => {
-  const t = useTr('home-page');
+  const t = useTr('guestPage');
   const developers = ['dev1', 'dev2', 'dev3'];
 
   return (

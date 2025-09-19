@@ -42,7 +42,7 @@ export const firebaseAuthActions = {
       } catch (error: unknown) {
         const errData = getError((error as { code?: string })?.code);
         dispatch(setError(errData.message));
-        return false;
+        throw errData;
       } finally {
         dispatch(setLoading(false));
       }
