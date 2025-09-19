@@ -7,15 +7,15 @@ import {
   subscribeToAuthChanges,
 } from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
-import { useTranslation } from 'react-i18next';
 import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
 import VariablesButton from '~/components/buttons/variables/variables-button';
 import HistoryButton from '~/components/buttons/history/history-button';
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 const Welcome = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, firestoreProfile, loading, error } = useAuth();
-  const { t } = useTranslation();
+  const t = useTr('welcomePage');
 
   useEffect(() => {
     const unsubscribe = dispatch(subscribeToAuthChanges());
@@ -31,8 +31,8 @@ const Welcome = () => {
 
   if (error)
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        {error}
+      <div className="min-h-screen flex items-center justify-center text-red-400">
+        {t('loadingError')}
       </div>
     );
 
@@ -41,7 +41,6 @@ const Welcome = () => {
   return (
     <div className="flex flex-col h-full scale-135 text-center">
       <h1 className="text-xl font-bold mb-5">
-        {' '}
         {t('welcome')}, {nameToDisplay}!
       </h1>
       <div className="flex items-center gap-3 justify-center">

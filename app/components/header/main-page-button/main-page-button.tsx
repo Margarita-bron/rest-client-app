@@ -2,14 +2,14 @@ import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 
-export const SignInButton = () => {
+export const MainPageButton = () => {
   const t = useTr('header');
   return (
     <Link
       to={ROUTES.signIn}
       className="rounded-lg border border-gray-300 leading-relaxed px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-300 hover:text-gray-600 transition-colors"
     >
-      {t('signIn')}
+      {t('mainPage')}
     </Link>
   );
 };

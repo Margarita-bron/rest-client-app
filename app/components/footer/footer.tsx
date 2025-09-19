@@ -5,7 +5,7 @@ export const Footer = () => {
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="flex items-center justify-between">
           <a
-            href="https://github.com/Margarita-bron/rest-client-appp"
+            href="https://github.com/Margarita-bron/rest-client-app"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition-colors"

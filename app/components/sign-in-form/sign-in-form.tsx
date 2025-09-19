@@ -1,21 +1,26 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { SIGN_IN_FORM_DATA } from '~/components/sign-in-form/sign-in-form.data';
-import { signInSchema } from '~/utils/validation/zod-auth-tests';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '~/redux/store';
 import { loginUser } from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
-
-type SignInFormData = z.infer<typeof signInSchema>;
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { useAuthSchemas } from '~/utils/validation/use-auth-schemas';
+import { SIGN_IN_FORM_DATA } from './sign-in-form.data';
 
 export const SignInForm = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { user, loading, error } = useAuth();
   const { navigate } = useRouter();
-  const { loading, error } = useAuth();
+
+  const t = useTr('signInForm');
+  const { signInSchema } = useAuthSchemas();
+
+  type SignInFormData = z.infer<typeof signInSchema>;
 
   const {
     register,
@@ -26,10 +31,20 @@ export const SignInForm = () => {
     mode: 'onChange',
   });
 
+  useEffect(() => {
+    if (!loading && user && !error) {
+      navigate(ROUTES.welcome);
+    }
+  }, [user, loading, error, navigate]);
+
   const onSubmit = async (formData: SignInFormData) => {
     try {
-      await dispatch(loginUser(formData.email, formData.password));
-      navigate(ROUTES.welcome);
+      const success = await dispatch(
+        loginUser(formData.email, formData.password)
+      );
+      if (success) {
+        navigate(ROUTES.welcome);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -42,15 +57,15 @@ export const SignInForm = () => {
         method="POST"
         className="bg-gray-900 p-8 rounded-2xl shadow-lg min-w-115 max-w-md space-y-4"
       >
-        <h1 className="text-2xl font-semibold text-center">Sign In</h1>
+        <h1 className="text-2xl font-semibold text-center">{t('submit')}</h1>
 
         <div>
-          <label htmlFor="email" className="block text-m mb-1 text-left">
-            Email
+          <label htmlFor="email" className="block text-sm mb-1 text-left">
+            {t('submit')}
           </label>
           <input
             id="email"
-            placeholder="E-mail Address"
+            placeholder={t('emailPlaceholder')}
             autoComplete="email"
             {...register('email')}
             {...SIGN_IN_FORM_DATA.email}
@@ -58,19 +73,19 @@ export const SignInForm = () => {
           <div className="h-5">
             {errors.email && touchedFields.email && (
               <p className="text-red-400 text-sm text-left">
-                {errors.email.message}
+                {errors.email?.message}
               </p>
             )}
           </div>
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-m mb-1 text-left">
-            Password
+          <label htmlFor="password" className="block text-sm mb-1 text-left">
+            {t('submit')}
           </label>
           <input
             id="password"
-            placeholder="Password"
+            placeholder={t('passwordPlaceholder')}
             autoComplete="current-password"
             {...register('password')}
             {...SIGN_IN_FORM_DATA.password}
@@ -78,14 +93,14 @@ export const SignInForm = () => {
           <div className="h-5">
             {errors.password && (
               <p className="text-red-400 text-sm text-left">
-                {errors.password.message}
+                {errors.password?.message}
               </p>
             )}
           </div>
         </div>
 
         <button {...SIGN_IN_FORM_DATA.submit} disabled={loading}>
-          {loading ? 'Signing in...' : 'Sign In'}
+          {loading ? 'Signing in...' : t('submit')}
         </button>
 
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
@@ -95,17 +110,17 @@ export const SignInForm = () => {
             to={ROUTES.reset}
             className="text-indigo-400 hover:text-indigo-300 font-medium"
           >
-            Forgot password?
+            {t('forgotPassword')}
           </Link>
         </div>
 
         <p className="text-sm text-center text-gray-400">
-          Don’t have an account?{' '}
+          {t('dontHaveAccount')}{' '}
           <Link
             to={ROUTES.signUp}
             className="text-indigo-400 hover:text-indigo-300 font-medium"
           >
-            Sign Up
+            {t('signUp')}
           </Link>
         </p>
       </form>

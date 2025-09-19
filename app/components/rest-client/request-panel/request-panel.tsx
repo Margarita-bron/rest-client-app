@@ -1,4 +1,5 @@
 import { type ChangeEvent } from 'react';
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 type RequestPanelProps = {
   selectedMethod: string;
@@ -7,16 +8,18 @@ type RequestPanelProps = {
   setUrl: (url: string) => void;
   loading: boolean;
   sendRequest: () => void;
-}
+};
 
 const RequestPanel = ({
-                        selectedMethod,
-                        setSelectedMethod,
-                        url,
-                        setUrl,
-                        loading,
-                        sendRequest
-                      }: RequestPanelProps) => {
+  selectedMethod,
+  setSelectedMethod,
+  url,
+  setUrl,
+  loading,
+  sendRequest,
+}: RequestPanelProps) => {
+  const t = useTr('requestPanel');
+
   const handleMethodChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedMethod(event.target.value);
   };
@@ -38,7 +41,7 @@ const RequestPanel = ({
       </select>
 
       <input
-        placeholder="Enter URL (e.g., jsonplaceholder.typicode.com/posts)"
+        placeholder={t('placeholder')}
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         className="flex-1 min-w-[200px] px-3 py-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -49,7 +52,7 @@ const RequestPanel = ({
         disabled={loading}
         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? 'Loading...' : 'Send'}
+        {loading ? t('loading') : t('send')}
       </button>
     </div>
   );
