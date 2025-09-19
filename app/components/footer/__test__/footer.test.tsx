@@ -12,7 +12,7 @@ describe('Footer', () => {
     expect(githubLink).toBeTruthy();
     expect(githubLink).toHaveAttribute(
       'href',
-      'https://github.com/Margarita-bron/rest-client-appp'
+      'https://github.com/Margarita-bron/rest-client-app'
     );
     expect(githubLink).toHaveAttribute('target', '_blank');
     expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
@@ -31,6 +31,6 @@ describe('Footer', () => {
   });
 
   it('renders copyright text', () => {
-    expect(screen.getByText('© 2025 MVA Project')).toBeTruthy();
+    expect(screen.getByText('© 2025 REST Client App')).toBeTruthy();
   });
 });

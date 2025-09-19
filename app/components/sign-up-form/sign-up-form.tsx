@@ -4,22 +4,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '~/redux/store';
-import { registerUser } from '~/redux/auth/auth-actions';
-import { useAuth } from '~/redux/auth/hooks';
+import { useAuth, useRegisterUser } from '~/redux/auth/hooks';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { useAuthSchemas } from '~/utils/validation/use-auth-schemas';
 import { SIGN_UP_FORM } from './sign-up-form.data';
 
 export const SignUpForm = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { user, loading, error } = useAuth();
   const { navigate } = useRouter();
+  const { register: registerUser } = useRegisterUser(); // ✅ хук
 
   const t = useTr('signUpForm');
   const { signUpSchema } = useAuthSchemas();
-
   type SignUpFormData = z.infer<typeof signUpSchema>;
 
   const {
@@ -38,11 +34,17 @@ export const SignUpForm = () => {
   }, [user, loading, error, navigate]);
 
   const onSubmit = async (formData: SignUpFormData) => {
-    const success = await dispatch(
-      registerUser(formData.name, formData.email, formData.password)
-    );
-    if (success) {
-      navigate(ROUTES.welcome);
+    try {
+      const success = await registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      if (success) {
+        navigate(ROUTES.welcome);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -121,7 +123,7 @@ export const SignUpForm = () => {
           {t('alreadyHaveAccount')}{' '}
           <Link
             to={ROUTES.signIn}
-            className="text-indigo-400 hover:text-indigo-300 font-medium"
+            className="text-indigo-400 hover:underline font-medium"
           >
             {t('signIn')}
           </Link>

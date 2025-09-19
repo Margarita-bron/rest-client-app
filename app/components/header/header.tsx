@@ -23,9 +23,9 @@ export const Header = () => {
       <div
         className={`
           fixed top-0 left-0 w-full z-50 border-b border-gray-700
-          bg-gray-800
-          transition-all duration-500
-          ${scrolled ? 'h-16' : 'h-20 bg-gray-950'}
+          bg-gray-800 
+          transition-all duration-200
+          ${scrolled ? 'h-16' : 'h-20 bg-gray-950 border-gray-600'}
         `}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 h-full">

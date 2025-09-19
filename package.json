@@ -83,13 +83,13 @@
   "main": "eslint.config.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Margarita-bron/rest-client-appp.git"
+    "url": "git+https://github.com/Margarita-bron/rest-client-app.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Margarita-bron/rest-client-appp/issues"
+    "url": "https://github.com/Margarita-bron/rest-client-app/issues"
   },
-  "homepage": "https://github.com/Margarita-bron/rest-client-appp#readme"
+  "homepage": "https://github.com/Margarita-bron/rest-client-app#readme"
 }

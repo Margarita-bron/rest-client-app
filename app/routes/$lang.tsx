@@ -11,7 +11,7 @@ export default function LangLayout() {
   useEffect(() => {
     const locales = routing.locales as readonly string[];
     if (!lang || !locales.includes(lang)) {
-      navigate(ROUTES.home, { replace: true });
+      navigate('/notfound404', { replace: true });
       return;
     }
     if (i18n.language !== lang) {
