@@ -30,7 +30,7 @@
     "dontHaveAccount": "Нет аккаунта?",
     "signUp": "Регистрация",
     "emailPlaceholder": "mail.address@gmail.com",
-    "passwordPlaceholder": "Пароль"
+    "passwordPlaceholder": "Пароль1234$"
   },
   "auth-validation": {
     "signUp": {
@@ -89,5 +89,37 @@
     "history": "История",
     "variables": "Переменные",
     "loadingError": "Произошла ошибка при загрузке данных"
+  },
+  "home-page": {
+    "welcome": "Добро пожаловать!",
+    "aboutProject": {
+      "title": "О проекте",
+      "text": "REST Client App — это лёгкая альтернатива Postman/Thunder Client, созданная как учебный проект. Приложение позволяет выполнять HTTP-запросы, редактировать заголовки и тело, просматривать ответы, сохранять историю и работать с переменными.",
+      "source": "Исходный код"
+    },
+    "aboutCourse": {
+      "title": "О курсе",
+      "text": "Проект разработан в рамках курса"
+    },
+    "developers": {
+      "title": "Разработчики",
+      "dev1": {
+        "name": "Маргарита Савоневская",
+        "github": "margarita-bron"
+      },
+      "dev2": {
+        "name": "Владислав Бендер",
+        "github": "vladbender1"
+      },
+      "dev3": {
+        "name": "Анри Акопян",
+        "github": "anriako"
+      }
+    }
+  },
+  "footer": {
+    "source": "Исходный код",
+    "year": "© 2025 REST Client App",
+    "course": "Курс"
   }
 }

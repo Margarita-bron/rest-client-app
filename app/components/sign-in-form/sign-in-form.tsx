@@ -90,7 +90,7 @@ export const SignInForm = () => {
             {...register('password')}
             {...SIGN_IN_FORM_DATA.password}
           />
-          <div className="h-5">
+          <div className="h-7">
             {errors.password && (
               <p className="text-red-400 text-sm text-left">
                 {errors.password?.message}
@@ -108,7 +108,7 @@ export const SignInForm = () => {
         <div className="text-sm">
           <Link
             to={ROUTES.reset}
-            className="text-indigo-400 hover:text-indigo-300 font-medium"
+            className="text-indigo-400 hover:underline font-medium"
           >
             {t('forgotPassword')}
           </Link>
@@ -118,7 +118,7 @@ export const SignInForm = () => {
           {t('dontHaveAccount')}{' '}
           <Link
             to={ROUTES.signUp}
-            className="text-indigo-400 hover:text-indigo-300 font-medium"
+            className="text-indigo-400 hover:underline font-medium"
           >
             {t('signUp')}
           </Link>

@@ -23,7 +23,7 @@ export const SignOutButton = () => {
   return (
     <button
       onClick={handleLogout}
-      className="bg-indigo-500 rounded-lg px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors cursor-pointer"
+      className="bg-indigo-500 rounded-lg px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors cursor-pointer w-25 text-center"
     >
       {t('signOut')}
     </button>

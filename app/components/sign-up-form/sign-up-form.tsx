@@ -121,7 +121,7 @@ export const SignUpForm = () => {
           {t('alreadyHaveAccount')}{' '}
           <Link
             to={ROUTES.signIn}
-            className="text-indigo-400 hover:text-indigo-300 font-medium"
+            className="text-indigo-400 hover:underline font-medium"
           >
             {t('signIn')}
           </Link>
