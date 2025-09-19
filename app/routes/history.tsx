@@ -18,9 +18,10 @@ const History = () => {
 
   useEffect(() => {
     const fetchHistory = async () => {
+      if (!user) return;
       setLoadingHistory(true);
       try {
-        const data = await getUserRequestHistory(user?.uid);
+        const data = await getUserRequestHistory(user.uid);
         setRequestsHistory(data);
       } finally {
         setLoadingHistory(false);

@@ -1,23 +1,20 @@
-import { useEffect } from 'react';
-import { Outlet, useParams, useNavigate } from 'react-router';
+import { Outlet, useParams } from 'react-router';
 import { I18nextProvider } from 'react-i18next';
 import { i18n } from '~/lib/i18n';
-import { ROUTES, routing } from '~/lib/routing/routes-path';
+import { routing } from '~/lib/routing/routes-path';
+import NotFound from '~/routes/not-found';
 
 export default function LangLayout() {
   const { lang } = useParams();
-  const navigate = useNavigate();
+  const locales = routing.locales as readonly string[];
 
-  useEffect(() => {
-    const locales = routing.locales as readonly string[];
-    if (!lang || !locales.includes(lang)) {
-      navigate('/notfound404', { replace: true });
-      return;
-    }
-    if (i18n.language !== lang) {
-      i18n.changeLanguage(lang);
-    }
-  }, [lang, navigate]);
+  if (!lang || !locales.includes(lang)) {
+    return <NotFound />;
+  }
+
+  if (i18n.language !== lang) {
+    i18n.changeLanguage(lang);
+  }
 
   return (
     <I18nextProvider i18n={i18n}>

@@ -11,7 +11,9 @@ export default [
         route(ROUTES.signIn, 'routes/sign-in.tsx'),
         route(ROUTES.signUp, 'routes/sign-up.tsx'),
       ]),
+
       route(ROUTES.reset, 'routes/reset.tsx'),
+
       route('', 'routes/__private.tsx', [
         route(ROUTES.welcome, 'routes/main.tsx'),
         route(ROUTES.restClient, 'routes/rest-client.tsx'),
@@ -19,6 +21,8 @@ export default [
         route(ROUTES.variables, 'routes/variables.tsx'),
       ]),
     ]),
+
+    route('*', 'routes/lang-not-found.tsx'),
   ]),
 
   route('*', 'routes/not-found.tsx'),
