@@ -26,9 +26,10 @@ const mapFirebaseUser = (user: User) => ({
 // --- login ---
 export const loginUser =
   (email: string, password: string) =>
-  async (dispatch: AppDispatch): Promise<boolean> => {
+  async (dispatch: AppDispatch): Promise<void> => {
     dispatch(setLoading(true));
     dispatch(setError(null));
+    dispatch(setUser(null));
     try {
       await signInWithEmailPassword(email, password);
       const currentUser = auth.currentUser;
@@ -41,7 +42,7 @@ export const loginUser =
       dispatch(
         setError(error instanceof Error ? error.message : 'Unknown error')
       );
-      return false;
+      dispatch(setUser(null));
     } finally {
       dispatch(setLoading(false));
     }

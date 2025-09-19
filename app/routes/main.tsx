@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from '~/lib/routing/navigation';
-import { ROUTES } from '~/lib/routing/routes-path';
 import WelcomeSkeleton from '../loading/welcome-skeleton';
 import type { AppDispatch } from '~/redux/store';
 import {
@@ -9,6 +7,9 @@ import {
   subscribeToAuthChanges,
 } from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
+import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
+import VariablesButton from '~/components/buttons/variables/variables-button';
+import HistoryButton from '~/components/buttons/history/history-button';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 const Welcome = () => {
@@ -43,26 +44,11 @@ const Welcome = () => {
         {t('welcome')}, {nameToDisplay}!
       </h1>
       <div className="flex items-center gap-3 justify-center">
-        <Link
-          to={ROUTES.restClient}
-          className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-        >
-          {t('restClient')}
-        </Link>
+        <RestClientButton />
         <div className="w-px h-4 bg-gray-300" />
-        <Link
-          to={ROUTES.history}
-          className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-        >
-          {t('history')}
-        </Link>
+        <HistoryButton />
         <div className="w-px h-4 bg-gray-300" />
-        <Link
-          to={ROUTES.variables}
-          className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-        >
-          {t('variables')}
-        </Link>
+        <VariablesButton />
       </div>
     </div>
   );
