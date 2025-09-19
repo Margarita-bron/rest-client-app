@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RequestPanel from '../components/rest-client/request-panel/request-panel';
 import HeadersEditor from '../components/rest-client/headers-editor/headers-editor';
 import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
 import ResponseView from '../components/rest-client/response-view/response-view';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
+import type { User } from 'firebase/auth';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 
 export interface Header {
   id: string;
@@ -12,11 +16,17 @@ export interface Header {
   enabled: boolean;
 }
 
+const defaultHeaders: Header[] = [
+  { id: '1', key: 'Content-Type', value: 'application/json', enabled: true },
+];
+
 const RestClient = () => {
+  const [user] = useAuthState(auth);
+
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [url, setUrl] = useState('');
   const [requestBody, setRequestBody] = useState('');
-  const [responseData, setResponseData] = useState<any>(null);
+  const [responseData, setResponseData] = useState<unknown>(null);
   const [responseRaw, setResponseRaw] = useState<string>('');
   const [responseHeaders, setResponseHeaders] = useState<
     Record<string, string>
@@ -39,10 +49,13 @@ const RestClient = () => {
         loading={loading}
         sendRequest={() =>
           sendRequest({
+            user,
             selectedMethod,
             url,
             requestBody,
+            responseRaw,
             headers,
+            error,
             setLoading,
             setError,
             setResponseData,
@@ -95,23 +108,29 @@ const RestClient = () => {
 };
 
 async function sendRequest({
+  user,
   selectedMethod,
   url,
   requestBody,
+  responseRaw,
   headers,
+  error,
   setLoading,
   setError,
   setResponseData,
   setResponseRaw,
   setResponseHeaders,
 }: {
+  user: User | null | undefined;
   selectedMethod: string;
   url: string;
   requestBody: string;
+  responseRaw: string;
   headers: Header[];
+  error: string | null;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  setResponseData: (data: any) => void;
+  setResponseData: (data: unknown) => void;
   setResponseRaw: (raw: string) => void;
   setResponseHeaders: (headers: Record<string, string>) => void;
 }) {
@@ -125,6 +144,8 @@ async function sendRequest({
   setResponseData(null);
   setResponseRaw('');
   setResponseHeaders({});
+  const startTime = Date.now();
+  let statusCode = 0;
 
   try {
     let targetUrl = url;
@@ -134,9 +155,7 @@ async function sendRequest({
 
     const urlObj = new URL(targetUrl);
 
-    const requestHeaders: Record<string, string> = {
-      'X-Target-URL': urlObj.origin,
-    };
+    const requestHeaders: Record<string, string> = {};
 
     headers.forEach((header) => {
       if (header.enabled && header.key && header.value) {
@@ -144,7 +163,7 @@ async function sendRequest({
       }
     });
 
-    let requestBodyData: any = undefined;
+    let requestBodyData: unknown = undefined;
     if (['POST', 'PUT', 'PATCH'].includes(selectedMethod) && requestBody) {
       try {
         requestBodyData = JSON.parse(requestBody);
@@ -159,10 +178,11 @@ async function sendRequest({
       headers: requestHeaders,
       data: requestBodyData,
       timeout: 10000,
-      transformResponse: [(data: any) => data],
+      transformResponse: [(data: unknown) => data],
     };
 
     const res = await axios(config);
+    statusCode = res.status;
     setResponseRaw(res.data);
     setResponseHeaders(res.headers as Record<string, string>);
 
@@ -171,16 +191,66 @@ async function sendRequest({
     } catch {
       setResponseData(res.data);
     }
-  } catch (err: any) {
-    const errorMessage =
-      err.response?.data?.message || err.message || 'Request failed';
-    setError(errorMessage);
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      const error = err as AxiosError;
 
-    if (err.response?.headers) {
-      setResponseHeaders(err.response.headers);
+      statusCode = err.response?.status ?? 0;
+      setError(err.message);
+
+      if (error.response?.headers) {
+        const headers: Record<string, string> = {};
+
+        for (const [key, value] of Object.entries(error.response.headers)) {
+          if (typeof value === 'string') {
+            headers[key] = value;
+          } else if (Array.isArray(value)) {
+            headers[key] = value.join(', ');
+          } else if (value !== undefined) {
+            headers[key] = String(value);
+          }
+        }
+        setResponseHeaders(headers);
+      }
+    } else if (err instanceof Error) {
+      setError(err.message);
+    } else {
+      setError('Request failed');
     }
   } finally {
     setLoading(false);
+    const duration = Date.now() - startTime;
+
+    const saveHeaders: Record<string, string | boolean> = {};
+    headers.forEach(({ id, key, value, enabled }) => {
+      if (enabled && key) {
+        saveHeaders[key] = value;
+      }
+    });
+    const rawBody =
+      typeof requestBody === 'string'
+        ? requestBody
+        : JSON.stringify(requestBody);
+    const requestSize = new TextEncoder().encode(rawBody).length;
+
+    const rawResponse =
+      typeof responseRaw === 'string'
+        ? responseRaw
+        : JSON.stringify(responseRaw);
+    const responseSize = new TextEncoder().encode(rawResponse).length;
+
+    await saveUserRequestHistory({
+      userId: user?.uid,
+      method: selectedMethod.toLowerCase(),
+      url: url,
+      headers: saveHeaders,
+      body: requestBody,
+      requestSize,
+      responseSize,
+      duration,
+      statusCode,
+      errorMessage: error,
+    });
   }
 }
 

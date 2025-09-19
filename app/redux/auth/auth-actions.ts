@@ -36,6 +36,7 @@ export const firebaseAuthActions = {
         await signInWithEmailPasswordFn(email, password);
         const currentUser = auth.currentUser;
         if (!currentUser) return false;
+
         dispatch(setUser(mapFirebaseUser(currentUser)));
         return true;
       } catch (error: unknown) {
@@ -46,7 +47,6 @@ export const firebaseAuthActions = {
         dispatch(setLoading(false));
       }
     },
-
   registerUser:
     (name: string, email: string, password: string, getError: GetErrorFn) =>
     async (dispatch: AppDispatch): Promise<boolean> => {

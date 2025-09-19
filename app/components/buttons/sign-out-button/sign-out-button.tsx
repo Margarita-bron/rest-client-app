@@ -12,6 +12,7 @@ export const SignOutButton = () => {
     e.preventDefault();
     try {
       await logout();
+
       navigate(ROUTES.signIn);
     } catch (error) {
       console.error(error);

@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
+
 import WelcomeSkeleton from '../loading/welcome-skeleton';
 import { useAuth } from '~/redux/auth/hooks';
 import { firebaseAuthActions } from '~/redux/auth/auth-actions';
+
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '~/redux/store';
@@ -35,26 +37,11 @@ const Welcome = () => {
         {t('welcome')}, {nameToDisplay}!
       </h1>
       <div className="flex items-center gap-3 justify-center">
-        <Link
-          to={ROUTES.restClient}
-          className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-        >
-          {t('restClient')}
-        </Link>
+        <RestClientButton />
         <div className="w-px h-4 bg-gray-300" />
-        <Link
-          to={ROUTES.history}
-          className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-        >
-          {t('history')}
-        </Link>
+        <HistoryButton />
         <div className="w-px h-4 bg-gray-300" />
-        <Link
-          to={ROUTES.variables}
-          className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
-        >
-          {t('variables')}
-        </Link>
+        <VariablesButton />
       </div>
     </div>
   );

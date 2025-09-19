@@ -9,7 +9,6 @@ import {
   type User,
 } from 'firebase/auth';
 import { getFirestore, setDoc, doc } from 'firebase/firestore';
-
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
   authDomain: 'mva-project-6c4da.firebaseapp.com',
