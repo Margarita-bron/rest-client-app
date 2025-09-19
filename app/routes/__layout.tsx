@@ -3,6 +3,8 @@ import { Header } from '~/components/header/header';
 import { Footer } from '~/components/footer/footer';
 
 export default function Layout() {
+  console.log('Is guest');
+
   return (
     <div className="min-h-screen flex flex-col ">
       <Header />

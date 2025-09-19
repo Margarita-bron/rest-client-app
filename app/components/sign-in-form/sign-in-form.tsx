@@ -4,18 +4,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '~/redux/store';
-import { loginUser } from '~/redux/auth/auth-actions';
-import { useAuth } from '~/redux/auth/hooks';
+import { useAuth, useLoginUser } from '~/redux/auth/hooks';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { useAuthSchemas } from '~/utils/validation/use-auth-schemas';
 import { SIGN_IN_FORM_DATA } from './sign-in-form.data';
 
 export const SignInForm = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const { user, loading, error } = useAuth();
   const { navigate } = useRouter();
+  const { login } = useLoginUser();
 
   const t = useTr('signInForm');
   const { signInSchema } = useAuthSchemas();
@@ -39,9 +36,10 @@ export const SignInForm = () => {
 
   const onSubmit = async (formData: SignInFormData) => {
     try {
-      const success = await dispatch(
-        loginUser(formData.email, formData.password)
-      );
+      const success = await login({
+        email: formData.email,
+        password: formData.password,
+      });
       if (success) {
         navigate(ROUTES.welcome);
       }
@@ -100,10 +98,11 @@ export const SignInForm = () => {
         </div>
 
         <button {...SIGN_IN_FORM_DATA.submit} disabled={loading}>
-          {loading ? 'Signing in...' : t('submit')}
+          {loading ? t('submiting') : t('submit')}
         </button>
-
-        {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+        <div className="h-5">
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+        </div>
 
         <div className="text-sm">
           <Link

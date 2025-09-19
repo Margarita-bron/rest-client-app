@@ -1,19 +1,17 @@
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '~/redux/store';
-import { logoutUser } from '~/redux/auth/auth-actions';
 import { useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { useLogoutUser } from '~/redux/auth/hooks';
 
 export const SignOutButton = () => {
   const t = useTr('header');
-  const dispatch = useDispatch<AppDispatch>();
   const { navigate } = useRouter();
+  const { logout } = useLogoutUser();
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await dispatch(logoutUser());
+      await logout();
       navigate(ROUTES.signIn);
     } catch (error) {
       console.error(error);

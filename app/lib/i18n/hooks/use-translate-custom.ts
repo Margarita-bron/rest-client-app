@@ -18,15 +18,15 @@ Custom hook: useTr as wrapper above useTranslation
  *    t('authorName', { name: 'Alice' });
  */
 
-type TranslateFunc = (key: string, options?: TOptions) => string;
+type TranslateFunc = <T = string>(key: string, options?: TOptions) => T;
 
 export function useTr(namespace?: string): TranslateFunc {
   const { t } = useTranslation();
 
-  return (key: string, options?: TOptions) => {
+  return (<T = string>(key: string, options?: TOptions) => {
     if (namespace) {
-      return t(`${namespace}.${key}`, options);
+      return t(`${namespace}.${key}`, options) as T;
     }
-    return t(key, options);
-  };
+    return t(key, options) as T;
+  }) as TranslateFunc;
 }

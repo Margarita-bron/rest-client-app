@@ -1,20 +1,22 @@
 import { toast } from 'react-toastify';
-import { FirebaseAuthErrorMessages } from '~/lib/firebase/firebase-errors';
+import { useFirebaseAuthErrorMessages } from '~/lib/firebase/firebase-errors';
 
-const showAuthErrorNotification = (error: unknown) => {
-  if (error && typeof error === 'object' && 'code' in error) {
-    const code = (error as { code: string }).code;
-    const errData = FirebaseAuthErrorMessages[code];
-    if (errData) {
+export const useShowAuthErrorNotification = () => {
+  const { getError } = useFirebaseAuthErrorMessages();
+
+  const showAuthErrorNotification = (error: unknown) => {
+    if (error && typeof error === 'object' && 'code' in error) {
+      const code = (error as { code: string }).code;
+      const errData = getError(code);
       toast.error(`${errData.message} ${errData.action}`);
       return;
     }
-  }
-  toast.error('An unknown error occurred. Please try again.');
-};
+    toast.error(getError('unknownError').message);
+  };
 
-const showAuthInfoNotification = (message: string) => {
-  toast.info(message);
-};
+  const showAuthInfoNotification = (message: string) => {
+    toast.info(message);
+  };
 
-export { showAuthErrorNotification, showAuthInfoNotification };
+  return { showAuthErrorNotification, showAuthInfoNotification };
+};

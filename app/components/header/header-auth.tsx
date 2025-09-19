@@ -1,7 +1,7 @@
 import logo from '~/assets/logo.png';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { SignOutButton } from '~/components/header/sign-out-button/sign-out-button';
+import { SignOutButton } from '~/components/buttons/sign-out-button/sign-out-button';
 import { LanguageToggleButton } from '~/components/header/language-toggle-button/language-toggle-button';
 import { MainPageButton } from '~/components/header/main-page-button/main-page-button';
 

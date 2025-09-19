@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import WelcomeSkeleton from '../loading/welcome-skeleton';
-import type { AppDispatch } from '~/redux/store';
-import {
-  fetchUserProfile,
-  subscribeToAuthChanges,
-} from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
+import { firebaseAuthActions } from '~/redux/auth/auth-actions';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '~/redux/store';
 
 const Welcome = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,14 +14,9 @@ const Welcome = () => {
   const t = useTr('welcomePage');
 
   useEffect(() => {
-    const unsubscribe = dispatch(subscribeToAuthChanges());
+    const unsubscribe = dispatch(firebaseAuthActions.subscribeToAuthChanges());
     return () => unsubscribe();
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!user?.uid) return;
-    dispatch(fetchUserProfile(user.uid));
-  }, [user?.uid, dispatch]);
 
   if (loading) return <WelcomeSkeleton />;
 

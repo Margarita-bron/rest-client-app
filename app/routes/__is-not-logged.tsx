@@ -6,6 +6,7 @@ import { useRouter } from '~/lib/routing/navigation';
 export default function IsNotLogged() {
   const { isAuthenticated } = useAuth();
   const { locale } = useRouter();
+  console.log('Is not logged');
 
   if (isAuthenticated) {
     const to = `/${locale}/${ROUTES.welcome}`;

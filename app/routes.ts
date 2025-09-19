@@ -11,16 +11,15 @@ export default [
         route(ROUTES.signIn, 'routes/sign-in.tsx'),
         route(ROUTES.signUp, 'routes/sign-up.tsx'),
       ]),
-
       route(ROUTES.reset, 'routes/reset.tsx'),
-
       route('', 'routes/__private.tsx', [
         route(ROUTES.welcome, 'routes/main.tsx'),
-
         route(ROUTES.restClient, 'routes/rest-client.tsx'),
         route(ROUTES.history, 'routes/history.tsx'),
         route(ROUTES.variables, 'routes/variables.tsx'),
       ]),
     ]),
   ]),
+
+  route('*', 'routes/not-found.tsx'),
 ];
