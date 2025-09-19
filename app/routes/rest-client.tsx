@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RequestPanel from '../components/rest-client/request-panel/request-panel';
 import HeadersEditor from '../components/rest-client/headers-editor/headers-editor';
 import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
@@ -7,6 +7,7 @@ import axios, { AxiosError } from 'axios';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
 import type { User } from 'firebase/auth';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 
 export interface Header {
   id: string;
@@ -15,8 +16,13 @@ export interface Header {
   enabled: boolean;
 }
 
+const defaultHeaders: Header[] = [
+  { id: '1', key: 'Content-Type', value: 'application/json', enabled: true },
+];
+
 const RestClient = () => {
   const [user] = useAuthState(auth);
+
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [url, setUrl] = useState('');
   const [requestBody, setRequestBody] = useState('');
@@ -47,6 +53,7 @@ const RestClient = () => {
             selectedMethod,
             url,
             requestBody,
+            responseRaw,
             headers,
             error,
             setLoading,
@@ -105,6 +112,7 @@ async function sendRequest({
   selectedMethod,
   url,
   requestBody,
+  responseRaw,
   headers,
   error,
   setLoading,
@@ -117,6 +125,7 @@ async function sendRequest({
   selectedMethod: string;
   url: string;
   requestBody: string;
+  responseRaw: string;
   headers: Header[];
   error: string | null;
   setLoading: (loading: boolean) => void;
@@ -146,9 +155,7 @@ async function sendRequest({
 
     const urlObj = new URL(targetUrl);
 
-    const requestHeaders: Record<string, string> = {
-      'X-Target-URL': urlObj.origin,
-    };
+    const requestHeaders: Record<string, string> = {};
 
     headers.forEach((header) => {
       if (header.enabled && header.key && header.value) {
@@ -220,6 +227,17 @@ async function sendRequest({
         saveHeaders[key] = value;
       }
     });
+    const rawBody =
+      typeof requestBody === 'string'
+        ? requestBody
+        : JSON.stringify(requestBody);
+    const requestSize = new TextEncoder().encode(rawBody).length;
+
+    const rawResponse =
+      typeof responseRaw === 'string'
+        ? responseRaw
+        : JSON.stringify(responseRaw);
+    const responseSize = new TextEncoder().encode(rawResponse).length;
 
     await saveUserRequestHistory({
       userId: user?.uid,
@@ -227,6 +245,8 @@ async function sendRequest({
       url: url,
       headers: saveHeaders,
       body: requestBody,
+      requestSize,
+      responseSize,
       duration,
       statusCode,
       errorMessage: error,

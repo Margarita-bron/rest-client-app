@@ -4,6 +4,8 @@ export type RequestAnalytic = {
   url: string;
   headers: Record<string, string | boolean>;
   body?: string;
+  requestSize: number;
+  responseSize: number;
   duration: number;
   statusCode: number;
   createdAt: number;
