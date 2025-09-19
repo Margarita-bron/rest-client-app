@@ -1,7 +1,4 @@
 import { useEffect } from 'react';
-import { Link } from '~/lib/routing/navigation';
-import { ROUTES } from '~/lib/routing/routes-path';
-
 import WelcomeSkeleton from '../loading/welcome-skeleton';
 import { useAuth } from '~/redux/auth/hooks';
 import { firebaseAuthActions } from '~/redux/auth/auth-actions';
@@ -9,6 +6,9 @@ import { firebaseAuthActions } from '~/redux/auth/auth-actions';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '~/redux/store';
+import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
+import HistoryButton from '~/components/buttons/history/history-button';
+import VariablesButton from '~/components/buttons/variables/variables-button';
 
 const Welcome = () => {
   const dispatch = useDispatch<AppDispatch>();
