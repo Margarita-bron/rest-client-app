@@ -10,9 +10,8 @@ export default [
       route('', 'routes/__is-not-logged.tsx', [
         route(ROUTES.signIn, 'routes/sign-in.tsx'),
         route(ROUTES.signUp, 'routes/sign-up.tsx'),
+        route(ROUTES.reset, 'routes/reset.tsx'),
       ]),
-
-      route(ROUTES.reset, 'routes/reset.tsx'),
 
       route('', 'routes/__private.tsx', [
         route(ROUTES.welcome, 'routes/main.tsx'),

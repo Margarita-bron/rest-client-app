@@ -28,7 +28,8 @@
   "signInForm": {
     "submit": "Sign In",
     "submiting": "Signing In...",
-
+    "email": "Email",
+    "password": "Password",
     "forgotPassword": "Forgot password?",
     "dontHaveAccount": "Don’t have an account?",
     "signUp": "Sign Up",

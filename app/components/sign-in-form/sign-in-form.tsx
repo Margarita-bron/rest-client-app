@@ -57,7 +57,7 @@ export const SignInForm = () => {
 
         <div>
           <label htmlFor="email" className="block text-sm mb-1 text-left">
-            {t('submit')}
+            {t('email')}
           </label>
           <input
             id="email"
@@ -77,7 +77,7 @@ export const SignInForm = () => {
 
         <div>
           <label htmlFor="password" className="block text-sm mb-1 text-left">
-            {t('submit')}
+            {t('password')}
           </label>
           <input
             id="password"
@@ -86,6 +86,13 @@ export const SignInForm = () => {
             {...register('password')}
             {...SIGN_IN_FORM_DATA.password}
           />
+          <div className="h-7">
+            {errors.password && (
+              <p className="text-red-400 text-sm text-left">
+                {errors.password?.message}
+              </p>
+            )}
+          </div>
         </div>
 
         <button {...SIGN_IN_FORM_DATA.submit} disabled={loading}>

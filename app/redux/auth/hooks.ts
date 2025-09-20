@@ -4,8 +4,8 @@ import { firebaseAuthActions } from './auth-actions';
 import { useFirebaseAuthErrorMessages } from '~/lib/firebase/firebase-errors';
 import { useMemo, useCallback } from 'react';
 import { useShowAuthNotifications } from '~/lib/firebase/firebase-notification';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 // Хук для получения состояния аутентификации
 export const useAuth = () => {
@@ -35,6 +35,7 @@ export const useLoginUser = () => {
   const { getError } = useFirebaseAuthErrorMessages();
   const { showAuthErrorNotification, showAuthInfoNotification } =
     useShowAuthNotifications();
+  const t = useTr('authNotifications');
 
   const login = useCallback(
     async (data: LoginParams) => {
@@ -42,14 +43,14 @@ export const useLoginUser = () => {
         const success = await dispatch(
           firebaseAuthActions.loginUser(data.email, data.password, getError)
         );
-        if (success) showAuthInfoNotification('Login successful!');
+        if (success) showAuthInfoNotification(t('loginSuccess'));
         return { success: !!success, error: null };
       } catch (err: unknown) {
         showAuthErrorNotification(err);
         return { success: false, error: err };
       }
     },
-    [dispatch, getError, showAuthErrorNotification, showAuthInfoNotification]
+    [dispatch, getError, showAuthErrorNotification, showAuthInfoNotification, t]
   );
 
   return { login };
@@ -62,6 +63,7 @@ export const useRegisterUser = () => {
   const { getError } = useFirebaseAuthErrorMessages();
   const { showAuthErrorNotification, showAuthInfoNotification } =
     useShowAuthNotifications();
+  const t = useTr('authNotifications');
 
   const register = useCallback(
     async (data: RegisterParams) => {
@@ -74,13 +76,13 @@ export const useRegisterUser = () => {
             getError
           )
         );
-        if (success) showAuthInfoNotification('Registration successful!');
+        if (success) showAuthInfoNotification(t('registerSuccess'));
         return success;
       } catch (err: unknown) {
         showAuthErrorNotification(err);
       }
     },
-    [dispatch, getError, showAuthErrorNotification, showAuthInfoNotification]
+    [dispatch, getError, showAuthErrorNotification, showAuthInfoNotification, t]
   );
 
   return { register };
@@ -92,17 +94,18 @@ export const useResetPasswordUser = () => {
   const { getError } = useFirebaseAuthErrorMessages();
   const { showAuthErrorNotification, showAuthInfoNotification } =
     useShowAuthNotifications();
+  const t = useTr('authNotifications');
 
   const resetPassword = useCallback(
     async (email: string) => {
       try {
         await dispatch(firebaseAuthActions.resetPasswordUser(email, getError));
-        showAuthInfoNotification('Password reset email sent!');
+        showAuthInfoNotification(t('resetPasswordSuccess'));
       } catch (err: unknown) {
         showAuthErrorNotification(err);
       }
     },
-    [dispatch, getError, showAuthErrorNotification, showAuthInfoNotification]
+    [dispatch, getError, showAuthErrorNotification, showAuthInfoNotification, t]
   );
 
   return { resetPassword };
@@ -113,15 +116,16 @@ export const useLogoutUser = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { showAuthErrorNotification, showAuthInfoNotification } =
     useShowAuthNotifications();
+  const t = useTr('authNotifications');
 
   const logout = useCallback(async () => {
     try {
       await dispatch(firebaseAuthActions.logoutUser());
-      showAuthInfoNotification('Logout successful!');
+      showAuthInfoNotification(t('logoutSuccess'));
     } catch (err: unknown) {
       showAuthErrorNotification(err);
     }
-  }, [dispatch, showAuthErrorNotification, showAuthInfoNotification]);
+  }, [dispatch, showAuthErrorNotification, showAuthInfoNotification, t]);
 
   return { logout };
 };

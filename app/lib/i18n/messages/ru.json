@@ -26,6 +26,8 @@
   },
   "signInForm": {
     "submit": "Войти",
+    "email": "Электронная почта",
+    "password": "Пароль",
     "forgotPassword": "Забыли пароль?",
     "dontHaveAccount": "Нет аккаунта?",
     "signUp": "Регистрация",
@@ -56,6 +58,12 @@
       "emailRequired": "Электронная почта обязательна",
       "emailInvalid": "Введите корректный адрес электронной почты"
     }
+  },
+  "authNotifications": {
+    "loginSuccess": "Вход выполнен успешно!",
+    "registerSuccess": "Регистрация прошла успешно!",
+    "resetPasswordSuccess": "Письмо для сброса пароля отправлено!",
+    "logoutSuccess": "Вы успешно вышли из системы!"
   },
   "headersEditor": {
     "title": "Заголовки",
