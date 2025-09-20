@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -11,23 +11,17 @@ import {
 import {
   getFirestore,
   setDoc,
-  addDoc,
-  serverTimestamp,
   doc,
   collection,
-  orderBy,
-  where,
   query,
+  orderBy,
   getDocs,
+  serverTimestamp,
+  type DocumentData,
+  type DocumentReference,
+  addDoc,
 } from 'firebase/firestore';
-import type {
-  RequestAnalytic,
-  UserRequestHistory,
-} from '~/types/history-analytic';
-import {
-  showAuthErrorNotification,
-  showAuthInfoNotification,
-} from '~/lib/firebase/firebase-notification';
+import type { RequestAnalytic } from '~/types/history-analytic';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
@@ -39,83 +33,41 @@ const firebaseConfig = {
   measurementId: 'G-CC9RST6B6Y',
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+if (!getApps().length) initializeApp(firebaseConfig);
 
-const signInWithEmailPassword = async (
+export const auth = getAuth();
+export const db = getFirestore();
+
+export const signInWithEmailPasswordFn = async (
   email: string,
   password: string
-): Promise<void> => {
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(
-        'Полный объект ошибки, полученный в catch:',
-        JSON.stringify(error, null, 2)
-      );
-      showAuthErrorNotification(error);
-      alert(error.message);
-    } else {
-      showAuthErrorNotification(error);
-    }
-  }
-};
+) => signInWithEmailAndPassword(auth, email, password);
 
-const registerWithEmailAndPassword = async (
+export const registerWithEmailAndPasswordFn = async (
   name: string,
   email: string,
   password: string
-): Promise<void> => {
-  try {
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user: User = res.user;
+) => {
+  const res = await createUserWithEmailAndPassword(auth, email, password);
+  const user: User = res.user;
 
-    if (user) {
-      await updateProfile(user, {
-        displayName: name,
-      });
-    }
+  if (user) {
+    await updateProfile(user, { displayName: name });
     await user.reload();
     await setDoc(doc(db, 'users', user.uid), {
       name,
       email,
       authProvider: 'local',
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(
-        'Полный объект ошибки, полученный в catch:',
-        JSON.stringify(error, null, 2)
-      );
-      showAuthErrorNotification(error);
-      alert(error.message);
-    } else {
-      showAuthErrorNotification(error);
-    }
+    } as Record<string, string>);
   }
 };
 
-const sendPasswordReset = async (email: string): Promise<void> => {
-  try {
-    await sendPasswordResetEmail(auth, email);
-    showAuthInfoNotification('Password reset link sent to email!');
-  } catch (error) {
-    if (error instanceof Error) {
-      showAuthErrorNotification(error);
-      alert(error.message);
-    } else {
-      showAuthErrorNotification(error);
-    }
-  }
-};
+export const sendPasswordResetFn = (email: string) =>
+  sendPasswordResetEmail(auth, email);
 
-const logout = (): void => {
-  signOut(auth);
-};
+export const logoutFn = () => signOut(auth);
 
-const saveUserRequestHistory = async (
+export const saveUserRequestHistory = async (
   entry: Omit<RequestAnalytic, 'createdAt'>
 ) => {
   try {
@@ -128,26 +80,20 @@ const saveUserRequestHistory = async (
   }
 };
 
-const getUserRequestHistory = async (userId: string | undefined) => {
-  const docsHistory = query(
-    collection(db, 'requestHistory'),
-    where('userId', '==', userId),
-    orderBy('createdAt', 'desc')
-  );
-  const querySnapshot = await getDocs(docsHistory);
-  return querySnapshot.docs.map((doc) => ({
+export const getUserRequestHistory = async (
+  userId: string
+): Promise<(Record<string, unknown> & { id: string })[]> => {
+  if (!userId) return [];
+
+  const historyCol = collection(db, 'users', userId, 'requestHistory');
+  const q = query(historyCol, orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-  }));
+  })) as (Record<string, unknown> & { id: string })[];
 };
-
-export {
-  auth,
-  db,
-  signInWithEmailPassword,
-  registerWithEmailAndPassword,
-  sendPasswordReset,
-  logout,
-  saveUserRequestHistory,
-  getUserRequestHistory,
-};
+function showAuthErrorNotification(error: unknown) {
+  throw new Error('Function not implemented.');
+}

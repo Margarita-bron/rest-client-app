@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import RequestPanel from '../components/rest-client/request-panel/request-panel';
 import HeadersEditor from '../components/rest-client/headers-editor/headers-editor';
 import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
@@ -7,6 +7,7 @@ import axios, { AxiosError } from 'axios';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
 import type { User } from 'firebase/auth';
+<<<<<<< HEAD
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
   base64DecodeUtf8,
@@ -15,6 +16,8 @@ import {
 import { useVariables } from '~/hooks/use-variables';
 import { availableMethods } from '~/constants/rest-client';
 import { v4 as uuidv4 } from 'uuid';
+=======
+>>>>>>> develop
 
 export interface Header {
   id: string;
@@ -324,10 +327,9 @@ async function sendRequest({
       }
     });
 
-    await saveUserRequestHistory({
-      userId: user?.uid,
+    await saveUserRequestHistory(user?.uid!, {
       method: selectedMethod.toLowerCase(),
-      url: url,
+      url,
       headers: saveHeaders,
       body: requestBody,
       requestSize,

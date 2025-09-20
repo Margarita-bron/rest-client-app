@@ -22,10 +22,12 @@
     "@react-router/serve": "^7.7.1",
     "@reduxjs/toolkit": "^2.9.0",
     "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "axios": "^1.11.0",
     "firebase": "^12.2.1",
     "i18next": "^25.5.2",
     "isbot": "^5.1.27",
+    "js-cookie": "^3.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-firebase-hooks": "^5.1.1",
@@ -45,6 +47,7 @@
     "@tailwindcss/vite": "^4.1.4",
     "@testing-library/jest-dom": "^6.8.0",
     "@types/jest": "^30.0.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.19.13",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
@@ -85,13 +88,13 @@
   "main": "eslint.config.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Margarita-bron/rest-client-appp.git"
+    "url": "git+https://github.com/Margarita-bron/rest-client-app.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Margarita-bron/rest-client-appp/issues"
+    "url": "https://github.com/Margarita-bron/rest-client-app/issues"
   },
-  "homepage": "https://github.com/Margarita-bron/rest-client-appp#readme"
+  "homepage": "https://github.com/Margarita-bron/rest-client-app#readme"
 }

@@ -26,11 +26,13 @@
   },
   "signInForm": {
     "submit": "Войти",
+    "email": "Электронная почта",
+    "password": "Пароль",
     "forgotPassword": "Забыли пароль?",
     "dontHaveAccount": "Нет аккаунта?",
     "signUp": "Регистрация",
     "emailPlaceholder": "mail.address@gmail.com",
-    "passwordPlaceholder": "Пароль"
+    "passwordPlaceholder": "Пароль1234$"
   },
   "auth-validation": {
     "signUp": {
@@ -56,6 +58,12 @@
       "emailRequired": "Электронная почта обязательна",
       "emailInvalid": "Введите корректный адрес электронной почты"
     }
+  },
+  "authNotifications": {
+    "loginSuccess": "Вход выполнен успешно!",
+    "registerSuccess": "Регистрация прошла успешно!",
+    "resetPasswordSuccess": "Письмо для сброса пароля отправлено!",
+    "logoutSuccess": "Вы успешно вышли из системы!"
   },
   "headersEditor": {
     "title": "Заголовки",
@@ -83,11 +91,97 @@
     "showHeaders": "Показать заголовки",
     "headersTitle": "Заголовки ответа:"
   },
-  "welcomePage": {
+  "mainPage": {
     "welcome": "Добро пожаловать",
     "restClient": "REST клиент",
     "history": "История",
     "variables": "Переменные",
     "loadingError": "Произошла ошибка при загрузке данных"
+  },
+  "guestPage": {
+    "welcome": "Добро пожаловать!",
+    "aboutProject": {
+      "title": "О проекте",
+      "text": "REST Client App — это лёгкая альтернатива Postman/Thunder Client, созданная как учебный проект. Приложение позволяет выполнять HTTP-запросы, редактировать заголовки и тело, просматривать ответы, сохранять историю и работать с переменными.",
+      "source": "Исходный код"
+    },
+    "aboutCourse": {
+      "title": "О курсе",
+      "text": "Проект разработан в рамках курса"
+    },
+    "developers": {
+      "title": "Разработчики",
+      "dev1": {
+        "name": "Маргарита Савоневская",
+        "github": "margarita-bron"
+      },
+      "dev2": {
+        "name": "Владислав Бендер",
+        "github": "vladbender1"
+      },
+      "dev3": {
+        "name": "Анри Акопян",
+        "github": "anriako"
+      }
+    }
+  },
+  "footer": {
+    "source": "Исходный код",
+    "year": "© 2025 REST Client App",
+    "course": "Курс"
+  },
+  "firebaseAuthErrors": {
+    "auth/invalid-credential": {
+      "message": "Неверные данные для входа.",
+      "action": "Проверьте email и пароль и попробуйте снова."
+    },
+    "auth/email-already-in-use": {
+      "message": "Аккаунт с этим email уже существует.",
+      "action": "Попробуйте войти или используйте другой email."
+    },
+    "auth/user-disabled": {
+      "message": "Аккаунт пользователя отключен.",
+      "action": "Свяжитесь с поддержкой для восстановления доступа."
+    },
+    "auth/user-not-found": {
+      "message": "Пользователь с таким email не найден.",
+      "action": "Проверьте email или зарегистрируйтесь."
+    },
+    "auth/wrong-password": {
+      "message": "Неверный пароль.",
+      "action": "Попробуйте ввести пароль снова или сбросьте его."
+    },
+    "auth/too-many-requests": {
+      "message": "Слишком много неудачных попыток входа.",
+      "action": "Подождите несколько минут перед новой попыткой."
+    },
+    "auth/network-request-failed": {
+      "message": "Произошла ошибка сети.",
+      "action": "Проверьте подключение к интернету и попробуйте снова."
+    },
+    "auth/account-exists-with-different-credential": {
+      "message": "Аккаунт с таким email существует, но через другой способ входа.",
+      "action": "Войдите через первоначального провайдера или сбросьте пароль."
+    },
+    "auth/requires-recent-login": {
+      "message": "Необходимо повторно войти для выполнения операции.",
+      "action": "Войдите снова, чтобы подтвердить личность."
+    },
+    "auth/expired-action-code": {
+      "message": "Ссылка для сброса пароля истекла.",
+      "action": "Запросите новую ссылку для сброса пароля."
+    },
+    "auth/invalid-action-code": {
+      "message": "Ссылка для сброса пароля недействительна.",
+      "action": "Запросите новую ссылку для сброса пароля."
+    },
+    "auth/argument-error": {
+      "message": "Переданы неверные аргументы для Firebase Authentication.",
+      "action": "Проверьте введенные данные и попробуйте снова."
+    },
+    "auth/internal-error": {
+      "message": "Произошла внутренняя ошибка на серверах Firebase.",
+      "action": "Попробуйте позже или свяжитесь с поддержкой."
+    }
   }
 }

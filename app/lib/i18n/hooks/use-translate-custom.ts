@@ -16,17 +16,19 @@ Custom hook: useTr as wrapper above useTranslation
  *
  * 3. Supports i18next options:
  *    t('authorName', { name: 'Alice' });
+ * 
+ * 4. Allowes to pass objects
  */
 
-type TranslateFunc = (key: string, options?: TOptions) => string;
+type TranslateFunc = <T = string>(key: string, options?: TOptions) => T;
 
 export function useTr(namespace?: string): TranslateFunc {
   const { t } = useTranslation();
 
-  return (key: string, options?: TOptions) => {
+  return (<T = string>(key: string, options?: TOptions) => {
     if (namespace) {
-      return t(`${namespace}.${key}`, options);
+      return t(`${namespace}.${key}`, options) as T;
     }
-    return t(key, options);
-  };
+    return t(key, options) as T;
+  }) as TranslateFunc;
 }

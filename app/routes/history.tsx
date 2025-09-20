@@ -3,7 +3,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect, useState } from 'react';
 import type { UserRequestHistory } from '~/types/history-analytic';
 import { auth, getUserRequestHistory } from '~/lib/firebase/firebase';
-import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
+import { RestClientButton } from '~/components/buttons/rest-client/rest-client-button';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { buildShareRoute } from '~/lib/routing/rest-client-path';
 
@@ -18,9 +18,10 @@ const History = () => {
 
   useEffect(() => {
     const fetchHistory = async () => {
+      if (!user) return;
       setLoadingHistory(true);
       try {
-        const data = await getUserRequestHistory(user?.uid);
+        const data = await getUserRequestHistory(user.uid);
         setRequestsHistory(data);
       } finally {
         setLoadingHistory(false);

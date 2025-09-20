@@ -1,29 +1,25 @@
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '~/redux/store';
-import { logoutUser } from '~/redux/auth/auth-actions';
 import { useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { useLogoutUser } from '~/redux/auth/hooks';
+import { BUTTON_TEST_IDS } from '~/components/buttons/button-test-ids';
 
 export const SignOutButton = () => {
   const t = useTr('header');
-  const dispatch = useDispatch<AppDispatch>();
   const { navigate } = useRouter();
+  const { logout } = useLogoutUser();
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    try {
-      await dispatch(logoutUser());
-      navigate(ROUTES.signIn);
-    } catch (error) {
-      console.error(error);
-    }
+    await logout();
+    navigate(ROUTES.signIn);
   };
 
   return (
     <button
       onClick={handleLogout}
-      className="bg-indigo-500 rounded-lg px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors cursor-pointer"
+      data-testid={BUTTON_TEST_IDS.signOut}
+      className="rounded-lg leading-relaxed cursor-pointer bg-indigo-500 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors text-center w-30"
     >
       {t('signOut')}
     </button>
