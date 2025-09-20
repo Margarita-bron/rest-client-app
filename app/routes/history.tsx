@@ -5,7 +5,7 @@ import type { UserRequestHistory } from '~/types/history-analytic';
 import { auth, getUserRequestHistory } from '~/lib/firebase/firebase';
 import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
 import { Link, useRouter } from '~/lib/routing/navigation';
-import type { Locale } from '~/lib/routing/routes-path';
+import { buildShareRoute } from '~/lib/routing/rest-client-path';
 
 const History = () => {
   const [user, loading, error] = useAuthState(auth);
@@ -48,27 +48,25 @@ const History = () => {
         {requestsHistory.length > 0 && (
           <ul className="space-y-4">
             {requestsHistory.map((item) => {
-              function buildRestClientPath(arg0: {
-                locale: Locale;
-                method: string;
-                url: string;
-                body: string | undefined;
-                headers: Record<string, string | boolean> | undefined;
-              }): string {
-                throw new Error('Function not implemented.');
-              }
+              const headers = Object.entries(item.headers || {}).map(
+                ([key, value]) => ({
+                  id: key,
+                  key,
+                  value: String(value),
+                  enabled: true,
+                })
+              );
+
+              const shareRoute = buildShareRoute(
+                item.method ?? 'GET',
+                item.url ?? '',
+                item.body || '',
+                headers
+              );
 
               return (
                 <li key={item.createdAt} className="bg-gray-800 p-4 rounded-lg">
-                  <Link
-                    to={buildRestClientPath({
-                      locale,
-                      method: item.method ?? 'GET',
-                      url: item.url ?? '',
-                      body: item.body,
-                      headers: item.headers,
-                    })}
-                  >
+                  <Link to={shareRoute}>
                     [{item.method?.toUpperCase()}] {item.url}
                   </Link>
                   {

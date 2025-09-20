@@ -1,4 +1,5 @@
 import { type ChangeEvent } from 'react';
+import { availableMethods } from '~/constants/rest-client';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 type RequestPanelProps = {
@@ -31,13 +32,9 @@ const RequestPanel = ({
         onChange={handleMethodChange}
         className="px-3 py-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        <option value="GET">GET</option>
-        <option value="POST">POST</option>
-        <option value="PUT">PUT</option>
-        <option value="PATCH">PATCH</option>
-        <option value="DELETE">DELETE</option>
-        <option value="HEAD">HEAD</option>
-        <option value="OPTIONS">OPTIONS</option>
+        {availableMethods.map((item) => (
+          <option value={item}>{item}</option>
+        ))}
       </select>
 
       <input

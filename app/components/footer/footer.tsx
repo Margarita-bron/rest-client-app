@@ -20,6 +20,7 @@ export const Footer = () => {
 
           <a
             href="https://rs.school/courses/reactjs"
+            target="blank"
             className="flex items-center gap-2 text-gray-300 hover:text-gray-400 transition-colors"
           >
             <span className="text-sm font-medium">Course</span>

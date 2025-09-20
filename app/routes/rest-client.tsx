@@ -8,6 +8,13 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
 import type { User } from 'firebase/auth';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
+import {
+  base64DecodeUtf8,
+  buildShareRoute,
+} from '~/lib/routing/rest-client-path';
+import { useVariables } from '~/hooks/use-variables';
+import { availableMethods } from '~/constants/rest-client';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Header {
   id: string;
@@ -22,6 +29,7 @@ const defaultHeaders: Header[] = [
 
 const RestClient = () => {
   const [user] = useAuthState(auth);
+  const { replaceVariablesInString } = useVariables();
 
   const [selectedMethod, setSelectedMethod] = useState('GET');
   const [url, setUrl] = useState('');
@@ -38,6 +46,51 @@ const RestClient = () => {
   const [headers, setHeaders] = useState<Header[]>([
     { id: '1', key: 'Content-Type', value: 'application/json', enabled: true },
   ]);
+
+  const navigate = useNavigate();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const methodParam = (params as Record<string, string | undefined>).method;
+    const encodedUrlParam = (params as Record<string, string | undefined>).url;
+    const encodedBodyParam = (params as Record<string, string | undefined>)
+      .body;
+
+    try {
+      if (methodParam) {
+        const method = methodParam.toUpperCase();
+        if (availableMethods.includes(method)) {
+          setSelectedMethod(method);
+        }
+      }
+      if (encodedUrlParam) {
+        const decodedUrl = base64DecodeUtf8(encodedUrlParam);
+        setUrl(decodedUrl);
+      }
+      if (encodedBodyParam) {
+        const decodedBody = base64DecodeUtf8(encodedBodyParam);
+        setRequestBody(decodedBody);
+      }
+
+      const incomingHeaders: Header[] = [];
+      for (const [key, value] of searchParams.entries()) {
+        const decodedKey = decodeURIComponent(key);
+        const decodedValue = decodeURIComponent(value);
+        incomingHeaders.push({
+          id: uuidv4(),
+          key: decodedKey,
+          value: decodedValue,
+          enabled: true,
+        });
+      }
+      if (incomingHeaders.length) {
+        setHeaders(incomingHeaders);
+      }
+    } catch (error) {
+      console.warn('Error decoding URL parameters:', error);
+    }
+  }, [params, searchParams]);
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 text-white">
@@ -61,6 +114,9 @@ const RestClient = () => {
             setResponseData,
             setResponseRaw,
             setResponseHeaders,
+            navigate,
+            buildShareRoute,
+            replaceVariablesInString,
           })
         }
       />
@@ -70,7 +126,7 @@ const RestClient = () => {
         addHeader={() =>
           setHeaders([
             ...headers,
-            { id: Date.now().toString(), key: '', value: '', enabled: true },
+            { id: uuidv4(), key: '', value: '', enabled: true },
           ])
         }
         updateHeader={(id, field, value) =>
@@ -120,6 +176,9 @@ async function sendRequest({
   setResponseData,
   setResponseRaw,
   setResponseHeaders,
+  navigate,
+  buildShareRoute,
+  replaceVariablesInString,
 }: {
   user: User | null | undefined;
   selectedMethod: string;
@@ -133,6 +192,9 @@ async function sendRequest({
   setResponseData: (data: unknown) => void;
   setResponseRaw: (raw: string) => void;
   setResponseHeaders: (headers: Record<string, string>) => void;
+  navigate: ReturnType<typeof useNavigate>;
+  buildShareRoute: (m: string, u: string, b: string, h: Header[]) => string;
+  replaceVariablesInString: (str: string) => string;
 }) {
   if (!url) {
     setError('Please enter a URL');
@@ -146,45 +208,79 @@ async function sendRequest({
   setResponseHeaders({});
   const startTime = Date.now();
   let statusCode = 0;
+  let requestSize = 0;
+  let responseSize = 0;
 
   try {
-    let targetUrl = url;
-    if (!url.startsWith('http')) {
-      targetUrl = 'https://' + url;
+    const originalUrl = replaceVariablesInString(url);
+    const thingProxyUrl = 'https://thingproxy.freeboard.io/fetch/';
+    const targetUrl = originalUrl.startsWith('http')
+      ? originalUrl
+      : 'https://' + originalUrl;
+    const proxiedUrl = thingProxyUrl + targetUrl;
+
+    const processedRequestBody = replaceVariablesInString(requestBody);
+    const rawBody =
+      typeof processedRequestBody === 'string'
+        ? processedRequestBody
+        : JSON.stringify(processedRequestBody);
+    requestSize = new TextEncoder().encode(rawBody).length;
+
+    const processedHeaders = headers.map((header) => ({
+      ...header,
+      key: replaceVariablesInString(header.key),
+      value: replaceVariablesInString(header.value),
+    }));
+
+    if (targetUrl.length < 2000) {
+      const shareRoute = buildShareRoute(
+        selectedMethod,
+        targetUrl,
+        processedRequestBody,
+        processedHeaders
+      );
+      navigate(shareRoute, { replace: false });
     }
 
-    const urlObj = new URL(targetUrl);
-
     const requestHeaders: Record<string, string> = {};
-
     headers.forEach((header) => {
       if (header.enabled && header.key && header.value) {
-        requestHeaders[header.key] = header.value;
+        const processedKey = replaceVariablesInString(header.key);
+        const processedValue = replaceVariablesInString(header.value);
+        requestHeaders[processedKey] = processedValue;
       }
     });
 
     let requestBodyData: unknown = undefined;
-    if (['POST', 'PUT', 'PATCH'].includes(selectedMethod) && requestBody) {
+    if (
+      ['POST', 'PUT', 'PATCH'].includes(selectedMethod) &&
+      processedRequestBody
+    ) {
       try {
-        requestBodyData = JSON.parse(requestBody);
+        requestBodyData = JSON.parse(processedRequestBody);
       } catch {
-        requestBodyData = requestBody;
+        requestBodyData = processedRequestBody;
       }
     }
 
     const config = {
       method: selectedMethod.toLowerCase(),
-      url: targetUrl,
+      url: proxiedUrl,
       headers: requestHeaders,
       data: requestBodyData,
       timeout: 10000,
       transformResponse: [(data: unknown) => data],
+      withCredentials: false,
     };
 
     const res = await axios(config);
     statusCode = res.status;
     setResponseRaw(res.data);
     setResponseHeaders(res.headers as Record<string, string>);
+
+    const rawResponse =
+      typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
+    responseSize = new TextEncoder().encode(rawResponse).length;
 
     try {
       setResponseData(JSON.parse(res.data));
@@ -227,17 +323,6 @@ async function sendRequest({
         saveHeaders[key] = value;
       }
     });
-    const rawBody =
-      typeof requestBody === 'string'
-        ? requestBody
-        : JSON.stringify(requestBody);
-    const requestSize = new TextEncoder().encode(rawBody).length;
-
-    const rawResponse =
-      typeof responseRaw === 'string'
-        ? responseRaw
-        : JSON.stringify(responseRaw);
-    const responseSize = new TextEncoder().encode(rawResponse).length;
 
     await saveUserRequestHistory({
       userId: user?.uid,
