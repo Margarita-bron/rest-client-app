@@ -9,7 +9,7 @@ export const SignUpButton = () => {
     <Link
       data-testid={SIGN_UP_BUTTON_DATA['data-testid']}
       to={ROUTES.signUp}
-      className="rounded-lg leading-relaxed bg-indigo-500 px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors text-center w-30"
+      className="rounded-lg leading-relaxed bg-indigo-500 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors text-center w-30"
     >
       {t('signUp')}
     </Link>

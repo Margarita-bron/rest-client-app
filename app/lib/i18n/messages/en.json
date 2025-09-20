@@ -61,6 +61,12 @@
       "emailInvalid": "Enter a valid email address"
     }
   },
+  "authNotifications": {
+    "loginSuccess": "Login successful!",
+    "registerSuccess": "Registration successful!",
+    "resetPasswordSuccess": "Password reset email sent!",
+    "logoutSuccess": "Logout successful!"
+  },
   "headersEditor": {
     "title": "Headers",
     "addButton": "+ Add Header",

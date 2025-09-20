@@ -3,7 +3,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useEffect, useState } from 'react';
 import type { UserRequestHistory } from '~/types/history-analytic';
 import { auth, getUserRequestHistory } from '~/lib/firebase/firebase';
-import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
+import { RestClientButton } from '~/components/buttons/rest-client/rest-client-button';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import type { Locale } from '~/lib/routing/routes-path';
 

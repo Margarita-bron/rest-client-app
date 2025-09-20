@@ -2,19 +2,29 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '~/redux/store';
 import { firebaseAuthActions } from './auth-actions';
 import { useFirebaseAuthErrorMessages } from '~/lib/firebase/firebase-errors';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState, useEffect } from 'react';
 import { useShowAuthNotifications } from '~/lib/firebase/firebase-notification';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { getUserFromCookie } from '~/redux/auth/cookie-utils';
 
-// Хук для получения состояния аутентификации
 export const useAuth = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const userFromState = useSelector((state: RootState) => state.auth.user);
   const firestoreProfile = useSelector(
     (state: RootState) => state.auth.firestoreProfile
   );
-  const loading = useSelector((state: RootState) => state.auth.loading);
+  const reduxLoading = useSelector((state: RootState) => state.auth.loading);
   const error = useSelector((state: RootState) => state.auth.error);
+
+  const [initLoading, setInitLoading] = useState(true);
+
+  const user = userFromState ?? getUserFromCookie();
+
+  useEffect(() => {
+    setInitLoading(false);
+  }, []);
+
+  const loading = reduxLoading || initLoading;
 
   return useMemo(
     () => ({
@@ -28,7 +38,6 @@ export const useAuth = () => {
   );
 };
 
-// Login
 type LoginParams = { email: string; password: string };
 export const useLoginUser = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -56,7 +65,6 @@ export const useLoginUser = () => {
   return { login };
 };
 
-// Register
 type RegisterParams = { name: string; email: string; password: string };
 export const useRegisterUser = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -88,7 +96,6 @@ export const useRegisterUser = () => {
   return { register };
 };
 
-// Reset Password
 export const useResetPasswordUser = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { getError } = useFirebaseAuthErrorMessages();
@@ -111,7 +118,6 @@ export const useResetPasswordUser = () => {
   return { resetPassword };
 };
 
-// Logout
 export const useLogoutUser = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { showAuthErrorNotification, showAuthInfoNotification } =
@@ -130,7 +136,6 @@ export const useLogoutUser = () => {
   return { logout };
 };
 
-// Subscribe to Auth Changes
 export const useSubscribeToAuthChanges = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { showAuthErrorNotification } = useShowAuthNotifications();
@@ -149,7 +154,6 @@ export const useSubscribeToAuthChanges = () => {
   return { subscribe };
 };
 
-// Fetch User Profile
 export const useFetchUserProfile = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { getError } = useFirebaseAuthErrorMessages();

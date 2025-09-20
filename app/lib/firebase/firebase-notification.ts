@@ -22,13 +22,11 @@ export const useShowAuthNotifications = () => {
     } else if (typeof error === 'string') {
       message = error;
     }
-    console.log('ERROR');
 
     toast.error(`${message}${action ? ' ' + action : ''}`);
   };
 
   const showAuthInfoNotification = (message: string) => {
-    console.log('SUCCESS');
     toast.info(message);
   };
 

@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { UserFirestoreProfile } from '~/lib/firebase/firebase-types';
+import { getUserFromCookie } from './cookie-utils';
 
 export interface AuthUser {
   uid: string;
@@ -14,8 +15,10 @@ export interface AuthState {
   error: string | null;
 }
 
+const initialUser = getUserFromCookie();
+
 const initialState: AuthState = {
-  user: null,
+  user: initialUser ?? null,
   firestoreProfile: null,
   loading: false,
   error: null,
@@ -26,7 +29,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action: PayloadAction<AuthUser | null>) {
-      state.user = action.payload;
+      state.user = action.payload ?? null;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;

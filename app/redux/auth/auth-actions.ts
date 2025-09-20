@@ -4,6 +4,7 @@ import {
   setFirestoreProfile,
   setLoading,
   setError,
+  type AuthUser,
 } from './auth-slice';
 import { auth, db } from '~/lib/firebase/firebase';
 import type { UserFirestoreProfile } from '~/lib/firebase/firebase-types';
@@ -16,10 +17,17 @@ import {
   logoutFn,
 } from '~/lib/firebase/firebase';
 import type { FirebaseAuthErrorData } from '~/lib/firebase/firebase-errors';
+import {
+  saveUserToCookie,
+  removeUserCookie,
+  getUserFromCookie,
+  saveProfileToCookie,
+  getProfileFromCookie,
+} from './cookie-utils';
 
 type GetErrorFn = (code?: string) => FirebaseAuthErrorData;
 
-const mapFirebaseUser = (user: User) => ({
+const mapFirebaseUser = (user: User): AuthUser => ({
   uid: user.uid,
   email: user.email,
   name: user.displayName,
@@ -29,7 +37,6 @@ export const firebaseAuthActions = {
   loginUser:
     (email: string, password: string, getError: GetErrorFn) =>
     async (dispatch: AppDispatch): Promise<boolean> => {
-      console.log('loginUser called');
       dispatch(setLoading(true));
       dispatch(setError(null));
       try {
@@ -37,7 +44,9 @@ export const firebaseAuthActions = {
         const currentUser = auth.currentUser;
         if (!currentUser) return false;
 
-        dispatch(setUser(mapFirebaseUser(currentUser)));
+        const mappedUser = mapFirebaseUser(currentUser);
+        dispatch(setUser(mappedUser));
+        saveUserToCookie(mappedUser);
         return true;
       } catch (error: unknown) {
         const errData = getError((error as { code?: string })?.code);
@@ -47,17 +56,20 @@ export const firebaseAuthActions = {
         dispatch(setLoading(false));
       }
     },
+
   registerUser:
     (name: string, email: string, password: string, getError: GetErrorFn) =>
     async (dispatch: AppDispatch): Promise<boolean> => {
-      console.log('registerUser called');
       dispatch(setLoading(true));
       dispatch(setError(null));
       try {
         await registerWithEmailAndPasswordFn(name, email, password);
         const currentUser = auth.currentUser;
         if (!currentUser) return false;
-        dispatch(setUser(mapFirebaseUser(currentUser)));
+
+        const mappedUser = mapFirebaseUser(currentUser);
+        dispatch(setUser(mappedUser));
+        saveUserToCookie(mappedUser);
         return true;
       } catch (error: unknown) {
         const errData = getError((error as { code?: string })?.code);
@@ -71,7 +83,6 @@ export const firebaseAuthActions = {
   resetPasswordUser:
     (email: string, getError: GetErrorFn) =>
     async (dispatch: AppDispatch): Promise<void> => {
-      console.log('resetPasswordUser called');
       dispatch(setLoading(true));
       dispatch(setError(null));
       try {
@@ -85,11 +96,11 @@ export const firebaseAuthActions = {
     },
 
   logoutUser: () => async (dispatch: AppDispatch) => {
-    console.log('logoutUser called');
     dispatch(setLoading(true));
     try {
       await logoutFn();
       dispatch(setUser(null));
+      removeUserCookie();
     } finally {
       dispatch(setLoading(false));
     }
@@ -98,35 +109,64 @@ export const firebaseAuthActions = {
   subscribeToAuthChanges:
     () =>
     (dispatch: AppDispatch): (() => void) => {
-      console.log('subscribeToAuthChanges called');
       const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
-        if (user) dispatch(setUser(mapFirebaseUser(user)));
-        else dispatch(setUser(null));
+        if (user) {
+          const mappedUser = mapFirebaseUser(user);
+          dispatch(setUser(mappedUser));
+          saveUserToCookie(mappedUser);
+        } else {
+          dispatch(setUser(null));
+          removeUserCookie();
+        }
       });
-      return unsubscribe; // важно вернуть unsubscribe
+      return unsubscribe;
     },
+
+  loadUserFromCookie: () => (dispatch: AppDispatch) => {
+    const userFromCookie = getUserFromCookie();
+    if (userFromCookie) dispatch(setUser(userFromCookie));
+  },
 
   fetchUserProfile:
     (uid: string, getError?: GetErrorFn) =>
     async (dispatch: AppDispatch, getState: () => RootState): Promise<void> => {
-      console.log('fetchUserProfile called');
       dispatch(setLoading(true));
       dispatch(setError(null));
+
+      const currentUser = auth.currentUser;
+
+      const reduxProfile = getState().auth.firestoreProfile as
+        | (UserFirestoreProfile & { uid: string })
+        | null;
+      if (reduxProfile && currentUser && reduxProfile.uid === currentUser.uid) {
+        dispatch(setLoading(false));
+        return;
+      }
+
+      const cachedProfile = getProfileFromCookie();
+      if (cachedProfile && cachedProfile.uid === uid) {
+        dispatch(setFirestoreProfile(cachedProfile));
+        dispatch(setLoading(false));
+        return;
+      }
+
+      if (currentUser) {
+        const mappedUser: AuthUser = mapFirebaseUser(currentUser);
+        dispatch(setUser(mappedUser));
+        saveUserToCookie(mappedUser);
+      }
+
       try {
         const docSnap = await getDoc(doc(db, 'users', uid));
         const data = docSnap.exists()
           ? (docSnap.data() as UserFirestoreProfile)
           : null;
 
-        const prev = getState().auth.firestoreProfile;
-        const hasChanged =
-          (!prev && data) ||
-          (!data && prev) ||
-          (prev &&
-            data &&
-            (prev.name !== data.name || prev.email !== data.email));
-
-        if (hasChanged) dispatch(setFirestoreProfile(data));
+        if (data) {
+          const profileWithUid = { uid, ...data };
+          dispatch(setFirestoreProfile(profileWithUid));
+          saveProfileToCookie(uid, data);
+        }
       } catch (error: unknown) {
         const msg = getError
           ? getError((error as { code?: string })?.code).message

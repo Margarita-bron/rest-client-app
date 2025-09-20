@@ -12,17 +12,16 @@ export const SignOutButton = () => {
     e.preventDefault();
     try {
       await logout();
-
       navigate(ROUTES.signIn);
     } catch (error) {
-      console.error(error);
+      throw new Error('Unexpected error', { cause: error });
     }
   };
 
   return (
     <button
       onClick={handleLogout}
-      className="bg-indigo-500 rounded-lg px-4 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors cursor-pointer w-25 text-center"
+      className="rounded-lg leading-relaxed bg-indigo-500 py-2 text-sm font-medium text-gray-100 hover:bg-indigo-400 transition-colors text-center w-30"
     >
       {t('signOut')}
     </button>

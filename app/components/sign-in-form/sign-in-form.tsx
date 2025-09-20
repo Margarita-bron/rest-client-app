@@ -42,7 +42,7 @@ export const SignInForm = () => {
       });
       if (success) navigate(ROUTES.welcome);
     } catch (err) {
-      console.error(err);
+      throw new Error('Unexpected error', { cause: error });
     }
   };
 

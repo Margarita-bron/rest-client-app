@@ -12,7 +12,7 @@ import { SIGN_UP_FORM } from './sign-up-form.data';
 export const SignUpForm = () => {
   const { user, loading, error } = useAuth();
   const { navigate } = useRouter();
-  const { register: registerUser } = useRegisterUser(); // ✅ хук
+  const { register: registerUser } = useRegisterUser();
 
   const t = useTr('signUpForm');
   const { signUpSchema } = useAuthSchemas();
@@ -44,7 +44,7 @@ export const SignUpForm = () => {
         navigate(ROUTES.welcome);
       }
     } catch (err) {
-      console.error(err);
+      throw new Error('Unexpected error', { cause: error });
     }
   };
 
