@@ -6,8 +6,9 @@ export default [
 
   route(':lang', 'routes/$lang.tsx', [
     route('', 'routes/__layout.tsx', [
-      index('routes/home.tsx'),
       route('', 'routes/__is-not-logged.tsx', [
+        index('routes/home.tsx'),
+
         route(ROUTES.signIn, 'routes/sign-in.tsx'),
         route(ROUTES.signUp, 'routes/sign-up.tsx'),
         route(ROUTES.reset, 'routes/reset.tsx'),

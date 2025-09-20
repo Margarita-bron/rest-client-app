@@ -9,7 +9,7 @@ import { RestClientButton } from '~/components/buttons/rest-client/rest-client-b
 import { HistoryButton } from '~/components/buttons/history/history-button';
 import { VariablesButton } from '~/components/buttons/variables/variables-button';
 
-const Welcome = () => {
+const main = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, firestoreProfile, loading, error } = useAuth();
   const t = useTr('mainPage');
@@ -46,4 +46,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default main;
