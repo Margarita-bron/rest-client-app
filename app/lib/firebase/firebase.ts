@@ -19,7 +19,9 @@ import {
   serverTimestamp,
   type DocumentData,
   type DocumentReference,
+  addDoc,
 } from 'firebase/firestore';
+import type { RequestAnalytic } from '~/types/history-analytic';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
@@ -66,16 +68,17 @@ export const sendPasswordResetFn = (email: string) =>
 export const logoutFn = () => signOut(auth);
 
 export const saveUserRequestHistory = async (
-  userId: string,
-  requestData: Record<string, unknown>
+  uid: string,
+  entry: Omit<RequestAnalytic, 'createdAt'>
 ) => {
-  const historyRef: DocumentReference<DocumentData> = doc(
-    collection(db, 'users', userId, 'requestHistory')
-  );
-  await setDoc(historyRef, {
-    ...requestData,
-    createdAt: serverTimestamp(),
-  });
+  try {
+    await addDoc(collection(db, 'users', uid, 'requestHistory'), {
+      ...entry,
+      createdAt: serverTimestamp(),
+    });
+  } catch (error) {
+    showAuthErrorNotification(error);
+  }
 };
 
 export const getUserRequestHistory = async (
@@ -92,3 +95,6 @@ export const getUserRequestHistory = async (
     ...doc.data(),
   })) as (Record<string, unknown> & { id: string })[];
 };
+function showAuthErrorNotification(error: unknown) {
+  throw new Error('Function not implemented.');
+}
