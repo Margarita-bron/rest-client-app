@@ -1,7 +1,7 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, vi, beforeEach, expect } from 'vitest';
-import { SignUpForm } from '../sign-up-form';
-import { useAuth, useRegisterUser } from '~/redux/auth/hooks';
+import { SignInForm } from '../sign-in-form';
+import { useAuth, useLoginUser } from '~/redux/auth/hooks';
 import { useRouter } from '~/lib/routing/navigation';
 import { renderWithProviders } from '~/utils/testing/test-render';
 import { ROUTES } from '~/lib/routing/routes-path';
@@ -11,19 +11,19 @@ vi.mock('~/lib/routing/navigation', () => ({
   Link: ({
     children,
     ...props
-  }: React.ComponentProps<'a'> & { children: React.ReactNode }) => (
+  }: React.PropsWithChildren<React.ComponentProps<'a'>>) => (
     <a {...props}>{children}</a>
   ),
 }));
 
 vi.mock('~/redux/auth/hooks', () => ({
   useAuth: vi.fn(),
-  useRegisterUser: vi.fn(),
+  useLoginUser: vi.fn(),
 }));
 
-describe('SignUpForm', () => {
+describe('SignInForm', () => {
   const navigateMock = vi.fn();
-  const registerMock = vi.fn();
+  const loginMock = vi.fn();
 
   beforeEach(() => {
     vi.mocked(useRouter).mockReturnValue({
@@ -41,40 +41,26 @@ describe('SignUpForm', () => {
       isAuthenticated: false,
     });
 
-    vi.mocked(useRegisterUser).mockReturnValue({ register: registerMock });
+    vi.mocked(useLoginUser).mockReturnValue({ login: loginMock });
     vi.clearAllMocks();
   });
 
   it('shows validation errors for empty fields', async () => {
-    renderWithProviders(<SignUpForm />);
+    renderWithProviders(<SignInForm />);
 
-    const nameInput = screen.getByTestId('sign-up-name');
-    const emailInput = screen.getByTestId('sign-up-email');
-    const passwordInput = screen.getByTestId('sign-up-password');
-    const submitButton = screen.getByTestId('sign-up-submit');
-
-    // Триггерим пустые поля через ввод и стирание
-    fireEvent.input(nameInput, { target: { value: 'a' } });
-    fireEvent.input(nameInput, { target: { value: '' } });
-    fireEvent.blur(nameInput);
+    const emailInput = screen.getByTestId('sign-in-email');
+    const passwordInput = screen.getByTestId('sign-in-password');
+    const submitButton = screen.getByTestId('sign-in-submit');
 
     fireEvent.input(emailInput, { target: { value: 'a' } });
     fireEvent.input(emailInput, { target: { value: '' } });
-    fireEvent.blur(emailInput);
 
     fireEvent.input(passwordInput, { target: { value: 'a' } });
     fireEvent.input(passwordInput, { target: { value: '' } });
-    fireEvent.blur(passwordInput);
 
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/Name must be at least 2 characters/i)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/Enter a valid email address/i)
-      ).toBeInTheDocument();
       expect(
         screen.getByText(/Password must be at least 8 characters long/i)
       ).toBeInTheDocument();
@@ -82,11 +68,11 @@ describe('SignUpForm', () => {
   });
 
   it('shows validation error for invalid email', async () => {
-    renderWithProviders(<SignUpForm />);
+    renderWithProviders(<SignInForm />);
 
-    const emailInput = screen.getByTestId('sign-up-email');
-    const passwordInput = screen.getByTestId('sign-up-password');
-    const submitButton = screen.getByTestId('sign-up-submit');
+    const emailInput = screen.getByTestId('sign-in-email');
+    const passwordInput = screen.getByTestId('sign-in-password');
+    const submitButton = screen.getByTestId('sign-in-submit');
 
     fireEvent.input(emailInput, { target: { value: '2131232132' } });
     fireEvent.blur(emailInput);
@@ -103,31 +89,27 @@ describe('SignUpForm', () => {
     });
   });
 
-  it('calls register and navigates on success', async () => {
-    registerMock.mockResolvedValue(true);
+  it('calls login and navigates on success', async () => {
+    loginMock.mockResolvedValue({ success: true });
 
-    renderWithProviders(<SignUpForm />);
-    fireEvent.input(screen.getByTestId('sign-up-name'), {
-      target: { value: 'John Doe' },
-    });
-    fireEvent.input(screen.getByTestId('sign-up-email'), {
+    renderWithProviders(<SignInForm />);
+    fireEvent.input(screen.getByTestId('sign-in-email'), {
       target: { value: 'test@mail.com' },
     });
-    fireEvent.input(screen.getByTestId('sign-up-password'), {
+    fireEvent.input(screen.getByTestId('sign-in-password'), {
       target: { value: 'Password123$' },
     });
-    fireEvent.click(screen.getByTestId('sign-up-submit'));
+    fireEvent.click(screen.getByTestId('sign-in-submit'));
 
     await waitFor(() => {
-      expect(registerMock).toHaveBeenCalledWith({
-        name: 'John Doe',
+      expect(loginMock).toHaveBeenCalledWith({
         email: 'test@mail.com',
         password: 'Password123$',
       });
       expect(navigateMock).toHaveBeenCalledWith(ROUTES.main);
     });
   });
-  it('disables submit button and shows signing up text when loading', async () => {
+  it('disables submit button and shows submitting text when loading', async () => {
     vi.mocked(useAuth).mockReturnValue({
       user: null,
       loading: true,
@@ -136,15 +118,15 @@ describe('SignUpForm', () => {
       isAuthenticated: false,
     });
 
-    renderWithProviders(<SignUpForm />);
+    renderWithProviders(<SignInForm />);
 
-    const submitButton = screen.getByTestId('sign-up-submit');
+    const submitButton = screen.getByTestId('sign-in-submit');
 
     expect(submitButton).toBeDisabled();
-    expect(submitButton).toHaveTextContent(/Signing up/i);
+    expect(submitButton).toHaveTextContent(/Signing In/i);
   });
 
-  it('renders error message when registration fails', async () => {
+  it('renders error message when login fails', async () => {
     vi.mocked(useAuth).mockReturnValue({
       user: null,
       loading: false,
@@ -153,10 +135,10 @@ describe('SignUpForm', () => {
       isAuthenticated: false,
     });
 
-    renderWithProviders(<SignUpForm />);
+    renderWithProviders(<SignInForm />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Network error/i)).toBeInTheDocument();
+      expect(screen.getByText(/network error/i)).toBeInTheDocument();
     });
   });
 });

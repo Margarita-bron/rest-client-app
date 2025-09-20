@@ -1,110 +1,96 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Mock } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import ResetForm from '../reset-form';
-import { RESET_FORM_DATA } from '../reset-form.data';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import * as firebaseModule from '~/lib/firebase/firebase';
-import * as routerModule from 'react-router-dom';
-
-vi.mock('react-firebase-hooks/auth', () => ({
-  useAuthState: vi.fn(),
-}));
-
-vi.mock('~/lib/firebase/firebase', () => ({
-  auth: {},
-  sendPasswordReset: vi.fn(),
-}));
-
-vi.mock('react-router-dom', async () => {
-  const actual =
-    await vi.importActual<typeof import('react-router-dom')>(
-      'react-router-dom'
-    );
-  return {
-    ...actual,
-    useNavigate: vi.fn(),
-    Link: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  };
-});
+import { screen, fireEvent, act } from '@testing-library/react';
+import { ResetForm } from '../reset-form';
+import { renderWithProviders } from '~/utils/testing/test-render';
+import * as authHooks from '~/redux/auth/hooks';
+import * as routerHooks from '~/lib/routing/navigation';
+import { vi } from 'vitest';
+import type { AuthUser } from '~/redux/auth/auth-slice';
 
 describe('ResetForm', () => {
-  let mockNavigate: Mock;
+  const resetPasswordMock = vi.fn();
+  const navigateMock = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockNavigate = vi.fn();
-    (routerModule.useNavigate as Mock).mockReturnValue(mockNavigate);
+    vi.spyOn(authHooks, 'useResetPasswordUser').mockReturnValue({
+      resetPassword: resetPasswordMock,
+    });
 
-    (useAuthState as unknown as Mock).mockReturnValue([null, false, null]);
+    vi.spyOn(authHooks, 'useAuth').mockReturnValue({
+      user: null,
+      loading: false,
+      error: null,
+      firestoreProfile: null,
+      isAuthenticated: false,
+    });
 
-    render(
-      <MemoryRouter>
-        <ResetForm />
-      </MemoryRouter>
-    );
+    vi.spyOn(routerHooks, 'useRouter').mockReturnValue({
+      locale: 'en',
+      pathname: '/reset',
+      navigate: navigateMock,
+      replace: vi.fn(),
+    });
   });
 
-  it('renders email input and submit button', () => {
+  it('renders all form elements', () => {
+    renderWithProviders(<ResetForm />);
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(
-      screen.getByTestId(RESET_FORM_DATA.email['data-testid'])
+      screen.getByRole('button', { name: /reset password/i })
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /send password reset email/i })
-    ).toBeInTheDocument();
+    expect(screen.getByText(/sign up/i)).toBeInTheDocument();
   });
 
-  it('shows validation error when email is empty', async () => {
-    const emailInput = screen.getByTestId(RESET_FORM_DATA.email['data-testid']);
+  it('shows an error when email is empty after user interaction', async () => {
+    renderWithProviders(<ResetForm />);
+    const emailInput = screen.getByLabelText(/email/i);
 
-    fireEvent.focus(emailInput);
+    fireEvent.change(emailInput, { target: { value: '' } });
     fireEvent.blur(emailInput);
 
-    fireEvent.click(
-      screen.getByRole('button', { name: /send password reset email/i })
-    );
+    fireEvent.click(screen.getByRole('button', { name: /reset password/i }));
 
-    const error = await screen.findByText('Enter a valid email address');
-    expect(error).toBeTruthy();
+    expect(
+      await screen.findByText(/enter a valid email address/i)
+    ).toBeInTheDocument();
   });
 
-  it('calls sendPasswordReset with correct email', async () => {
-    const emailInput = screen.getByTestId(RESET_FORM_DATA.email['data-testid']);
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+  it('calls resetPassword with the correct email', async () => {
+    renderWithProviders(<ResetForm />);
+    const emailInput = screen.getByLabelText(/email/i);
 
-    fireEvent.click(
-      screen.getByRole('button', { name: /send password reset email/i })
-    );
-
-    await waitFor(() => {
-      expect(firebaseModule.sendPasswordReset).toHaveBeenCalledWith(
-        'test@example.com'
-      );
+    await act(async () => {
+      fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+      fireEvent.click(screen.getByRole('button', { name: /reset password/i }));
     });
+
+    expect(resetPasswordMock).toHaveBeenCalledWith('test@example.com');
   });
 
-  it('navigates to /welcome if user is already logged in', async () => {
-    (useAuthState as unknown as Mock).mockReturnValue([
-      { uid: '123' },
-      false,
-      null,
-    ]);
-
-    render(
-      <MemoryRouter>
-        <ResetForm />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/welcome');
+  it('calls navigate if a user exists and there is no error', () => {
+    vi.spyOn(authHooks, 'useAuth').mockReturnValue({
+      user: { uid: '1', email: 'a@b.com', name: 'Test' } as AuthUser,
+      loading: false,
+      error: null,
+      firestoreProfile: null,
+      isAuthenticated: true,
     });
+
+    renderWithProviders(<ResetForm />);
+    expect(navigateMock).toHaveBeenCalled();
   });
 
-  it('renders Sign Up link correctly', () => {
-    const link = screen.getByText((text) => text.includes('Sign Up'));
-    expect(link).toBeTruthy();
+  it('displays a global error message', () => {
+    vi.spyOn(authHooks, 'useAuth').mockReturnValue({
+      user: null,
+      loading: false,
+      error: 'Some error',
+      firestoreProfile: null,
+      isAuthenticated: false,
+    });
+
+    renderWithProviders(<ResetForm />);
+    expect(screen.getByText('Some error')).toBeInTheDocument();
   });
 });

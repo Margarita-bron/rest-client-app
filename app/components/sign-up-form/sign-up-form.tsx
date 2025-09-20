@@ -29,22 +29,19 @@ export const SignUpForm = () => {
 
   useEffect(() => {
     if (!loading && user && !error) {
-      navigate(ROUTES.welcome);
+      navigate(ROUTES.main);
     }
   }, [user, loading, error, navigate]);
 
   const onSubmit = async (formData: SignUpFormData) => {
-    try {
-      const success = await registerUser({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
-      if (success) {
-        navigate(ROUTES.welcome);
-      }
-    } catch (err) {
-      throw new Error('Unexpected error', { cause: error });
+    const success = await registerUser({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (success) {
+      navigate(ROUTES.main);
     }
   };
 
@@ -114,7 +111,7 @@ export const SignUpForm = () => {
         </div>
 
         <button {...SIGN_UP_FORM.submit} disabled={loading}>
-          {loading ? 'Signing up...' : t('submit')}
+          {loading ? t('submiting') : t('submit')}
         </button>
         <div className="h-5">
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}

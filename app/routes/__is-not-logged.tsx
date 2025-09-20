@@ -8,7 +8,7 @@ export default function IsNotLogged() {
   const { locale } = useRouter();
 
   if (isAuthenticated) {
-    const to = `/${locale}/${ROUTES.welcome}`;
+    const to = `/${locale}/${ROUTES.main}`;
     return <Navigate to={to} replace />;
   }
 

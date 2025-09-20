@@ -9,7 +9,7 @@ const NotFound = () => {
 
   const handleGoHome = () => {
     if (user) {
-      navigate(`/${ROUTES.welcome}`, { replace: true });
+      navigate(`/${ROUTES.main}`, { replace: true });
     } else {
       navigate(`/${ROUTES.home}`, { replace: true });
     }

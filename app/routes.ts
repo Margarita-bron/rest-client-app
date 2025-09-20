@@ -14,7 +14,7 @@ export default [
       ]),
 
       route('', 'routes/__private.tsx', [
-        route(ROUTES.welcome, 'routes/main.tsx'),
+        route(ROUTES.main, 'routes/main.tsx'),
         route(ROUTES.restClient, 'routes/rest-client.tsx'),
         route(ROUTES.history, 'routes/history.tsx'),
         route(ROUTES.variables, 'routes/variables.tsx'),

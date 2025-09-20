@@ -1,6 +1,16 @@
 import { toast } from 'react-toastify';
 import { useFirebaseAuthErrorMessages } from './firebase-errors';
 
+interface ErrorWithCode {
+  code: string;
+  message?: string;
+  action?: string;
+}
+
+interface ErrorWithMessage {
+  message: string;
+}
+
 export const useShowAuthNotifications = () => {
   const { getError } = useFirebaseAuthErrorMessages();
 
@@ -9,15 +19,18 @@ export const useShowAuthNotifications = () => {
     let action = '';
 
     if (error && typeof error === 'object') {
-      if ('code' in error && typeof (error as any).code === 'string') {
-        const errData = getError((error as any).code);
+      if (
+        'code' in error &&
+        typeof (error as ErrorWithCode).code === 'string'
+      ) {
+        const errData = getError((error as ErrorWithCode).code);
         message = errData.message;
         action = errData.action;
       } else if (
         'message' in error &&
-        typeof (error as any).message === 'string'
+        typeof (error as ErrorWithMessage).message === 'string'
       ) {
-        message = (error as any).message;
+        message = (error as ErrorWithMessage).message;
       }
     } else if (typeof error === 'string') {
       message = error;

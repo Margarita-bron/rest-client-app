@@ -17,7 +17,10 @@ import {
   orderBy,
   getDocs,
   serverTimestamp,
+  type DocumentData,
+  type DocumentReference,
 } from 'firebase/firestore';
+
 const firebaseConfig = {
   apiKey: 'AIzaSyAnNGNOjL4Q4F2mFjMYvkI5tjiVklsVTek',
   authDomain: 'mva-project-6c4da.firebaseapp.com',
@@ -28,9 +31,7 @@ const firebaseConfig = {
   measurementId: 'G-CC9RST6B6Y',
 };
 
-if (!getApps().length) {
-  initializeApp(firebaseConfig);
-}
+if (!getApps().length) initializeApp(firebaseConfig);
 
 export const auth = getAuth();
 export const db = getFirestore();
@@ -55,7 +56,7 @@ export const registerWithEmailAndPasswordFn = async (
       name,
       email,
       authProvider: 'local',
-    });
+    } as Record<string, string>);
   }
 };
 
@@ -66,22 +67,28 @@ export const logoutFn = () => signOut(auth);
 
 export const saveUserRequestHistory = async (
   userId: string,
-  requestData: Record<string, any>
+  requestData: Record<string, unknown>
 ) => {
-  const historyRef = doc(collection(db, 'users', userId, 'requestHistory'));
+  const historyRef: DocumentReference<DocumentData> = doc(
+    collection(db, 'users', userId, 'requestHistory')
+  );
   await setDoc(historyRef, {
     ...requestData,
     createdAt: serverTimestamp(),
   });
 };
 
-export const getUserRequestHistory = async (userId: string) => {
+export const getUserRequestHistory = async (
+  userId: string
+): Promise<(Record<string, unknown> & { id: string })[]> => {
   if (!userId) return [];
+
   const historyCol = collection(db, 'users', userId, 'requestHistory');
   const q = query(historyCol, orderBy('createdAt', 'desc'));
   const snapshot = await getDocs(q);
+
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-  })) as (Record<string, any> & { id: string })[];
+  })) as (Record<string, unknown> & { id: string })[];
 };

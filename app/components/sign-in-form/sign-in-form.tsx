@@ -30,20 +30,17 @@ export const SignInForm = () => {
 
   useEffect(() => {
     if (!loading && user && !error) {
-      navigate(ROUTES.welcome);
+      navigate(ROUTES.main);
     }
   }, [user, loading, error, navigate]);
 
   const onSubmit = async (formData: SignInFormData) => {
-    try {
-      const { success } = await login({
-        email: formData.email,
-        password: formData.password,
-      });
-      if (success) navigate(ROUTES.welcome);
-    } catch (err) {
-      throw new Error('Unexpected error', { cause: error });
-    }
+    const { success } = await login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (success) navigate(ROUTES.main);
   };
 
   return (

@@ -9,7 +9,7 @@ export const HeaderAuth = () => {
   return (
     <>
       <Link
-        to={ROUTES.welcome}
+        to={ROUTES.main}
         className="flex items-center transition-transform hover:scale-105"
       >
         <img src={logo} alt="Logo" className="h-8 mr-3" />

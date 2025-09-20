@@ -31,7 +31,7 @@ export const ResetForm = () => {
 
   useEffect(() => {
     if (!loading && user && !error) {
-      navigate(ROUTES.welcome);
+      navigate(ROUTES.main);
     }
   }, [user, loading, error, navigate]);
 
