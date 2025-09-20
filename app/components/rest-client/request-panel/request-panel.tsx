@@ -8,7 +8,7 @@ type RequestPanelProps = {
   url: string;
   setUrl: (url: string) => void;
   loading: boolean;
-  sendRequest: () => void;
+  onSend: () => void | Promise<void>;
 };
 
 const RequestPanel = ({
@@ -17,7 +17,7 @@ const RequestPanel = ({
   url,
   setUrl,
   loading,
-  sendRequest,
+  onSend,
 }: RequestPanelProps) => {
   const t = useTr('requestPanel');
 
@@ -33,7 +33,9 @@ const RequestPanel = ({
         className="px-3 py-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {availableMethods.map((item) => (
-          <option value={item}>{item}</option>
+          <option key={item} value={item}>
+            {item}
+          </option>
         ))}
       </select>
 
@@ -45,9 +47,9 @@ const RequestPanel = ({
       />
 
       <button
-        onClick={sendRequest}
+        onClick={onSend}
         disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         {loading ? t('loading') : t('send')}
       </button>

@@ -31,66 +31,77 @@ const History = () => {
     fetchHistory();
   }, [user, navigate]);
 
+  if (loading || loadingHistory) {
+    return <div className="text-center py-10 text-gray-500">Загрузка...</div>;
+  }
+
+  if (requestsHistory.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <div className="bg-gray-800 p-6 rounded-lg text-center">
+          <p className="text-lg mb-2">
+            You haven't executed any requests. It's empty here.
+          </p>
+          <p className="text-sm text-gray-400 mb-4">Try:</p>
+          <RestClientButton />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col h-full scale-135 text-center">
-      <div className="flex items-center gap-3 justify-center flex-col">
-        {(loading || loadingHistory) && (
-          <div className="text-center py-10 text-gray-500">Загрузка...</div>
-        )}
-        {requestsHistory.length === 0 && !loadingHistory && (
-          <div className="bg-gray-800 p-6 rounded-lg text-center">
-            <p className="text-lg mb-2">
-              You haven't executed any requests It's empty here.
-            </p>
-            <p className="text-sm text-gray-400 mb-4">Try:</p>
-            <RestClientButton />
-          </div>
-        )}
-        {requestsHistory.length > 0 && (
-          <ul className="space-y-4">
-            {requestsHistory.map((item) => {
-              const headers = Object.entries(item.headers || {}).map(
-                ([key, value]) => ({
-                  id: key,
-                  key,
-                  value: String(value),
-                  enabled: true,
-                })
-              );
+    <div className="w-full overflow-auto">
+      <div className="min-w-[1000px]">
+        <div className="grid grid-cols-[100px_400px_100px_100px_100px_80px_200px] gap-2 bg-gray-800 text-white p-3 rounded-t-lg font-semibold sticky top-0 z-10">
+          <div>Method</div>
+          <div>URL</div>
+          <div>Duration (ms)</div>
+          <div>Req Size (B)</div>
+          <div>Res Size (B)</div>
+          <div>Status</div>
+          <div>Error</div>
+        </div>
+        {requestsHistory.map((item) => {
+          const headers = Object.entries(item.headers || {}).map(
+            ([key, value]) => ({
+              id: key,
+              key,
+              value: String(value),
+              enabled: true,
+            })
+          );
 
-              const shareRoute = buildShareRoute(
-                item.method ?? 'GET',
-                item.url ?? '',
-                item.body || '',
-                headers
-              );
+          const shareRoute = buildShareRoute(
+            item.method ?? 'GET',
+            item.url ?? '',
+            item.body || '',
+            headers
+          );
 
-              return (
-                <li key={item.createdAt} className="bg-gray-800 p-4 rounded-lg">
-                  <Link to={shareRoute}>
-                    [{item.method?.toUpperCase()}] {item.url}
-                  </Link>
-                  {
-                    <div className="text-sm text-gray-400 mt-2">
-                      <p>⏱ Duration: {item.duration} мс</p>
-                      <p>📦 Request size: {item.requestSize ?? '—'} bite</p>
-                      <p>📥 Response size: {item.responseSize ?? '—'} bite</p>
-
-                      <p>✅ Status: {item.statusCode}</p>
-                      {item.errorMessage && (
-                        <p className="text-red-400">
-                          ⚠️ Error: {item.errorMessage}
-                        </p>
-                      )}
-                    </div>
-                  }
-                </li>
-              );
-            })}
-          </ul>
-        )}
+          return (
+            <div
+              key={item.createdAt}
+              className="grid grid-cols-[100px_400px_100px_100px_100px_80px_200px] gap-2 bg-gray-900 text-white p-3 border-b border-gray-700 hover:bg-gray-800"
+            >
+              <div className="font-mono">{item.method?.toUpperCase()}</div>
+              <div className="truncate overflow-x-auto">
+                <Link to={shareRoute} className="underline hover:text-blue-400">
+                  {item.url}
+                </Link>
+              </div>
+              <div>{item.duration}</div>
+              <div>{item.requestSize ?? '—'}</div>
+              <div>{item.responseSize ?? '—'}</div>
+              <div>{item.statusCode}</div>
+              <div className="text-red-400 truncate">
+                {item.errorMessage ?? '-'}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
+
 export default History;

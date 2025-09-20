@@ -68,10 +68,11 @@ export const sendPasswordResetFn = (email: string) =>
 export const logoutFn = () => signOut(auth);
 
 export const saveUserRequestHistory = async (
+  uid: string,
   entry: Omit<RequestAnalytic, 'createdAt'>
 ) => {
   try {
-    await addDoc(collection(db, 'requestHistory'), {
+    await addDoc(collection(db, 'users', uid, 'requestHistory'), {
       ...entry,
       createdAt: serverTimestamp(),
     });

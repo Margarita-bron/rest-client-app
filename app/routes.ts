@@ -18,14 +18,10 @@ export default [
         route(ROUTES.main, 'routes/main.tsx'),
         route(ROUTES.history, 'routes/history.tsx'),
         route(ROUTES.variables, 'routes/variables.tsx'),
-        route('rest-client', 'routes/rest-client.tsx'),
-        route(':method/:url', 'routes/rest-client-method-url.tsx'),
-        route(':method/:url/:body', 'routes/rest-client-method-url-body.tsx'),
+        route('rest-client/:method?/:url?/:body?', 'routes/rest-client.tsx'),
       ]),
     ]),
-
     route('*', 'routes/lang-not-found.tsx'),
   ]),
-
   route('*', 'routes/not-found.tsx'),
 ];

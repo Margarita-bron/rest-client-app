@@ -33,30 +33,7 @@ export function buildQueryFromHeaders(current: Header[]): string {
       parts.push(`${encodeURIComponent(h.key)}=${encodeURIComponent(h.value)}`);
     }
   });
-  /**  const query = new URLSearchParams();
-  headers.forEach(({ key, value, enabled }) => {
-    if (enabled && key && value) {
-      query.set(key, value);
-    }
-  }); */
   return parts.length ? `?${parts.join('&')}` : '';
-}
-
-export function buildProxyUrl(
-  method: string,
-  targetUrl: string,
-  bodyString: string,
-  current: Header[]
-): string {
-  const proxyBase = 'http://localhost:5137';
-  const encodedUrl = base64EncodeUtf8(targetUrl);
-  const hasBody = Boolean(
-    bodyString &&
-      ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())
-  );
-  const encodedBody = hasBody ? `/${base64EncodeUtf8(bodyString)}` : '';
-  const query = buildQueryFromHeaders(current);
-  return `${proxyBase}/${method.toUpperCase()}/${encodedUrl}${encodedBody}${query}`;
 }
 
 export function buildShareRoute(
@@ -65,13 +42,47 @@ export function buildShareRoute(
   bodyString: string,
   current: Header[]
 ): string {
-  const proxyBase = 'http://localhost:5137';
   const encodedUrl = base64EncodeUtf8(targetUrl);
-  const hasBody = Boolean(
+  const hasBody =
     bodyString &&
-      ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase())
-  );
+    ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase());
   const encodedBody = hasBody ? `/${base64EncodeUtf8(bodyString)}` : '';
   const query = buildQueryFromHeaders(current);
-  return `${proxyBase}/${method.toUpperCase()}/${encodedUrl}${encodedBody}${query}`;
+  return `rest-client/${method.toUpperCase()}/${encodedUrl}${encodedBody}${query}`;
+}
+
+import { v4 as uuidv4 } from 'uuid';
+
+export function parseRequestFromUrl(
+  params: Record<string, string | undefined>,
+  searchParams: URLSearchParams
+): {
+  method: string;
+  url: string;
+  body: string;
+  headers: Header[];
+} {
+  let method = 'GET';
+  let url = '';
+  let body = '';
+  const headers: Header[] = [];
+
+  try {
+    if (params.method) method = params.method.toUpperCase();
+    if (params['url']) url = base64DecodeUtf8(params['url']);
+    if (params['body']) body = base64DecodeUtf8(params['body']);
+
+    for (const [key, value] of searchParams.entries()) {
+      headers.push({
+        id: uuidv4(),
+        key: decodeURIComponent(key),
+        value: decodeURIComponent(value),
+        enabled: true,
+      });
+    }
+  } catch (err) {
+    console.warn('Error parsing request from URL:', err);
+  }
+
+  return { method, url, body, headers };
 }

@@ -54,6 +54,7 @@ export function Link({
     </a>
   );
 }
+export type AppNavigate = (path: string, loc?: Locale) => void;
 
 export function useRouter() {
   const { lang } = useParams();
@@ -61,14 +62,17 @@ export function useRouter() {
   const location = useLocation();
   const locale = (lang as Locale) ?? routing.defaultLocale;
 
-  const navigate = useCallback(
-    (path: string, loc: Locale = locale) => navigateFn(buildPath(loc, path)),
+  const navigate: AppNavigate = useCallback(
+    (path: string, loc: Locale = locale) => {
+      navigateFn(buildPath(loc, path));
+    },
     [navigateFn, locale]
   );
 
-  const replace = useCallback(
-    (path: string, loc: Locale = locale) =>
-      navigateFn(buildPath(loc, path), { replace: true }),
+  const replace: AppNavigate = useCallback(
+    (path: string, loc: Locale = locale) => {
+      navigateFn(buildPath(loc, path), { replace: true });
+    },
     [navigateFn, locale]
   );
 
