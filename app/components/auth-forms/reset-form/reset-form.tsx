@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { RESET_FORM_DATA } from '~/components/reset-form/reset-form.data';
+import { RESET_FORM_DATA } from '~/components/auth-forms/reset-form/reset-form.data';
 import { useResetPasswordUser } from '~/redux/auth/hooks';
 import { useAuth } from '~/redux/auth/hooks';
 import { useDispatch } from 'react-redux';
@@ -31,7 +31,7 @@ export const ResetForm = () => {
 
   useEffect(() => {
     if (!loading && user && !error) {
-      navigate(ROUTES.welcome);
+      navigate(ROUTES.main);
     }
   }, [user, loading, error, navigate]);
 

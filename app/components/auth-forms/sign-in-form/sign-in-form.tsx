@@ -4,48 +4,43 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
-import { useAuth, useRegisterUser } from '~/redux/auth/hooks';
+import { useAuth, useLoginUser } from '~/redux/auth/hooks';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { useAuthSchemas } from '~/utils/validation/use-auth-schemas';
-import { SIGN_UP_FORM } from './sign-up-form.data';
+import { SIGN_IN_FORM_DATA } from './sign-in-form.data';
 
-export const SignUpForm = () => {
+export const SignInForm = () => {
   const { user, loading, error } = useAuth();
   const { navigate } = useRouter();
-  const { register: registerUser } = useRegisterUser();
+  const { login } = useLoginUser();
 
-  const t = useTr('signUpForm');
-  const { signUpSchema } = useAuthSchemas();
-  type SignUpFormData = z.infer<typeof signUpSchema>;
+  const t = useTr('signInForm');
+  const { signInSchema } = useAuthSchemas();
+
+  type SignInFormData = z.infer<typeof signInSchema>;
 
   const {
     register,
     handleSubmit,
     formState: { errors, touchedFields },
-  } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
     mode: 'onChange',
   });
 
   useEffect(() => {
     if (!loading && user && !error) {
-      navigate(ROUTES.welcome);
+      navigate(ROUTES.main);
     }
   }, [user, loading, error, navigate]);
 
-  const onSubmit = async (formData: SignUpFormData) => {
-    try {
-      const success = await registerUser({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
-      if (success) {
-        navigate(ROUTES.welcome);
-      }
-    } catch (err) {
-      throw new Error('Unexpected error', { cause: error });
-    }
+  const onSubmit = async (formData: SignInFormData) => {
+    const { success } = await login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (success) navigate(ROUTES.main);
   };
 
   return (
@@ -58,33 +53,17 @@ export const SignUpForm = () => {
         <h1 className="text-2xl font-semibold text-center">{t('submit')}</h1>
 
         <div>
-          <label className="block text-sm mb-1 text-left">{t('name')}</label>
-          <input
-            id="name"
-            placeholder={t('namePlaceholder')}
-            autoComplete="given-name"
-            {...register('name')}
-            {...SIGN_UP_FORM.name}
-          />
-          <div className="h-7">
-            {errors.name && touchedFields.name && (
-              <p className="text-red-400 text-sm text-left">
-                {errors.name?.message}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1 text-left">{t('email')}</label>
+          <label htmlFor="email" className="block text-sm mb-1 text-left">
+            {t('email')}
+          </label>
           <input
             id="email"
             placeholder={t('emailPlaceholder')}
             autoComplete="email"
             {...register('email')}
-            {...SIGN_UP_FORM.email}
+            {...SIGN_IN_FORM_DATA.email}
           />
-          <div className="h-7">
+          <div className="h-5">
             {errors.email && touchedFields.email && (
               <p className="text-red-400 text-sm text-left">
                 {errors.email?.message}
@@ -94,15 +73,15 @@ export const SignUpForm = () => {
         </div>
 
         <div>
-          <label className="block text-sm mb-1 text-left">
+          <label htmlFor="password" className="block text-sm mb-1 text-left">
             {t('password')}
           </label>
           <input
             id="password"
             placeholder={t('passwordPlaceholder')}
-            autoComplete="new-password"
+            autoComplete="current-password"
             {...register('password')}
-            {...SIGN_UP_FORM.password}
+            {...SIGN_IN_FORM_DATA.password}
           />
           <div className="h-7">
             {errors.password && (
@@ -113,19 +92,29 @@ export const SignUpForm = () => {
           </div>
         </div>
 
-        <button {...SIGN_UP_FORM.submit} disabled={loading}>
-          {loading ? 'Signing up...' : t('submit')}
+        <button {...SIGN_IN_FORM_DATA.submit} disabled={loading}>
+          {loading ? t('submiting') : t('submit')}
         </button>
         <div className="h-5">
           {error && <p className="text-red-400 text-sm text-center">{error}</p>}
         </div>
-        <p className="text-sm text-center text-gray-400">
-          {t('alreadyHaveAccount')}{' '}
+
+        <div className="text-sm">
           <Link
-            to={ROUTES.signIn}
+            to={ROUTES.reset}
             className="text-indigo-400 hover:underline font-medium"
           >
-            {t('signIn')}
+            {t('forgotPassword')}
+          </Link>
+        </div>
+
+        <p className="text-sm text-center text-gray-400">
+          {t('dontHaveAccount')}{' '}
+          <Link
+            to={ROUTES.signUp}
+            className="text-indigo-400 hover:underline font-medium"
+          >
+            {t('signUp')}
           </Link>
         </p>
       </form>

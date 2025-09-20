@@ -1,3 +1,4 @@
+import { HEADER_TEST_IDS } from '~/components/header/header-test-ids';
 import { useToggleLanguage } from '~/lib/i18n/hooks/use-toggle-language';
 
 export function LanguageToggleButton() {
@@ -6,6 +7,7 @@ export function LanguageToggleButton() {
   return (
     <button
       onClick={toggleLanguage}
+      data-testid={HEADER_TEST_IDS.langiageToggleButton}
       className="flex items-center gap-1 rounded-full bg-gray-300 p-0.5 transition-colors hover:bg-gray-300 hover:cursor-pointer"
     >
       <span
