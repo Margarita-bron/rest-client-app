@@ -3,7 +3,7 @@ import { Link } from '~/lib/routing/navigation';
 import { ROUTES } from '~/lib/routing/routes-path';
 import { SignInButton } from '~/components/buttons/sign-in-button/sign-in-button';
 import { SignUpButton } from '~/components/buttons/sign-up-button/sign-up-button';
-import { LanguageToggleButton } from '~/components/header/language-toggle-button/language-toggle-button';
+import { LanguageToggleButton } from '~/components/header/language-toggle-button';
 
 export const HeaderGuest = () => {
   return (

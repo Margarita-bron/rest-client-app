@@ -1,5 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { LanguageToggleButton } from '~/components/header/language-toggle-button/language-toggle-button';
+import { LanguageToggleButton } from '~/components/header/language-toggle-button';
 import { renderWithProviders } from '~/utils/testing/test-render';
 import { HEADER_TEST_IDS } from '~/components/header/header-test-ids';
 import * as router from 'react-router';
