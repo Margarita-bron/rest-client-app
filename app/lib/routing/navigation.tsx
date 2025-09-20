@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import {
   Link as RouterLink,
   useParams,
@@ -30,11 +31,14 @@ export function Link({
   const navigateFn = useNavigate();
   const loc = locale ?? (lang as Locale) ?? routing.defaultLocale;
   const to = buildPath(loc, toProp, relative);
-  const handleClick = (e: React.MouseEvent) => {
-    if (relative) return;
-    e.preventDefault();
-    navigateFn(to);
-  };
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (relative) return;
+      e.preventDefault();
+      navigateFn(to);
+    },
+    [navigateFn, to, relative]
+  );
 
   if (relative) {
     return (
@@ -57,12 +61,21 @@ export function useRouter() {
   const location = useLocation();
   const locale = (lang as Locale) ?? routing.defaultLocale;
 
+  const navigate = useCallback(
+    (path: string, loc: Locale = locale) => navigateFn(buildPath(loc, path)),
+    [navigateFn, locale]
+  );
+
+  const replace = useCallback(
+    (path: string, loc: Locale = locale) =>
+      navigateFn(buildPath(loc, path), { replace: true }),
+    [navigateFn, locale]
+  );
+
   return {
     locale,
     pathname: location.pathname,
-    navigate: (path: string, loc: Locale = locale) =>
-      navigateFn(buildPath(loc, path)),
-    replace: (path: string, loc: Locale = locale) =>
-      navigateFn(buildPath(loc, path), { replace: true }),
+    navigate,
+    replace,
   };
 }

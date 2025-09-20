@@ -1,31 +1,23 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import WelcomeSkeleton from '../loading/welcome-skeleton';
-import type { AppDispatch } from '~/redux/store';
-import {
-  fetchUserProfile,
-  subscribeToAuthChanges,
-} from '~/redux/auth/auth-actions';
 import { useAuth } from '~/redux/auth/hooks';
-import RestClientButton from '~/components/buttons/rest-client/rest-client-button';
-import VariablesButton from '~/components/buttons/variables/variables-button';
-import HistoryButton from '~/components/buttons/history/history-button';
+import { firebaseAuthActions } from '~/redux/auth/auth-actions';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '~/redux/store';
+import { RestClientButton } from '~/components/buttons/rest-client/rest-client-button';
+import { HistoryButton } from '~/components/buttons/history/history-button';
+import { VariablesButton } from '~/components/buttons/variables/variables-button';
 
-const Welcome = () => {
+const main = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user, firestoreProfile, loading, error } = useAuth();
-  const t = useTr('welcomePage');
+  const t = useTr('mainPage');
 
   useEffect(() => {
-    const unsubscribe = dispatch(subscribeToAuthChanges());
+    const unsubscribe = dispatch(firebaseAuthActions.subscribeToAuthChanges());
     return () => unsubscribe();
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!user?.uid) return;
-    dispatch(fetchUserProfile(user.uid));
-  }, [user?.uid, dispatch]);
 
   if (loading) return <WelcomeSkeleton />;
 
@@ -54,4 +46,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default main;

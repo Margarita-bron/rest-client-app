@@ -9,7 +9,6 @@ export default function Layout() {
       <main className="flex-1 container mx-auto flex justify-center items-center text-center">
         <Outlet />
       </main>
-
       <Footer />
     </div>
   );
