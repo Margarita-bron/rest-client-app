@@ -14,7 +14,7 @@ const Variables = () => {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1500);
     } catch (err) {
-      console.error('Failed to copy', err);
+      return null;
     }
   };
 
