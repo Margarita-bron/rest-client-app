@@ -13,9 +13,9 @@ import {
   parseRequestFromUrl,
 } from '~/lib/routing/rest-client-path';
 import { useVariables } from '~/hooks/use-variables';
-import { useSendRequest } from '~/components/rest-client/hooks/useSendRequest';
+import { useSendRequest } from '~/components/rest-client/hooks/use-send-request';
 import type { User } from 'firebase/auth';
-import { replaceVariablesInRequest } from '~/components/rest-client/replaceVariablesInRequest';
+import { replaceVariablesInRequest } from '~/components/rest-client/utils/replace-variables-in-request';
 
 export type Header = {
   id: string;

@@ -1,6 +1,7 @@
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 import { Loader } from '~/ui/loader';
 import SpaceStationImg from '~/assets/space-station.png';
+import { REST_CLIENT_IDS } from '~/components/rest-client/rest-client-test-ids';
 
 type ResponseViewProps = {
   loading: boolean;
@@ -46,7 +47,12 @@ const ResponseView = ({
     <div className="w-full mt-4">
       <div className="w-full text-left">
         <div className="flex items-center gap-3 mb-2 flex-wrap">
-          <h3 className="text-lg font-semibold m-0 text-white">{t('title')}</h3>
+          <h3
+            data-testid={REST_CLIENT_IDS.responseView.title}
+            className="text-lg font-semibold m-0 text-white"
+          >
+            {t('title')}
+          </h3>
 
           {(statusCode || responseSize) && (
             <div className="flex gap-4 text-sm text-gray-300">
@@ -65,6 +71,7 @@ const ResponseView = ({
 
           <div className="flex gap-2 ml-auto">
             <button
+              data-testid={REST_CLIENT_IDS.responseView.toggleRawButton}
               onClick={() => setShowRaw(!showRaw)}
               disabled={!hasResponse}
               className={`px-3 py-1 text-sm border rounded-md transition-colors ${
@@ -76,6 +83,7 @@ const ResponseView = ({
               {showRaw ? t('showJson') : t('showRaw')}
             </button>
             <button
+              data-testid={REST_CLIENT_IDS.responseView.toggleHeadersButton}
               onClick={() => setShowHeaders(!showHeaders)}
               disabled={!hasResponse}
               className={`px-3 py-1 text-sm border rounded-md transition-colors ${
@@ -94,13 +102,17 @@ const ResponseView = ({
             <h4 className="text-md font-semibold mb-2 text-white">
               {t('headersTitle')}
             </h4>
-            <pre className="text-left bg-gray-800 p-4 border border-gray-700 rounded-md overflow-auto max-h-48 text-sm font-mono text-gray-200">
+            <pre
+              data-testid={REST_CLIENT_IDS.responseView.responseHeaders}
+              className="text-left bg-gray-800 p-4 border border-gray-700 rounded-md overflow-auto max-h-48 text-sm font-mono text-gray-200"
+            >
               {formatHeaders(responseHeaders)}
             </pre>
           </div>
         )}
 
         <pre
+          data-testid={REST_CLIENT_IDS.responseView.responseBody}
           className={`p-4 border border-gray-700 rounded-md overflow-auto min-h-96 max-h-96 text-sm w-full box-border font-mono text-gray-200 ${
             hasResponse
               ? 'bg-gray-800'
@@ -136,7 +148,10 @@ const ResponseView = ({
       </div>
 
       {error && (
-        <div className="p-4 bg-red-900/20 border border-red-700 rounded-md text-red-300 mt-4 w-full">
+        <div
+          data-testid={REST_CLIENT_IDS.responseView.errorMessage}
+          className="p-4 bg-red-900/20 border border-red-700 rounded-md text-red-300 mt-4 w-full"
+        >
           {t('error', { message: error })}
         </div>
       )}
