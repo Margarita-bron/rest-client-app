@@ -8,7 +8,7 @@ export const RestClientButton = () => {
 
   return (
     <Link
-      to={'/rest-client'}
+      to={ROUTES.restClient}
       className="border border-gray-300 hover:bg-gray-800 rounded-full p-2"
       data-testid={BUTTON_TEST_IDS.restClient}
     >
