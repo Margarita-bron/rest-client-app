@@ -1,0 +1,232 @@
+{
+  "header": {
+    "signUp": "Регистрация",
+    "signIn": "Вход",
+    "signOut": "Выйти",
+    "mainPage": "Главная"
+  },
+  "resetForm": {
+    "resetPassword": "Сброс пароля",
+    "email": "Электронная почта",
+    "emailPlaceHolder": "mail.adress@gmail.com",
+    "notHaveAccount": "Нет аккаунта?",
+    "signUp": "Регистрация"
+  },
+  "signUpForm": {
+    "signUp": "Регистрация",
+    "signIn": "Вход",
+    "alreadyHaveAccount": "Уже есть аккаунт?",
+    "name": "Полное имя",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "namePlaceholder": "Полное имя",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Пароль1234$",
+    "submit": "Зарегистрироваться"
+  },
+  "signInForm": {
+    "submit": "Войти",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "forgotPassword": "Забыли пароль?",
+    "dontHaveAccount": "Нет аккаунта?",
+    "signUp": "Регистрация",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Пароль1234$"
+  },
+  "auth-validation": {
+    "signUp": {
+      "nameRequired": "Имя обязательно",
+      "nameMin": "Имя должно содержать не менее 2 символов",
+      "nameInvalid": "Имя может содержать только буквы, пробелы, апострофы и дефисы",
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "passwordMin": "Пароль должен содержать не менее 8 символов",
+      "passwordLetter": "Пароль должен содержать хотя бы одну букву",
+      "passwordNumber": "Пароль должен содержать хотя бы одну цифру",
+      "passwordSpecial": "Пароль должен содержать хотя бы один специальный символ (!@#$%^&*())"
+    },
+    "signIn": {
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "passwordMin": "Пароль должен содержать не менее 8 символов",
+      "passwordLetter": "Пароль должен содержать хотя бы одну букву",
+      "passwordNumber": "Пароль должен содержать хотя бы одну цифру",
+      "passwordSpecial": "Пароль должен содержать хотя бы один специальный символ (!@#$%^&*())"
+    },
+    "reset": {
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты"
+    }
+  },
+  "authNotifications": {
+    "loginSuccess": "Вход выполнен успешно!",
+    "registerSuccess": "Регистрация прошла успешно!",
+    "resetPasswordSuccess": "Письмо для сброса пароля отправлено!",
+    "logoutSuccess": "Вы успешно вышли из системы!"
+  },
+  "headersEditor": {
+    "title": "Заголовки",
+    "addButton": "+ Добавить заголовок",
+    "headerNamePlaceholder": "Имя заголовка",
+    "headerValuePlaceholder": "Значение заголовка",
+    "removeButton": "×"
+  },
+  "requestBodyEditor": {
+    "title": "Тело запроса",
+    "placeholder": "{\"ключ\": \"значение\"}"
+  },
+  "requestPanel": {
+    "placeholder": "Введите URL (например, jsonplaceholder.typicode.com/posts)",
+    "send": "Отправить",
+    "loading": "Загрузка..."
+  },
+  "codeGenerator": {
+    "content": "Выберите язык:",
+    "generate": "Сгенерировать",
+    "loading": "Загрузка...",
+    "copied":"Скопировано!",
+    "copy": "Скопировать код"
+  },
+  "responseView": {
+    "title": "Ответ",
+    "showRaw": "Показать Raw",
+    "showJson": "Показать JSON",
+    "showHeaders": "Показать заголовки",
+    "hideHeaders": "Скрыть заголовки",
+    "headersTitle": "Заголовки",
+    "status": "Статус",
+    "size": "Размер",
+    "loading": "Загрузка...",
+    "emptyPlaceholder": "Ответ пока отсутствует",
+    "error": "Ошибка: {{message}}",
+    "sendRequestToSeeResponse": "Чтобы получить тело ответа, отправьте запрос"
+  },
+  "mainPage": {
+    "welcome": "Добро пожаловать",
+    "restClient": "REST клиент",
+    "history": "История",
+    "variables": "Переменные",
+    "loadingError": "Произошла ошибка при загрузке данных"
+  },
+  "guestPage": {
+    "welcome": "Добро пожаловать!",
+    "aboutProject": {
+      "title": "О проекте",
+      "text": "REST Client App — это лёгкая альтернатива Postman/Thunder Client, созданная как учебный проект. Приложение позволяет выполнять HTTP-запросы, редактировать заголовки и тело, просматривать ответы, сохранять историю и работать с переменными.",
+      "source": "Исходный код"
+    },
+    "aboutCourse": {
+      "title": "О курсе",
+      "text": "Проект разработан в рамках курса"
+    },
+    "developers": {
+      "title": "Разработчики",
+      "dev1": {
+        "name": "Маргарита Савоневская",
+        "github": "margarita-bron"
+      },
+      "dev2": {
+        "name": "Владислав Бендер",
+        "github": "vladbender1"
+      },
+      "dev3": {
+        "name": "Анри Акопян",
+        "github": "anriako"
+      }
+    }
+  },
+  "footer": {
+    "source": "Исходный код",
+    "year": "© 2025 REST Client App",
+    "course": "Курс"
+  },
+  "firebaseAuthErrors": {
+    "auth/invalid-credential": {
+      "message": "Неверные данные для входа.",
+      "action": "Проверьте email и пароль и попробуйте снова."
+    },
+    "auth/email-already-in-use": {
+      "message": "Аккаунт с этим email уже существует.",
+      "action": "Попробуйте войти или используйте другой email."
+    },
+    "auth/user-disabled": {
+      "message": "Аккаунт пользователя отключен.",
+      "action": "Свяжитесь с поддержкой для восстановления доступа."
+    },
+    "auth/user-not-found": {
+      "message": "Пользователь с таким email не найден.",
+      "action": "Проверьте email или зарегистрируйтесь."
+    },
+    "auth/wrong-password": {
+      "message": "Неверный пароль.",
+      "action": "Попробуйте ввести пароль снова или сбросьте его."
+    },
+    "auth/too-many-requests": {
+      "message": "Слишком много неудачных попыток входа.",
+      "action": "Подождите несколько минут перед новой попыткой."
+    },
+    "auth/network-request-failed": {
+      "message": "Произошла ошибка сети.",
+      "action": "Проверьте подключение к интернету и попробуйте снова."
+    },
+    "auth/account-exists-with-different-credential": {
+      "message": "Аккаунт с таким email существует, но через другой способ входа.",
+      "action": "Войдите через первоначального провайдера или сбросьте пароль."
+    },
+    "auth/requires-recent-login": {
+      "message": "Необходимо повторно войти для выполнения операции.",
+      "action": "Войдите снова, чтобы подтвердить личность."
+    },
+    "auth/expired-action-code": {
+      "message": "Ссылка для сброса пароля истекла.",
+      "action": "Запросите новую ссылку для сброса пароля."
+    },
+    "auth/invalid-action-code": {
+      "message": "Ссылка для сброса пароля недействительна.",
+      "action": "Запросите новую ссылку для сброса пароля."
+    },
+    "auth/argument-error": {
+      "message": "Переданы неверные аргументы для Firebase Authentication.",
+      "action": "Проверьте введенные данные и попробуйте снова."
+    },
+    "auth/internal-error": {
+      "message": "Произошла внутренняя ошибка на серверах Firebase.",
+      "action": "Попробуйте позже или свяжитесь с поддержкой."
+    }
+  },
+  "variables": {
+    "title": "Переменные",
+    "description": "Определите переменные, которые можно использовать в запросах, в формате",
+    "variableList": "Список переменных",
+    "add": "Добавить переменную",
+    "emptyMessage": "Переменные пока не заданы.",
+    "emptyHint1": "Нажмите",
+    "emptyHint2": "чтобы создать первую переменную.",
+    "enabled": "Включено",
+    "name": "Имя",
+    "value": "Значение",
+    "actions": "Действия",
+    "namePlaceholder": "Имя переменной (например, baseUrl)",
+    "valuePlaceholder": "Значение переменной (например, https://api.example.com)",
+    "copy": "Копировать",
+    "copied": "Скопировано!",
+    "delete": "Удалить",
+    "howToUseTitle": "Как использовать",
+    "howToUseTextBeforeCode": "Используйте",
+    "howToUseTextAfterCode": "в URL, заголовках или теле запроса.",
+    "howToUseAdditional": "Переменные чувствительны к регистру. Отключённые переменные не будут заменены. Переменные заменяются при отправке запроса.",
+    "example": "Пример:"
+  },
+  "history": {
+    "emptyMessage": "Вы ещё не выполняли запросы. Здесь пусто.",
+    "emptyHint": "Попробуйте отправить запрос, используя кнопку ниже.",
+    "method": "Метод",
+    "url": "URL",
+    "duration": "Время (мс)",
+    "requestSize": "Размер запроса (Б)",
+    "responseSize": "Размер ответа (Б)",
+    "status": "Статус",
+    "error": "Ошибка"
+  }
+}

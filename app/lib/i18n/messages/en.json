@@ -1,0 +1,234 @@
+{
+  "header": {
+    "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "mainPage": "Main page"
+  },
+  "resetForm": {
+    "resetPassword": "Reset Password",
+    "email": "Email",
+    "emailPlaceHolder": "mail.adress@gmail.com",
+    "notHaveAccount": "Don’t have an account?",
+    "signUp": "Sign Up"
+  },
+  "signUpForm": {
+    "signUp": "Sign Up",
+    "signIn": "Sign In",
+    "alreadyHaveAccount": "Already have an account?",
+    "name": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "namePlaceholder": "Full Name",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Password1234$",
+    "submit": "Sign Up",
+    "submiting": "Signing Up..."
+  },
+  "signInForm": {
+    "submit": "Sign In",
+    "submiting": "Signing In...",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "dontHaveAccount": "Don’t have an account?",
+    "signUp": "Sign Up",
+    "emailPlaceholder": "mail.address@gmail.com",
+    "passwordPlaceholder": "Password1234"
+  },
+  "auth-validation": {
+    "signUp": {
+      "nameRequired": "Name is required",
+      "nameMin": "Name must be at least 2 characters",
+      "nameInvalid": "Name can only contain letters, spaces, apostrophes, and hyphens",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "passwordLetter": "Password must contain at least one letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecial": "Password must contain at least one special character (!@#$%^&*())"
+    },
+    "signIn": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters long",
+      "passwordLetter": "Password must contain at least one letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecial": "Password must contain at least one special character (!@#$%^&*())"
+    },
+    "reset": {
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address"
+    }
+  },
+  "authNotifications": {
+    "loginSuccess": "Login successful!",
+    "registerSuccess": "Registration successful!",
+    "resetPasswordSuccess": "Password reset email sent!",
+    "logoutSuccess": "Logout successful!"
+  },
+  "headersEditor": {
+    "title": "Headers",
+    "addButton": "+ Add Header",
+    "headerNamePlaceholder": "Header name",
+    "headerValuePlaceholder": "Header value",
+    "removeButton": "×"
+  },
+  "requestBodyEditor": {
+    "title": "Request Body",
+    "placeholder": "{\"key\": \"value\"}"
+  },
+  "requestPanel": {
+    "placeholder": "Enter URL (e.g., jsonplaceholder.typicode.com/posts)",
+    "send": "Send",
+    "loading": "Loading..."
+  },
+  "codeGenerator": {
+    "content": "Select language:",
+    "generate": "Generate",
+    "loading": "Loading...",
+    "copied":"Copied!",
+    "copy": "Copy the code"
+  },
+  "responseView": {
+    "title": "Response",
+    "showRaw": "Show Raw",
+    "showJson": "Show JSON",
+    "showHeaders": "Show Headers",
+    "hideHeaders": "Hide Headers",
+    "headersTitle": "Headers",
+    "status": "Status",
+    "size": "Size",
+    "loading": "Loading...",
+    "emptyPlaceholder": "No response yet",
+    "error": "Error: {{message}}",
+    "sendRequestToSeeResponse": "To get the response body, send a request"
+  },
+  "mainPage": {
+    "welcome": "Welcome",
+    "restClient": "REST Client",
+    "history": "History",
+    "variables": "Variables",
+    "loadingError": "An error occurred while loading data"
+  },
+  "guestPage": {
+    "welcome": "Welcome!",
+    "aboutProject": {
+      "title": "About the Project",
+      "text": "REST Client App is a lightweight alternative to Postman/Thunder Client, created as a learning project. The app allows you to make HTTP requests, edit headers and body, view responses, save history, and work with variables.",
+      "source": "Source code"
+    },
+    "aboutCourse": {
+      "title": "About the Course",
+      "text": "The project was developed as part of the course"
+    },
+    "developers": {
+      "title": "Developers",
+      "dev1": {
+        "name": "Margarita Savonevskaya",
+        "github": "margarita-bron"
+      },
+      "dev2": {
+        "name": "Uladzislau Bender",
+        "github": "vladbender1"
+      },
+      "dev3": {
+        "name": "Anri Akopian",
+        "github": "anriako"
+      }
+    }
+  },
+  "footer": {
+    "source": "Source",
+    "year": "© 2025 REST Client App",
+    "course": "Course"
+  },
+  "firebaseAuthErrors": {
+    "auth/invalid-credential": {
+      "message": "Invalid login credentials.",
+      "action": "Please check your email and password and try again."
+    },
+    "auth/email-already-in-use": {
+      "message": "An account with this email already exists.",
+      "action": "Try logging in or use a different email."
+    },
+    "auth/user-disabled": {
+      "message": "The user account has been disabled.",
+      "action": "Contact support to reactivate your account."
+    },
+    "auth/user-not-found": {
+      "message": "No user found with this email.",
+      "action": "Please check your email or sign up if you don’t have an account."
+    },
+    "auth/wrong-password": {
+      "message": "Incorrect password.",
+      "action": "Try entering your password again or reset your password."
+    },
+    "auth/too-many-requests": {
+      "message": "Too many unsuccessful login attempts.",
+      "action": "Please wait a few minutes before trying again."
+    },
+    "auth/network-request-failed": {
+      "message": "Network error occurred.",
+      "action": "Check your internet connection and try again."
+    },
+    "auth/account-exists-with-different-credential": {
+      "message": "An account already exists with the same email using different sign-in credentials.",
+      "action": "Sign in using the original provider or reset your password."
+    },
+    "auth/requires-recent-login": {
+      "message": "Please re-authenticate to perform this operation.",
+      "action": "Log in again to confirm your identity."
+    },
+    "auth/expired-action-code": {
+      "message": "The password reset link has expired.",
+      "action": "Request a new password reset email."
+    },
+    "auth/invalid-action-code": {
+      "message": "The password reset link is invalid.",
+      "action": "Request a new password reset email."
+    },
+    "auth/argument-error": {
+      "message": "Invalid arguments provided to Firebase Authentication.",
+      "action": "Please check your input and try again."
+    },
+    "auth/internal-error": {
+      "message": "An internal error occurred on Firebase servers.",
+      "action": "Please try again later or contact support."
+    }
+  },
+  "variables": {
+    "title": "Variables",
+    "description": "Define variables that can be used in your requests using the format",
+    "variableList": "Variable List",
+    "add": "Add Variable",
+    "emptyMessage": "No variables defined yet.",
+    "emptyHint1": "Click",
+    "emptyHint2": "to create your first one.",
+    "enabled": "Enabled",
+    "name": "Name",
+    "value": "Value",
+    "actions": "Actions",
+    "namePlaceholder": "Variable name (e.g., baseUrl)",
+    "valuePlaceholder": "Variable value (e.g., https://api.example.com)",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "delete": "Delete",
+    "howToUseTitle": "How to use",
+    "howToUseTextBeforeCode": "Use",
+    "howToUseTextAfterCode": "in your request URL, headers, or body.",
+    "howToUseAdditional": "Variables are case-sensitive. Disabled variables will not be replaced. Variables are replaced when you send a request.",
+    "example": "Example:"
+  },
+  "history": {
+    "emptyMessage": "You haven't executed any requests. It's empty here.",
+    "emptyHint": "Try sending a request using the button below.",
+    "method": "Method",
+    "url": "URL",
+    "duration": "Duration (ms)",
+    "requestSize": "Req Size (B)",
+    "responseSize": "Res Size (B)",
+    "status": "Status",
+    "error": "Error"
+  }
+}
