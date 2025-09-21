@@ -185,5 +185,39 @@
       "message": "An internal error occurred on Firebase servers.",
       "action": "Please try again later or contact support."
     }
+  },
+  "variables": {
+    "title": "Variables",
+    "description": "Define variables that can be used in your requests using the format",
+    "variableList": "Variable List",
+    "add": "Add Variable",
+    "emptyMessage": "No variables defined yet.",
+    "emptyHint1": "Click",
+    "emptyHint2": "to create your first one.",
+    "enabled": "Enabled",
+    "name": "Name",
+    "value": "Value",
+    "actions": "Actions",
+    "namePlaceholder": "Variable name (e.g., baseUrl)",
+    "valuePlaceholder": "Variable value (e.g., https://api.example.com)",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "delete": "Delete",
+    "howToUseTitle": "How to use",
+    "howToUseTextBeforeCode": "Use",
+    "howToUseTextAfterCode": "in your request URL, headers, or body.",
+    "howToUseAdditional": "Variables are case-sensitive. Disabled variables will not be replaced. Variables are replaced when you send a request.",
+    "example": "Example:"
+  },
+  "history": {
+    "emptyMessage": "You haven't executed any requests. It's empty here.",
+    "emptyHint": "Try sending a request using the button below.",
+    "method": "Method",
+    "url": "URL",
+    "duration": "Duration (ms)",
+    "requestSize": "Req Size (B)",
+    "responseSize": "Res Size (B)",
+    "status": "Status",
+    "error": "Error"
   }
 }
