@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, vi, beforeEach } from 'vitest';
 import NotFound from '~/routes/not-found';
+import LangNotFound from '~/routes/lang-not-found';
 import { useAuth } from '~/redux/auth/hooks';
 import { useNavigate } from 'react-router';
 import { ROUTES } from '~/lib/routing/routes-path';
@@ -17,7 +18,7 @@ vi.mock('react-router', async () => {
   };
 });
 
-describe('NotFound', () => {
+describe('NotFound component', () => {
   const useAuthMock = vi.mocked(useAuth);
   const useNavigateMock = vi.mocked(useNavigate);
 
@@ -25,7 +26,7 @@ describe('NotFound', () => {
     vi.clearAllMocks();
   });
 
-  it('рендерит 404 страницу', () => {
+  it('renders the 404 page content', () => {
     useAuthMock.mockReturnValue({
       user: null,
       loading: false,
@@ -47,18 +48,14 @@ describe('NotFound', () => {
     ).toBeInTheDocument();
   });
 
-  it('навигация на главную для авторизованного пользователя', () => {
+  it('navigates to main route for authenticated user', () => {
     const navigateMock = vi.fn();
     useAuthMock.mockReturnValue({
-      user: {
-        uid: 'dvfs',
-        email: null,
-        name: null,
-      },
+      user: { uid: '123', email: 'a@b.com', name: 'Test User' },
       loading: false,
       error: null,
       firestoreProfile: null,
-      isAuthenticated: false,
+      isAuthenticated: true,
     });
     useNavigateMock.mockReturnValue(navigateMock);
 
@@ -70,7 +67,7 @@ describe('NotFound', () => {
     });
   });
 
-  it('навигация на домашнюю для неавторизованного пользователя', () => {
+  it('navigates to home route for unauthenticated user', () => {
     const navigateMock = vi.fn();
     useAuthMock.mockReturnValue({
       user: null,
@@ -87,5 +84,62 @@ describe('NotFound', () => {
     expect(navigateMock).toHaveBeenCalledWith(`/${ROUTES.home}`, {
       replace: true,
     });
+  });
+});
+
+describe('LangNotFound component', () => {
+  const useAuthMock = vi.mocked(useAuth);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders the 404 page content', () => {
+    useAuthMock.mockReturnValue({
+      user: null,
+      loading: false,
+      error: null,
+      firestoreProfile: null,
+      isAuthenticated: false,
+    });
+
+    render(<LangNotFound />);
+
+    expect(screen.getByText('404')).toBeInTheDocument();
+    expect(screen.getByText('Page not found')).toBeInTheDocument();
+    expect(
+      screen.getByText('Sorry, we couldn’t find the page you’re looking for.')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /go back home/i })
+    ).toBeInTheDocument();
+  });
+
+  it('links to main route for authenticated user', () => {
+    useAuthMock.mockReturnValue({
+      user: { uid: '123', email: 'a@b.com', name: 'Test User' },
+      loading: false,
+      error: null,
+      firestoreProfile: null,
+      isAuthenticated: true,
+    });
+
+    render(<LangNotFound />);
+    const link = screen.getByRole('link', { name: /go back home/i });
+    expect(link).toHaveAttribute('href', '/en/main');
+  });
+
+  it('links to home route for unauthenticated user', () => {
+    useAuthMock.mockReturnValue({
+      user: null,
+      loading: false,
+      error: null,
+      firestoreProfile: null,
+      isAuthenticated: false,
+    });
+
+    render(<LangNotFound />);
+    const link = screen.getByRole('link', { name: /go back home/i });
+    expect(link).toHaveAttribute('href', '/en');
   });
 });

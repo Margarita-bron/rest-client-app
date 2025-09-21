@@ -65,7 +65,7 @@ describe('ResponseView', () => {
     );
 
     const body = screen.getByTestId(REST_CLIENT_IDS.responseView.responseBody);
-    expect(body.querySelector('div')).toBeInTheDocument(); // Loader container
+    expect(body.querySelector('div')).toBeInTheDocument();
   });
 
   it('renders responseData as JSON when showRaw is false', () => {
