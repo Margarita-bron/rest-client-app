@@ -16,6 +16,7 @@ import { useVariables } from '~/hooks/use-variables';
 import { useSendRequest } from '~/components/rest-client/hooks/useSendRequest';
 import type { User } from 'firebase/auth';
 import { replaceVariablesInRequest } from '~/components/rest-client/replaceVariablesInRequest';
+import CodeGenerator from '~/components/rest-client/code-generator/code-generator';
 
 export type Header = {
   id: string;
@@ -202,6 +203,10 @@ const RestClient = () => {
         setShowRaw={setShowRaw}
         showHeaders={showHeaders}
         setShowHeaders={setShowHeaders}
+      />
+      <CodeGenerator
+        loading={false}
+        obj={{ method: selectedMethod, url, headers, body: requestBody }}
       />
     </div>
   );
