@@ -43,7 +43,7 @@ export function generateFetch({
   body,
 }: codeGenProps): string {
   const filteredHeaders = filterAndMapHeaders(headers);
-  const options: any = { method: method.toUpperCase() };
+  const options: RequestInit = { method: method.toUpperCase() };
   if (Object.keys(filteredHeaders).length) options.headers = filteredHeaders;
   if (body) options.body = body;
 
