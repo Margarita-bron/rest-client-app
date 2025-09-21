@@ -13,7 +13,7 @@ export const useAxiosRequest = () => {
   const sendAxiosRequest = useCallback(
     async (config: AxiosRequestConfig): Promise<AxiosRequestResult> => {
       try {
-        const res = await axios(config);
+        const res = await axios.request(config);
         const rawResponse =
           typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
 

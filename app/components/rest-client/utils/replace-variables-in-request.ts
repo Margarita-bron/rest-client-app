@@ -1,4 +1,4 @@
-import type { Header } from '~/routes/rest-client';
+import type { Header } from '~/components/rest-client/rest-client-page';
 import type { Variable } from '~/types/variables';
 
 export function replaceVariablesInRequest(

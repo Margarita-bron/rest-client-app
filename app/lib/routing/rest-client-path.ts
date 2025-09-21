@@ -1,4 +1,4 @@
-import type { Header } from '~/routes/rest-client';
+import type { Header } from '~/components/rest-client/rest-client-page';
 import { v4 as uuidv4 } from 'uuid';
 
 export function base64EncodeUtf8Share(input: string): string {

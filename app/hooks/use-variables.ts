@@ -1,15 +1,24 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import type { Variable } from '~/types/variables';
 import { useLocalStorage } from './use-local-storage';
+import { useAuth } from '~/redux/auth/hooks';
 
 const STORAGE_KEY = 'rest-client-variables';
 
 export function useVariables(initialVariables: Variable[] = []) {
-  const { getValue, setValue } = useLocalStorage<Variable[]>(STORAGE_KEY);
+  const { user } = useAuth();
+  const userId = user?.uid;
+
+  const storageKey = useMemo(() => {
+    return userId ? `${STORAGE_KEY}-${userId}` : STORAGE_KEY;
+  }, [userId]);
+
+  const { getValue, setValue } = useLocalStorage<Variable[]>(storageKey);
 
   const [variables, setVariables] = useState<Variable[]>(() => {
     return getValue() ?? initialVariables;
   });
+
   useEffect(() => {
     setValue(variables);
   }, [variables, setValue]);
