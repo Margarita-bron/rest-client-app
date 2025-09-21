@@ -13,6 +13,7 @@ describe('Variables component', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+
     vi.spyOn(useVariablesHook, 'useVariables').mockReturnValue({
       variables: mockVariables,
       addVariable: mockAdd,
@@ -20,11 +21,14 @@ describe('Variables component', () => {
       removeVariable: mockRemove,
       setVariables: vi.fn(),
       replaceVariablesInString: vi.fn(),
-    } as any);
-    vi.spyOn(i18nHook, 'useTr').mockReturnValue(mockT);
+    });
+
+    vi.spyOn(i18nHook, 'useTr').mockReturnValue(
+      mockT as unknown as ReturnType<typeof i18nHook.useTr>
+    );
     vi.stubGlobal('navigator', {
       clipboard: { writeText: vi.fn() },
-    });
+    } as unknown as Navigator);
   });
 
   it('renders title and description', () => {
@@ -70,7 +74,7 @@ describe('Variables component', () => {
 
   it('copies value to clipboard', async () => {
     const writeTextMock = vi.fn();
-    (navigator.clipboard as any).writeText = writeTextMock;
+    navigator.clipboard.writeText = writeTextMock;
 
     render(<Variables />);
     await act(async () => {

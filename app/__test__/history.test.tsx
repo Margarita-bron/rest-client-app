@@ -6,19 +6,23 @@ import * as useAuthHook from 'react-firebase-hooks/auth';
 import * as routerHook from '~/lib/routing/navigation';
 import * as i18nHook from '~/lib/i18n/hooks/use-translate-custom';
 import History from '~/routes/history';
+import type { User } from 'firebase/auth';
 
 vi.mock('react-router', async () => {
-  const actual: any = await vi.importActual('react-router');
+  const actual =
+    await vi.importActual<typeof import('react-router')>('react-router');
   return { ...actual, useNavigate: vi.fn() };
 });
 
 vi.mock('~/lib/routing/navigation', () => ({
   useRouter: vi.fn(),
-  Link: ({ children, to }: any) => <a href={to}>{children}</a>,
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
+    <a href={to}>{children}</a>
+  ),
 }));
 
 vi.mock('~/lib/routing/rest-client-path', () => ({
-  buildShareRoute: vi.fn((m, u) => `/share/${m}`),
+  buildShareRoute: vi.fn((m: string, u: string) => `/share/${m}`),
 }));
 
 vi.mock('~/ui/loader', () => ({
@@ -30,9 +34,29 @@ vi.mock('~/components/buttons/rest-client/rest-client-button', () => ({
 }));
 
 describe('History component', () => {
-  const mockUser = { uid: 'user1' };
+  // мок Firebase User с нужными полями
+  const mockUser = {
+    uid: 'user1',
+    email: 'john@test.com',
+    displayName: 'John',
+    emailVerified: true,
+    isAnonymous: false,
+    metadata: {} as unknown,
+    providerData: [],
+    phoneNumber: null,
+    photoURL: null,
+    refreshToken: 'token',
+    reload: vi.fn(),
+    delete: vi.fn(),
+    getIdToken: vi.fn().mockResolvedValue('token'),
+    getIdTokenResult: vi.fn().mockResolvedValue({ token: 'token' }),
+    reloadUserInfo: {} as unknown,
+  } as unknown as User;
+
   const mockNavigate = vi.fn();
-  const mockT = vi.fn((key: string) => key);
+  const mockT = ((key: string) => key) as unknown as ReturnType<
+    typeof i18nHook.useTr
+  >;
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -40,11 +64,11 @@ describe('History component', () => {
     vi.spyOn(useAuthHook, 'useAuthState').mockReturnValue([
       mockUser,
       false,
-    ] as any);
+      undefined, // вместо null
+    ]);
     vi.spyOn(firebase, 'getUserRequestHistory').mockResolvedValue([]);
 
     vi.spyOn(reactRouter, 'useNavigate').mockReturnValue(mockNavigate);
-
     vi.spyOn(routerHook, 'useRouter').mockReturnValue({
       locale: 'en',
       pathname: '/',
@@ -52,22 +76,22 @@ describe('History component', () => {
       replace: mockNavigate,
     });
 
-    vi.spyOn(i18nHook, 'useTr').mockReturnValue(((key: string) => key) as any);
+    vi.spyOn(i18nHook, 'useTr').mockReturnValue(mockT);
   });
 
   it('renders loader when auth is loading', () => {
-    vi.spyOn(useAuthHook, 'useAuthState').mockReturnValue([null, true] as any);
-
+    vi.spyOn(useAuthHook, 'useAuthState').mockReturnValue([
+      null,
+      true,
+      undefined, // вместо null
+    ]);
     render(<History />);
-
     expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
   it('renders empty message when no history', async () => {
     vi.spyOn(firebase, 'getUserRequestHistory').mockResolvedValue([]);
-
     render(<History />);
-
     expect(await screen.findByText('emptyMessage')).toBeInTheDocument();
     expect(screen.getByText('emptyHint')).toBeInTheDocument();
     expect(screen.getByText('RestClientButton')).toBeInTheDocument();
@@ -102,11 +126,8 @@ describe('History component', () => {
         createdAt: 2000,
       },
     ];
-
     vi.spyOn(firebase, 'getUserRequestHistory').mockResolvedValue(historyData);
-
     render(<History />);
-
     expect(await screen.findByText('/test')).toBeInTheDocument();
     expect(screen.getByText('/post')).toBeInTheDocument();
     expect(screen.getByText('123')).toBeInTheDocument();

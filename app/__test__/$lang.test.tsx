@@ -1,5 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import {
+  MemoryRouter,
+  Routes,
+  Route,
+  useParams,
+  type Params,
+} from 'react-router';
 import { describe, it, vi, beforeEach } from 'vitest';
 import { i18n } from '~/lib/i18n';
 
@@ -8,11 +14,14 @@ vi.mock('~/routes/not-found', () => ({
 }));
 
 vi.mock('react-router', async () => {
-  const actual: any = await vi.importActual('react-router');
-  return { ...actual, useParams: vi.fn() };
+  const actual =
+    await vi.importActual<typeof import('react-router')>('react-router');
+  return {
+    ...actual,
+    useParams: vi.fn() as unknown as () => Params<string>,
+  };
 });
 
-import { useParams } from 'react-router';
 import LangLayout from '~/routes/$lang';
 const useParamsMock = vi.mocked(useParams);
 

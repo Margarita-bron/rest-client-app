@@ -36,7 +36,7 @@ vi.mock('~/components/buttons/variables/variables-button', () => ({
 
 vi.mock('~/redux/auth/auth-actions', () => ({
   firebaseAuthActions: {
-    subscribeToAuthChanges: vi.fn().mockReturnValue(() => {}), // returns unsubscribe
+    subscribeToAuthChanges: vi.fn().mockReturnValue(() => {}),
   },
 }));
 
@@ -48,12 +48,12 @@ describe('Main component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Properly type the dispatch mock to AppDispatch
     const dispatchMock: AppDispatch = vi.fn().mockReturnValue(() => {});
     useDispatchMock.mockReturnValue(dispatchMock);
 
-    // Cast to any to satisfy TranslateFunc
-    useTrMock.mockReturnValue((key: string) => key as any);
+    useTrMock.mockReturnValue(
+      ((key: string) => key) as unknown as ReturnType<typeof useTr>
+    );
   });
 
   it('renders error message when error occurs', () => {
