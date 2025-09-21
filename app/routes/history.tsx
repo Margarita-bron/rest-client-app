@@ -6,6 +6,7 @@ import { auth, getUserRequestHistory } from '~/lib/firebase/firebase';
 import { RestClientButton } from '~/components/buttons/rest-client/rest-client-button';
 import { Link, useRouter } from '~/lib/routing/navigation';
 import { buildShareRoute } from '~/lib/routing/rest-client-path';
+import { Loader } from '~/ui/loader';
 
 const History = () => {
   const [user, loading, error] = useAuthState(auth);
@@ -32,7 +33,7 @@ const History = () => {
   }, [user, navigate]);
 
   if (loading || loadingHistory) {
-    return <div className="text-center py-10 text-gray-500">Загрузка...</div>;
+    return <Loader />;
   }
 
   if (requestsHistory.length === 0) {

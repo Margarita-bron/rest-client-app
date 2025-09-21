@@ -3,7 +3,7 @@ import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 type ResponseViewProps = {
   loading: boolean;
   error: string | null;
-  responseData: any;
+  responseData: unknown;
   responseRaw: string;
   responseHeaders: Record<string, string>;
   showRaw: boolean;

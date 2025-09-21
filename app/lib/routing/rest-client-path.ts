@@ -1,6 +1,7 @@
 import type { Header } from '~/routes/rest-client';
+import { v4 as uuidv4 } from 'uuid';
 
-export function base64EncodeUtf8(input: string): string {
+export function base64EncodeUtf8Share(input: string): string {
   const base64 = btoa(
     encodeURIComponent(input).replace(/%([0-9A-F]{2})/g, (_, p1) =>
       String.fromCharCode(parseInt(p1, 16))
@@ -9,12 +10,10 @@ export function base64EncodeUtf8(input: string): string {
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-export function base64DecodeUtf8(input: string): string {
+export function base64DecodeUtf8Share(input: string): string {
   input = input.replace(/-/g, '+').replace(/_/g, '/');
   const pad = input.length % 4;
-  if (pad) {
-    input += '='.repeat(4 - pad);
-  }
+  if (pad) input += '='.repeat(4 - pad);
   const decoded = atob(input);
   return decodeURIComponent(
     Array.prototype.map
@@ -26,32 +25,28 @@ export function base64DecodeUtf8(input: string): string {
   );
 }
 
-export function buildQueryFromHeaders(current: Header[]): string {
-  const parts: string[] = [];
-  current.forEach((h) => {
-    if (h.enabled && h.key) {
-      parts.push(`${encodeURIComponent(h.key)}=${encodeURIComponent(h.value)}`);
-    }
-  });
-  return parts.length ? `?${parts.join('&')}` : '';
-}
-
 export function buildShareRoute(
   method: string,
   targetUrl: string,
   bodyString: string,
   current: Header[]
 ): string {
-  const encodedUrl = base64EncodeUtf8(targetUrl);
+  const encodedUrl = base64EncodeUtf8Share(targetUrl);
+
   const hasBody =
     bodyString &&
     ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase());
-  const encodedBody = hasBody ? `/${base64EncodeUtf8(bodyString)}` : '';
-  const query = buildQueryFromHeaders(current);
-  return `rest-client/${method.toUpperCase()}/${encodedUrl}${encodedBody}${query}`;
-}
+  const encodedBody = hasBody ? `/${base64EncodeUtf8Share(bodyString)}` : '';
 
-import { v4 as uuidv4 } from 'uuid';
+  const query = current
+    .filter((h) => h.enabled && h.key)
+    .map((h) => `${encodeURIComponent(h.key)}=${encodeURIComponent(h.value)}`)
+    .join('&');
+
+  const queryString = query ? `?${query}` : '';
+
+  return `rest-client/${method.toUpperCase()}/${encodedUrl}${encodedBody}${queryString}`;
+}
 
 export function parseRequestFromUrl(
   params: Record<string, string | undefined>,
@@ -67,21 +62,18 @@ export function parseRequestFromUrl(
   let body = '';
   const headers: Header[] = [];
 
-  try {
-    if (params.method) method = params.method.toUpperCase();
-    if (params['url']) url = base64DecodeUtf8(params['url']);
-    if (params['body']) body = base64DecodeUtf8(params['body']);
+  if (params.method) method = params.method.toUpperCase();
 
-    for (const [key, value] of searchParams.entries()) {
-      headers.push({
-        id: uuidv4(),
-        key: decodeURIComponent(key),
-        value: decodeURIComponent(value),
-        enabled: true,
-      });
-    }
-  } catch (err) {
-    console.warn('Error parsing request from URL:', err);
+  if (params['url']) url = base64DecodeUtf8Share(params['url']);
+  if (params['body']) body = base64DecodeUtf8Share(params['body']);
+
+  for (const [key, value] of searchParams.entries()) {
+    headers.push({
+      id: uuidv4(),
+      key: decodeURIComponent(key),
+      value: decodeURIComponent(value),
+      enabled: true,
+    });
   }
 
   return { method, url, body, headers };

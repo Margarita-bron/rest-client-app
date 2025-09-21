@@ -1,9 +1,84 @@
-import { useState, useCallback } from 'react';
-import axios, { AxiosError } from 'axios';
+import { useReducer, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { saveUserRequestHistory } from '~/lib/firebase/firebase';
 import type { Header } from '~/routes/rest-client';
 import type { AppNavigate } from '~/lib/routing/navigation';
+import { useAxiosRequest } from './use-axios-request';
+
+type State = {
+  loading: boolean;
+  error: string | null;
+  responseData: unknown;
+  responseRaw: string;
+  responseHeaders: Record<string, string>;
+};
+
+type Action =
+  | { type: 'START' }
+  | {
+      type: 'SUCCESS';
+      payload: { data: unknown; raw: string; headers: Record<string, string> };
+    }
+  | {
+      type: 'ERROR';
+      payload: { error: string; headers?: Record<string, string> };
+    }
+  | { type: 'RESET' };
+
+const initialState: State = {
+  loading: false,
+  error: null,
+  responseData: null,
+  responseRaw: '',
+  responseHeaders: {},
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'START':
+      return { ...initialState, loading: true };
+    case 'SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        responseData: action.payload.data,
+        responseRaw: action.payload.raw,
+        responseHeaders: action.payload.headers,
+      };
+    case 'ERROR':
+      return {
+        ...state,
+        loading: false,
+        error: action.payload.error,
+        responseHeaders: action.payload.headers ?? {},
+      };
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+const prepareHeaders = (headers: Header[], replacer: (s: string) => string) =>
+  headers.reduce<Record<string, string>>((acc, { enabled, key, value }) => {
+    if (enabled && key && value) acc[replacer(key)] = replacer(value);
+    return acc;
+  }, {});
+
+const prepareBody = (
+  method: string,
+  body: string,
+  replacer: (s: string) => string
+) => {
+  if (!['POST', 'PUT', 'PATCH'].includes(method)) return undefined;
+  const processed = replacer(body);
+  try {
+    return JSON.parse(processed);
+  } catch {
+    return processed;
+  }
+};
 
 export const useSendRequest = ({
   user,
@@ -21,13 +96,8 @@ export const useSendRequest = ({
   replaceVariablesInString: (str: string) => string;
   navigate: AppNavigate;
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [responseData, setResponseData] = useState<unknown>(null);
-  const [responseRaw, setResponseRaw] = useState('');
-  const [responseHeaders, setResponseHeaders] = useState<
-    Record<string, string>
-  >({});
+  const { sendAxiosRequest } = useAxiosRequest();
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const sendRequest = useCallback(
     async ({
@@ -42,112 +112,91 @@ export const useSendRequest = ({
       headers: Header[];
     }) => {
       if (!url) {
-        setError('Please enter a URL');
-        return;
+        dispatch({ type: 'ERROR', payload: { error: 'Please enter a URL' } });
+        return {
+          data: null,
+          error: 'Please enter a URL',
+          duration: 0,
+          statusCode: 0,
+          responseSize: 0,
+        };
       }
 
-      setLoading(true);
-      setError(null);
-      setResponseData(null);
-      setResponseRaw('');
-      setResponseHeaders({});
+      dispatch({ type: 'START' });
       const startTime = Date.now();
+
       let statusCode = 0;
       let requestSize = 0;
       let responseSize = 0;
+      let errorMessage: string | null = null;
+      let data: unknown = null;
 
       try {
         const targetUrl = replaceVariablesInString(url);
-
         const processedRequestBody = replaceVariablesInString(requestBody);
-        const rawBody =
-          typeof processedRequestBody === 'string'
-            ? processedRequestBody
-            : JSON.stringify(processedRequestBody);
-        requestSize = new TextEncoder().encode(rawBody).length;
-
-        const processedHeaders = headers.map((header) => ({
-          ...header,
-          key: replaceVariablesInString(header.key),
-          value: replaceVariablesInString(header.value),
-        }));
+        requestSize = new TextEncoder().encode(processedRequestBody).length;
 
         if (targetUrl.length < 2000) {
-          const shareRoute = buildShareRoute(
-            selectedMethod,
-            targetUrl,
-            processedRequestBody,
-            processedHeaders
+          navigate(
+            buildShareRoute(
+              selectedMethod,
+              targetUrl,
+              processedRequestBody,
+              headers
+            )
           );
-          navigate(shareRoute);
         }
 
-        const requestHeaders: Record<string, string> = {};
-        headers.forEach((header) => {
-          if (header.enabled && header.key && header.value) {
-            requestHeaders[replaceVariablesInString(header.key)] =
-              replaceVariablesInString(header.value);
-          }
-        });
+        const requestHeaders = prepareHeaders(
+          headers,
+          replaceVariablesInString
+        );
+        const body = prepareBody(
+          selectedMethod,
+          requestBody,
+          replaceVariablesInString
+        );
 
-        let requestBodyData: unknown = undefined;
-        if (
-          ['POST', 'PUT', 'PATCH'].includes(selectedMethod) &&
-          processedRequestBody
-        ) {
-          try {
-            requestBodyData = JSON.parse(processedRequestBody);
-          } catch {
-            requestBodyData = processedRequestBody;
-          }
-        }
-
-        const config = {
+        const result = await sendAxiosRequest({
           method: selectedMethod.toLowerCase(),
           url: targetUrl,
           headers: requestHeaders,
-          data: requestBodyData,
+          data: body,
           timeout: 10000,
-          transformResponse: [(data: unknown) => data],
+          transformResponse: [(data) => data],
           withCredentials: false,
-        };
+        });
 
-        const res = await axios(config);
-        statusCode = res.status;
-        setResponseRaw(res.data);
-        setResponseHeaders(res.headers as Record<string, string>);
+        statusCode = result.statusCode;
+        responseSize = result.responseSize;
+        data = result.data;
 
-        const rawResponse =
-          typeof res.data === 'string' ? res.data : JSON.stringify(res.data);
-        responseSize = new TextEncoder().encode(rawResponse).length;
-
-        try {
-          setResponseData(JSON.parse(res.data));
-        } catch {
-          setResponseData(res.data);
-        }
+        dispatch({
+          type: 'SUCCESS',
+          payload: {
+            data: result.data,
+            raw: result.rawResponse,
+            headers: result.headers,
+          },
+        });
       } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-          const error = err as AxiosError;
-          statusCode = err.response?.status ?? 0;
-          setError(err.message);
-
-          if (error.response?.headers) {
-            const headers: Record<string, string> = {};
-            for (const [key, value] of Object.entries(error.response.headers)) {
-              if (typeof value === 'string') headers[key] = value;
-              else if (Array.isArray(value)) headers[key] = value.join(', ');
-              else if (value !== undefined) headers[key] = String(value);
-            }
-            setResponseHeaders(headers);
-          }
-        } else if (err instanceof Error) {
-          setError(err.message);
+        if (err && typeof err === 'object') {
+          const e = err as {
+            statusCode?: number;
+            message?: string;
+            headers?: Record<string, string>;
+          };
+          statusCode = e.statusCode ?? 0;
+          errorMessage = e.message ?? 'Request failed';
+          dispatch({
+            type: 'ERROR',
+            payload: { error: errorMessage, headers: e.headers },
+          });
         } else {
-          setError('Request failed');
+          errorMessage = 'Unexpected error';
+          dispatch({ type: 'ERROR', payload: { error: errorMessage } });
         }
       } finally {
-        setLoading(false);
         const duration = Date.now() - startTime;
 
         const saveHeaders: Record<string, string | boolean> = {};
@@ -165,20 +214,27 @@ export const useSendRequest = ({
             responseSize,
             duration,
             statusCode,
-            errorMessage: error,
+            errorMessage,
           });
         }
+
+        return {
+          data,
+          error: errorMessage,
+          duration,
+          statusCode,
+          responseSize,
+        };
       }
     },
-    [user, buildShareRoute, replaceVariablesInString, navigate]
+    [
+      user,
+      buildShareRoute,
+      replaceVariablesInString,
+      navigate,
+      sendAxiosRequest,
+    ]
   );
 
-  return {
-    sendRequest,
-    loading,
-    error,
-    responseData,
-    responseRaw,
-    responseHeaders,
-  };
+  return { ...state, sendRequest, reset: () => dispatch({ type: 'RESET' }) };
 };

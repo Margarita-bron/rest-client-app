@@ -7,7 +7,7 @@ import RequestPanel from '../components/rest-client/request-panel/request-panel'
 import HeadersEditor from '../components/rest-client/headers-editor/headers-editor';
 import RequestBodyEditor from '../components/rest-client/request-body-editor/request-body-editor';
 import ResponseView from '../components/rest-client/response-view/response-view';
-import { auth } from '~/lib/firebase/firebase';
+import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
 import {
   buildShareRoute,
   parseRequestFromUrl,
@@ -15,6 +15,7 @@ import {
 import { useVariables } from '~/hooks/use-variables';
 import { useSendRequest } from '~/components/rest-client/hooks/useSendRequest';
 import type { User } from 'firebase/auth';
+import { replaceVariablesInRequest } from '~/components/rest-client/replaceVariablesInRequest';
 
 export type Header = {
   id: string;
@@ -25,7 +26,7 @@ export type Header = {
 
 const RestClient = () => {
   const [user] = useAuthState(auth) as [User | null, boolean, unknown];
-  const { replaceVariablesInString } = useVariables();
+  const { variables } = useVariables();
   const { navigate } = useRouter();
 
   const [selectedMethod, setSelectedMethod] = useState('GET');
@@ -48,7 +49,17 @@ const RestClient = () => {
   } = useSendRequest({
     user,
     buildShareRoute,
-    replaceVariablesInString,
+    replaceVariablesInString: (str) => {
+      if (!str) return str;
+      let result = str;
+      variables
+        .filter((v) => v.enabled && v.key)
+        .forEach((v) => {
+          const pattern = new RegExp(`{{${v.key}}}`, 'g');
+          result = result.replace(pattern, v.value);
+        });
+      return result;
+    },
     navigate,
   });
 
@@ -58,8 +69,8 @@ const RestClient = () => {
   useEffect(() => {
     const {
       method,
-      url: decodedUrl,
-      body: decodedBody,
+      url: templateUrl,
+      body: templateBody,
       headers: incomingHeaders,
     } = parseRequestFromUrl(
       params as Record<string, string | undefined>,
@@ -67,10 +78,85 @@ const RestClient = () => {
     );
 
     setSelectedMethod(method);
-    setUrl(decodedUrl);
-    setRequestBody(decodedBody);
+
+    setUrl((prev) => prev || templateUrl);
+
+    setRequestBody((prev) => prev || templateBody);
     if (incomingHeaders.length) setHeaders(incomingHeaders);
   }, [params, searchParams]);
+
+  const onSend = async () => {
+    if (!user) return;
+
+    const originalUrl = url;
+    const originalBody = requestBody;
+    const originalHeaders: Header[] = headers.map((h) => ({ ...h }));
+
+    await saveUserRequestHistory(user.uid, {
+      method: selectedMethod,
+      url: originalUrl,
+      body: originalBody,
+      headers: originalHeaders.reduce<Record<string, string | boolean>>(
+        (acc, h) => {
+          if (h.key) acc[h.key] = h.enabled ? h.value : false;
+          return acc;
+        },
+        {}
+      ),
+      requestSize: originalBody.length,
+      responseSize: 0,
+      duration: 0,
+      statusCode: 0,
+      errorMessage: '',
+    });
+
+    navigate(
+      buildShareRoute(
+        selectedMethod,
+        originalUrl,
+        originalBody,
+        originalHeaders
+      )
+    );
+
+    const replaced = replaceVariablesInRequest(
+      originalUrl,
+      originalBody,
+      originalHeaders,
+      variables
+    );
+
+    const {
+      data,
+      error: reqError,
+      duration,
+      statusCode,
+      responseSize,
+    } = await sendRequest({
+      selectedMethod,
+      url: replaced.url,
+      requestBody: replaced.body,
+      headers: replaced.headers,
+    });
+
+    await saveUserRequestHistory(user.uid, {
+      method: selectedMethod,
+      url: originalUrl,
+      body: originalBody,
+      headers: originalHeaders.reduce<Record<string, string | boolean>>(
+        (acc, h) => {
+          if (h.key) acc[h.key] = h.enabled ? h.value : false;
+          return acc;
+        },
+        {}
+      ),
+      requestSize: originalBody.length,
+      responseSize: responseSize || 0,
+      duration: duration || 0,
+      statusCode: statusCode || 0,
+      errorMessage: reqError ? String(reqError) : '',
+    });
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 text-white">
@@ -80,9 +166,7 @@ const RestClient = () => {
         url={url}
         setUrl={setUrl}
         loading={loading}
-        onSend={() =>
-          sendRequest({ selectedMethod, url, requestBody, headers })
-        }
+        onSend={onSend}
       />
 
       <HeadersEditor

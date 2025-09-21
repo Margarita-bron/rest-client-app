@@ -8,6 +8,7 @@ export function replaceVariablesInRequest(
   variables: Variable[]
 ): { url: string; body: string; headers: Header[] } {
   const replace = (text: string) => {
+    if (!text) return text;
     let result = text;
     variables
       .filter((v) => v.enabled && v.key)
@@ -18,9 +19,19 @@ export function replaceVariablesInRequest(
     return result;
   };
 
+  const replacedBody = replace(body);
+
+  let jsonBody = replacedBody;
+  try {
+    const parsed = JSON.parse(replacedBody);
+    jsonBody = JSON.stringify(parsed);
+  } catch {
+    jsonBody = replacedBody;
+  }
+
   return {
     url: replace(url),
-    body: replace(body),
+    body: jsonBody,
     headers: headers.map((h) =>
       h.enabled ? { ...h, key: replace(h.key), value: replace(h.value) } : h
     ),
