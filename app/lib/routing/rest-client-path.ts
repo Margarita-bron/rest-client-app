@@ -1,24 +1,80 @@
 import type { Header } from '~/routes/rest-client';
+import { v4 as uuidv4 } from 'uuid';
 
-export function buildRestClientUrl(
+export function base64EncodeUtf8Share(input: string): string {
+  const base64 = btoa(
+    encodeURIComponent(input).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+      String.fromCharCode(parseInt(p1, 16))
+    )
+  );
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+export function base64DecodeUtf8Share(input: string): string {
+  input = input.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = input.length % 4;
+  if (pad) input += '='.repeat(4 - pad);
+  const decoded = atob(input);
+  return decodeURIComponent(
+    Array.prototype.map
+      .call(
+        decoded,
+        (c: string) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      )
+      .join('')
+  );
+}
+
+export function buildShareRoute(
   method: string,
-  url: string,
-  body: string | null,
-  headers: Header[]
+  targetUrl: string,
+  bodyString: string,
+  current: Header[]
 ): string {
-  const encodedUrl = btoa(url);
-  const encodedBody = body ? btoa(body) : '';
-  const query = new URLSearchParams();
+  const encodedUrl = base64EncodeUtf8Share(targetUrl);
 
-  headers.forEach(({ key, value, enabled }) => {
-    if (enabled && key && value) {
-      query.set(key, encodeURIComponent(value));
-    }
-  });
+  const hasBody =
+    bodyString &&
+    ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase());
+  const encodedBody = hasBody ? `/${base64EncodeUtf8Share(bodyString)}` : '';
 
-  let path = `/${method}/${encodedUrl}`;
-  if (body) path += `/${encodedBody}`;
-  const queryString = query.toString();
+  const query = current
+    .filter((h) => h.enabled && h.key)
+    .map((h) => `${encodeURIComponent(h.key)}=${encodeURIComponent(h.value)}`)
+    .join('&');
 
-  return queryString ? `${path}?${queryString}` : path;
+  const queryString = query ? `?${query}` : '';
+
+  return `rest-client/${method.toUpperCase()}/${encodedUrl}${encodedBody}${queryString}`;
+}
+
+export function parseRequestFromUrl(
+  params: Record<string, string | undefined>,
+  searchParams: URLSearchParams
+): {
+  method: string;
+  url: string;
+  body: string;
+  headers: Header[];
+} {
+  let method = 'GET';
+  let url = '';
+  let body = '';
+  const headers: Header[] = [];
+
+  if (params.method) method = params.method.toUpperCase();
+
+  if (params['url']) url = base64DecodeUtf8Share(params['url']);
+  if (params['body']) body = base64DecodeUtf8Share(params['body']);
+
+  for (const [key, value] of searchParams.entries()) {
+    headers.push({
+      id: uuidv4(),
+      key: decodeURIComponent(key),
+      value: decodeURIComponent(value),
+      enabled: true,
+    });
+  }
+
+  return { method, url, body, headers };
 }
