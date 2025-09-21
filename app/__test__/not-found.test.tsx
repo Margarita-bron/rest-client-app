@@ -62,7 +62,7 @@ describe('NotFound component', () => {
     render(<NotFound />);
     fireEvent.click(screen.getByRole('button', { name: /go back home/i }));
 
-    expect(navigateMock).toHaveBeenCalledWith(`/en/${ROUTES.main}`, {
+    expect(navigateMock).toHaveBeenCalledWith(`/${ROUTES.main}`, {
       replace: true,
     });
   });
@@ -81,7 +81,7 @@ describe('NotFound component', () => {
     render(<NotFound />);
     fireEvent.click(screen.getByRole('button', { name: /go back home/i }));
 
-    expect(navigateMock).toHaveBeenCalledWith(`/en/${ROUTES.home}`, {
+    expect(navigateMock).toHaveBeenCalledWith(`/${ROUTES.home}`, {
       replace: true,
     });
   });
