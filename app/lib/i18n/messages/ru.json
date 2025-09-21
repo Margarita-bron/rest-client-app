@@ -81,6 +81,13 @@
     "send": "Отправить",
     "loading": "Загрузка..."
   },
+  "codeGenerator": {
+    "content": "Выберите язык:",
+    "generate": "Сгенерировать",
+    "loading": "Загрузка...",
+    "copied":"Скопировано!",
+    "copy": "Скопировать код"
+  },
   "responseView": {
     "title": "Ответ",
     "showRaw": "Показать Raw",

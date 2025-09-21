@@ -83,6 +83,13 @@
     "send": "Send",
     "loading": "Loading..."
   },
+  "codeGenerator": {
+    "content": "Select language:",
+    "generate": "Generate",
+    "loading": "Loading...",
+    "copied":"Copied!",
+    "copy": "Copy the code"
+  },
   "responseView": {
     "title": "Response",
     "showRaw": "Show Raw",

@@ -5,6 +5,7 @@ import { ROUTES } from '~/lib/routing/routes-path';
 
 export const RestClientButton = () => {
   const t = useTr('mainPage');
+
   return (
     <Link
       to={ROUTES.restClient}

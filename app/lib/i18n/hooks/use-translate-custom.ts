@@ -20,7 +20,7 @@ Custom hook: useTr as wrapper above useTranslation
  * 4. Allowes to pass objects
  */
 
-type TranslateFunc = <T = string>(key: string, options?: TOptions) => T;
+export type TranslateFunc = <T = string>(key: string, options?: TOptions) => T;
 
 export function useTr(namespace?: string): TranslateFunc {
   const { t } = useTranslation();
