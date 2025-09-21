@@ -53,7 +53,6 @@ describe('SignUpForm', () => {
     const passwordInput = screen.getByTestId('sign-up-password');
     const submitButton = screen.getByTestId('sign-up-submit');
 
-    // Триггерим пустые поля через ввод и стирание
     fireEvent.input(nameInput, { target: { value: 'a' } });
     fireEvent.input(nameInput, { target: { value: '' } });
     fireEvent.blur(nameInput);
