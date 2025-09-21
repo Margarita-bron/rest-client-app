@@ -7,6 +7,7 @@ import axios, { AxiosError } from 'axios';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, saveUserRequestHistory } from '~/lib/firebase/firebase';
 import type { User } from 'firebase/auth';
+import CodeGenerator from '~/components/rest-client/code-generator/code-generator';
 
 export interface Header {
   id: string;
@@ -102,6 +103,7 @@ const RestClient = () => {
         showHeaders={showHeaders}
         setShowHeaders={setShowHeaders}
       />
+      <CodeGenerator />
     </div>
   );
 };
