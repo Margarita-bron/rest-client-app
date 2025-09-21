@@ -1,9 +1,9 @@
+import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
+
 type RequestBodyEditorProps = {
   requestBody: string;
   setRequestBody: (body: string) => void;
 };
-
-import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 const RequestBodyEditor = ({
   requestBody,
