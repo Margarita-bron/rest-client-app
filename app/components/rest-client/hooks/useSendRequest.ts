@@ -1,7 +1,7 @@
 import { useReducer, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { saveUserRequestHistory } from '~/lib/firebase/firebase';
-import type { Header } from '~/routes/rest-client';
+import type { Header } from '~/components/rest-client/rest-client-page';
 import type { AppNavigate } from '~/lib/routing/navigation';
 import { useAxiosRequest } from './use-axios-request';
 

@@ -55,8 +55,8 @@ const History = () => {
   );
 
   return (
-    <div className="w-full overflow-auto my-10">
-      <div className="min-w-[1000px]">
+    <div className="w-full max-w-7xl overflow-auto my-10">
+      <div className="min-w-[500px]">
         {/* header */}
         <div className="grid grid-cols-[100px_400px_120px_120px_120px_100px_200px] gap-2 bg-gray-950 border-2 border-gray-600 border-b-0 text-white px-4 py-3 rounded-t-lg font-semibold sticky top-0 z-10 text-center">
           <div>{t('method')}</div>

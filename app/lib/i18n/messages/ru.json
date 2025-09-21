@@ -82,14 +82,18 @@
     "loading": "Загрузка..."
   },
   "responseView": {
-    "loading": "Загрузка...",
-    "error": "Ошибка: {{message}}",
-    "title": "Ответ:",
+    "title": "Ответ",
+    "showRaw": "Показать Raw",
     "showJson": "Показать JSON",
-    "showRaw": "Показать raw",
-    "hideHeaders": "Скрыть заголовки",
     "showHeaders": "Показать заголовки",
-    "headersTitle": "Заголовки ответа:"
+    "hideHeaders": "Скрыть заголовки",
+    "headersTitle": "Заголовки",
+    "status": "Статус",
+    "size": "Размер",
+    "loading": "Загрузка...",
+    "emptyPlaceholder": "Ответ пока отсутствует",
+    "error": "Ошибка: {{message}}",
+    "sendRequestToSeeResponse": "Чтобы получить тело ответа, отправьте запрос"
   },
   "mainPage": {
     "welcome": "Добро пожаловать",

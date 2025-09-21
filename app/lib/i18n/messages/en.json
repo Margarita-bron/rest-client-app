@@ -84,14 +84,18 @@
     "loading": "Loading..."
   },
   "responseView": {
-    "loading": "Loading...",
-    "error": "Error: {{message}}",
-    "title": "Response:",
-    "showJson": "Show JSON",
+    "title": "Response",
     "showRaw": "Show Raw",
-    "hideHeaders": "Hide Headers",
+    "showJson": "Show JSON",
     "showHeaders": "Show Headers",
-    "headersTitle": "Response Headers:"
+    "hideHeaders": "Hide Headers",
+    "headersTitle": "Headers",
+    "status": "Status",
+    "size": "Size",
+    "loading": "Loading...",
+    "emptyPlaceholder": "No response yet",
+    "error": "Error: {{message}}",
+    "sendRequestToSeeResponse": "To get the response body, send a request"
   },
   "mainPage": {
     "welcome": "Welcome",

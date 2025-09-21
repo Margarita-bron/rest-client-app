@@ -1,4 +1,4 @@
-import type { Header } from '~/routes/rest-client';
+import type { Header } from '~/components/rest-client/rest-client-page';
 import { useTr } from '~/lib/i18n/hooks/use-translate-custom';
 
 type HeadersEditorProps = {
@@ -26,7 +26,7 @@ const HeadersEditor = ({
         <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
         <button
           onClick={addHeader}
-          className="px-3 py-1 bg-green-600 text-white rounded-md text-sm hover:bg-green-700"
+          className="px-3 py-1 bg-green-600 text-white rounded-md text-sm cursor-pointer hover:bg-green-700"
         >
           {t('addButton')}
         </button>

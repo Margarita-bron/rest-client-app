@@ -19,7 +19,7 @@ const Variables = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-6 text-white">
+    <div className="my-10 w-full max-w-6xl mx-auto p-8 text-gray-200 border-1 border-gray-800 rounded-2xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
         <p className="text-gray-300">
@@ -122,7 +122,7 @@ const Variables = () => {
         )}
       </div>
 
-      <div className="mt-6 bg-indigo-800 bg-opacity-20 border border-indigo-600 rounded-md p-4">
+      <div className="mt-6 bg-indigo-900 bg-opacity-20 border border-indigo-600 rounded-md p-4">
         <h3 className="text-base font-semibold mb-2">{t('howToUseTitle')}</h3>
         <div className="text-sm space-y-1 text-gray-300 leading-relaxed">
           <p>
