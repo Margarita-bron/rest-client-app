@@ -95,6 +95,6 @@ export const getUserRequestHistory = async (
     ...doc.data(),
   })) as (Record<string, unknown> & { id: string })[];
 };
-function showAuthErrorNotification(error: unknown) {
+export function showAuthErrorNotification(error: unknown) {
   throw new Error('Function not implemented.');
 }
